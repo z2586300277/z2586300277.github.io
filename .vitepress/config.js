@@ -2,7 +2,7 @@ import { defineConfig, loadEnv } from 'vitepress'
 
 export default defineConfig({
   title: "优雅永不过时",
-  base: './',
+  base: '/',
   description: "优雅永不过时的个人主页",
   themeConfig: {
     logo: 'https://z2586300277.github.io/three-editor/dist/site.png',
