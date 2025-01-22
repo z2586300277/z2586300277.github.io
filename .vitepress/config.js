@@ -2,7 +2,7 @@ import { defineConfig, loadEnv } from 'vitepress'
 
 export default defineConfig({
   title: "优雅永不过时",
-  base: './',
+  base: '/',
   description: "优雅永不过时的个人主页",
   head: [
     ['script', { async: true, src: 'https://www.googletagmanager.com/gtag/js?id=G-LKJQBJNGVF' }],
