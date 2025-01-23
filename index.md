@@ -5,7 +5,7 @@ layout: home
 hero:
   name: "优雅永不过时"
   text: "三维可视化"
-  tagline: Elegant in every time
+  tagline: QQ：2586300277   微信：z2586300277
   image:
     src: https://z2586300277.github.io/three-editor/dist/site.png
 
