@@ -16,7 +16,7 @@ features:
     details: 原生Three.js Cesium.js 开源案例
   - icon: 🍁
     title: 编辑器
-    link: https://z2586300277.github.io/three-editor/dist/#/editor
+    link: https://z2586300277.github.io/three-editor/docs/dist/
     details: Three.js 低代码组态编辑器
   - icon: 📚
     title: 博客
