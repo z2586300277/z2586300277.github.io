@@ -22,6 +22,8 @@ export default defineConfig({
   themeConfig: {
     logo: 'https://z2586300277.github.io/three-editor/dist/site.png',
     nav: [
+      { text: '打赏💰', link: 'https://z2586300277.github.io/three-editor/dist/wx_pay.jpg' },
+      { text: 'QQ群🐧', link: 'https://qm.qq.com/q/QdsKkzo2gI' },
       { text: 'BiBi📺', link: 'https://space.bilibili.com/245165721' },
       { text: 'CSDN📘', link: 'https://blog.csdn.net/guang2586' }
     ],
