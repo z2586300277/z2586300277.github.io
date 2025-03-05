@@ -22,6 +22,7 @@ export default defineConfig({
   themeConfig: {
     logo: 'https://z2586300277.github.io/three-editor/dist/site.png',
     nav: [
+      { text: '免费搭建github在线网页教程📖', link: 'https://www.bilibili.com/video/BV12T94YhEQA/?share_source=copy_web&vd_source=f15e5929f6b5d7c615287e0780660f84' },
       { text: '打赏💰', link: 'https://z2586300277.github.io/three-editor/dist/wx_pay.jpg' },
       { text: 'QQ群🐧', link: 'https://qm.qq.com/q/QdsKkzo2gI' },
       { text: 'BiBi📺', link: 'https://space.bilibili.com/245165721' },
