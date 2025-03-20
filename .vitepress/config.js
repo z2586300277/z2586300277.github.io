@@ -24,7 +24,7 @@ export default defineConfig({
     nav: [
       { text: '免费搭建github在线网页教程📖', link: 'https://www.bilibili.com/video/BV12T94YhEQA/?share_source=copy_web&vd_source=f15e5929f6b5d7c615287e0780660f84' },
       { text: '新编辑器🍏', link: 'https://z2586300277.github.io/threejs-editor/' },
-      { text: '打赏💰', link: 'https://z2586300277.github.io/three-editor/dist/wx_pay.jpg' },
+      { text: '打赏💰', link: 'https://z2586300277.github.io/3d-file-server/images/wx_star.png' },
       { text: 'QQ群🐧', link: 'https://qm.qq.com/q/QdsKkzo2gI' },
       { text: 'BiBi📺', link: 'https://space.bilibili.com/245165721' },
       { text: 'CSDN📘', link: 'https://blog.csdn.net/guang2586' }
