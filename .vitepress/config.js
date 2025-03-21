@@ -22,6 +22,7 @@ export default defineConfig({
   themeConfig: {
     logo: 'https://z2586300277.github.io/three-editor/dist/site.png',
     nav: [
+      { text: '下载案例源码⚡', link: 'https://pan.quark.cn/s/201da5c82fec' },
       { text: '免费搭建github在线网页教程📖', link: 'https://www.bilibili.com/video/BV12T94YhEQA/?share_source=copy_web&vd_source=f15e5929f6b5d7c615287e0780660f84' },
       { text: '新编辑器🍏', link: 'https://z2586300277.github.io/threejs-editor/' },
       { text: '打赏💰', link: 'https://z2586300277.github.io/3d-file-server/images/wx_star.png' },
@@ -30,7 +31,7 @@ export default defineConfig({
       { text: 'CSDN📘', link: 'https://blog.csdn.net/guang2586' }
     ],
     footer: {
-        copyright: `版权所有 ©2019-2025 优雅永不过时`,
+        copyright: `<img src="https://visitor-badge.laobi.icu/badge?page_id=z2586300277" style="float:left" > 版权所有 ©2019-2025 优雅永不过时`,
     },
     socialLinks: [
       { icon: 'github', link: 'https://github.com/z2586300277' }
