@@ -22,8 +22,7 @@ export default defineConfig({
   themeConfig: {
     logo: 'https://z2586300277.github.io/three-editor/dist/site.png',
     nav: [
-      { text: '下载案例源码⚡', link: 'https://pan.quark.cn/s/201da5c82fec' },
-      { text: '免费搭建github在线网页教程📖', link: 'https://www.bilibili.com/video/BV12T94YhEQA/?share_source=copy_web&vd_source=f15e5929f6b5d7c615287e0780660f84' },
+      { text: '作者资源💙', link: '/resource.md' },
       { text: '新编辑器🍏', link: 'https://z2586300277.github.io/threejs-editor/' },
       { text: '打赏💰', link: 'https://z2586300277.github.io/3d-file-server/images/wx_star.png' },
       { text: 'QQ群🐧', link: 'https://qm.qq.com/q/QdsKkzo2gI' },
