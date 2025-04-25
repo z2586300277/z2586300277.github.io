@@ -4,8 +4,7 @@ layout: home
 
 hero:
   name: "优雅永不过时"
-  text: "Web3D可视化"
-  tagline:  QQ：2586300277   微信：z2586300277
+  tagline: Web三维可视化：开源分享、为爱发电、知识学习、互相帮助、技术支持、创业、合作等。有需要联系   QQ：2586300277   微信：z2586300277
   image:
     src: https://z2586300277.github.io/three-editor/dist/site.png
 
