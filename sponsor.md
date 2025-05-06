@@ -31,6 +31,7 @@ const donations = ref(list);
 
 <div class="fixed-qrcode">
   <img src="https://z2586300277.github.io/3d-file-server/images/wx_star.png" alt="赞赏">
+  <img src="https://z2586300277.github.io/3d-file-server/images/alipay.png" alt="赞赏">
 </div>
 
 <style>
@@ -43,9 +44,12 @@ table {
 }
 .fixed-qrcode {
   position: fixed;
-  top: 30%;
+  top: 100px;
   right:15%;
-  transform: translateY(-50%);
-  width: 280px;
+  height: 560px;
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 </style>
