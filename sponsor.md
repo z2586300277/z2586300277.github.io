@@ -34,7 +34,7 @@ const donations = ref(list);
   <img src="https://z2586300277.github.io/3d-file-server/images/alipay.png" alt="赞赏">
 </div>
 
-<style>
+<style scoped>
 .content {
     padding: 0 !important;
 }
