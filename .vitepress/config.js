@@ -22,9 +22,9 @@ export default defineConfig({
   themeConfig: {
     logo: 'https://z2586300277.github.io/three-editor/dist/site.png',
     nav: [
+      { text: '捐赠💰', link: '/sponsor.md' },
       { text: '作者资源💙', link: '/resource.md' },
       { text: '新编辑器🍏', link: 'https://z2586300277.github.io/threejs-editor/' },
-      { text: '打赏💰', link: 'https://z2586300277.github.io/3d-file-server/images/wx_star.png' },
       { text: 'QQ群🐧', link: 'https://qm.qq.com/q/QdsKkzo2gI' },
       { text: 'BiBi📺', link: 'https://space.bilibili.com/245165721' },
       { text: 'CSDN📘', link: 'https://blog.csdn.net/guang2586' }
