@@ -44,9 +44,9 @@ table {
 }
 .fixed-qrcode {
   position: fixed;
-  top: 100px;
+  top: 80px;
   right:15%;
-  height: 560px;
+  height: 540px;
   width: 260px;
   display: flex;
   flex-direction: column;
