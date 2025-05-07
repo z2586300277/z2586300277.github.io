@@ -22,7 +22,7 @@ export default defineConfig({
   themeConfig: {
     logo: 'https://z2586300277.github.io/three-editor/dist/site.png',
     nav: [
-      { text: '捐赠💰', link: '/sponsor.md' },
+      { text: '赞赏👍', link: '/sponsor.md' },
       { text: '作者资源💙', link: '/resource.md' },
       { text: '新编辑器🍏', link: 'https://z2586300277.github.io/threejs-editor/' },
       { text: 'QQ群🐧', link: 'https://qm.qq.com/q/QdsKkzo2gI' },
