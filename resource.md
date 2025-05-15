@@ -15,6 +15,8 @@ aside: true
 
 - ⚡ [案例源码](https://pan.quark.cn/s/201da5c82fec) - 国内高速直接下载Three-Cesium-Examples的源码
 
+- 📂 [开源案例 - 模型、贴图、json等文件资源包](https://pan.quark.cn/s/ce7012c3293e) - 网盘下载 3d-file-server 文件资源
+
 - 📖 [GitHub 在线网页教程](https://www.bilibili.com/video/BV12T94YhEQA) - 免费搭建 GitHub 在线网页的教程
 
 
