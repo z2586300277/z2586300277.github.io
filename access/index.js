@@ -1,0 +1,1 @@
+console.log("Copyright (c) threehub.cn email:2586300277@qq.com All rights reserved.");
