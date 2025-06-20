@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 
 const list = [
-  { name: '示例名称 - 优雅永不过时', amount:  0, date: '2025-05-06', message: '开源分享--------------------为爱发电', link: 'https://github.com/z2586300277', linkName: '示例名 - 官网' },
+  { name: '示例名称 - 优雅永不过时', amount:  0, date: '2025-05-06', message: '开源分享--------------------为爱发电', link: 'https://github.com/z2586300277', linkName: '示例名 - 博客' },
 ].sort((a, b) => a.amount - b.amount).reverse()
 const donations = ref(list);
 </script>
@@ -11,18 +11,18 @@ const donations = ref(list);
     <thead>
       <tr>
         <th>姓名</th>
-        <th>链接(可选)</th>
         <th>金额(￥)</th>
         <th>留言</th>
+        <th>链接(可选)</th>
         <th>日期</th>
       </tr>
     </thead>
     <tbody>
       <tr v-for="(donation, index) in donations" :key="index">
         <td>{{ donation.name }}</td>
-        <td><a :href="donation.link" target="_blank">{{ donation.linkName }}</a></td>
         <td>{{ donation.amount }}</td>
         <td>{{ donation.message }}</td>
+        <td><a :href="donation.link" target="_blank">{{ donation.linkName }}</a></td>
         <td>{{ donation.date }}</td>
       </tr>
     </tbody>
