@@ -17,6 +17,8 @@ aside: true
 
 - 🍋 [Shader学习](/shader.md) - shader 学习的一些资源
 
+- 🚫 [F12检测片段](/f12.md) - F12检测
+
 ## 链接
 
 - ⚡ [案例源码](https://pan.quark.cn/s/201da5c82fec) - 国内高速直接下载Three-Cesium-Examples的源码
