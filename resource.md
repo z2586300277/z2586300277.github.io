@@ -13,6 +13,8 @@ aside: true
 
 ## 学习
 
+- 🏗️ [Blender教程](https://www.bilibili.com/video/BV1fb4y1e7PD) - B站优秀的Blender建模学习教程
+
 - ☘️ [基础GLSL学习](/glsl.md) - 搜集的glsl 基础语法
 
 - 🍋 [Shader学习](/shader.md) - shader 学习的一些资源
