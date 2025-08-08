@@ -18,7 +18,7 @@ features:
     link: https://z2586300277.github.io/editor-docs/
     details: 快速定制 Three.js 低代码编辑器
   - icon: 📚
-    title: 博客
+    title: 博客 <img style="float:right" src="https://img.shields.io/badge/dynamic/json?url=https://api.bilibili.com/x/relation/stat?vmid=245165721&query=data.follower&color=282c34&label=BiBi&labelColor=FE7398">
     link: https://z2586300277.github.io/blog/
     details: Hexo 个人博客
   - icon: ⛪
