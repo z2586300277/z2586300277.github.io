@@ -13,7 +13,7 @@ const list = [
   { name: 'wll', amount:  20, date: '2025', message: '' },
   { name: '好好吃饭', amount:  30, date: '2025', message: '' },
   { name: '天亮了', amount:  18.8, date: '2025', message: '' },
-].sort((a, b) => a.amount - b.amount).reverse()
+].sort((a, b) => new Date(b.date) - new Date(a.date))
 const donations = ref(list);
 </script>
 <div class="content-container">
