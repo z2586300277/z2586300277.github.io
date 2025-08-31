@@ -2,7 +2,8 @@
 import { ref } from 'vue';
 
 const list = [
-  { name: '示例名称 - 优雅永不过时', amount:  0, date: '2025-05-06', message: '开源分享--------------------为爱发电', link: 'https://github.com/z2586300277', linkName: '示例名 - 博客' },
+    { name: 'Nico', amount:  50, date: '2025-08-22', message: '', link: 'https://nicowebgl.cn', linkName: '官网' },
+  { name: 'giao66', amount:  20, date: '2025-08-31', message: '', link: 'https://github.com/giao66', linkName: 'github' },
 ].sort((a, b) => a.amount - b.amount).reverse()
 const donations = ref(list);
 </script>
