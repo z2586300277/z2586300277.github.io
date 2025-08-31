@@ -4,6 +4,15 @@ import { ref } from 'vue';
 const list = [
     { name: 'Nico', amount:  50, date: '2025-08-22', message: '', link: 'https://nicowebgl.cn', linkName: '官网' },
   { name: 'giao66', amount:  20, date: '2025-08-31', message: '', link: 'https://github.com/giao66', linkName: 'github' },
+  { name: '红叶舞秋山', amount:  100 + 200 + 20, date: '2025', message: '' },
+  { name: '高登坤', amount:  50, date: '2025', message: '' },
+  { name: '怎么了', amount:  100, date: '2025', message: '' },
+  { name: '左手', amount:  88 + 66, date: '2025', message: '' },
+  { name: '空id', amount:  20, date: '2025', message: '' },
+  { name: '小白', amount:  10, date: '2025', message: '' },
+  { name: 'wll', amount:  20, date: '2025', message: '' },
+  { name: '好好吃饭', amount:  30, date: '2025', message: '' },
+  { name: '天亮了', amount:  18.8, date: '2025', message: '' },
 ].sort((a, b) => a.amount - b.amount).reverse()
 const donations = ref(list);
 </script>
