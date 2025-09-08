@@ -11,6 +11,12 @@ aside: true
 优雅永不过时的资源链接，包含了学习资源、技术社区、实用工具、框架与库等内容。
 :::
 
+## 常用导航
+
+| 链接 | 链接 | 链接 | 链接 | 链接 | 链接 | 
+| ------- | ----- | ------ | ------- | ----- | ------ |
+|[🧑‍🤝‍🧑OpenThree](https://github.com/orgs/OpenThree/repositories)| [🙂emoji表情](https://emoji.muan.co/) | [🌟github排行榜](https://evanli.github.io/Github-Ranking/)| [🐋python学习](https://github.com/jackfrued/Python-100-Days)
+
 ## 学习
 
 - 🏗️ [Blender教程](https://www.bilibili.com/video/BV1fb4y1e7PD) - B站优秀的Blender建模学习教程
@@ -38,9 +44,3 @@ aside: true
 
 - 🌟[模型资源](https://pan.quark.cn/s/59f2ed3acb24) - 作者收集的一些优质模型资源,glb、fbx、obj、体积小、精美
 
-
-## 常用导航
-
-| 链接 | 链接 | 链接 | 链接 | 链接 | 链接 | 
-| ------- | ----- | ------ | ------- | ----- | ------ |
-|[🧑‍🤝‍🧑OpenThree](https://github.com/orgs/OpenThree/repositories)| [🙂emoji表情](https://emoji.muan.co/) | [🌟github排行榜](https://evanli.github.io/Github-Ranking/)| |

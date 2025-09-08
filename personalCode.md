@@ -44,10 +44,10 @@ title: 个人二维码
 <!-- 包裹展示区 -->
 
   <div class="qrgrid">
-    <img class="ims" src="https://z2586300277.github.io/3d-file-server/images/QQ.png" >
+    <img class="ims3" src="/files/qq.png" >
     <img class="ims2" src="https://z2586300277.github.io/3d-file-server/images/elegant.jpg" >
     <img class="ims4" src="https://z2586300277.github.io/3d-file-server/images/wx_min_app.jpg" >
-    <img class="ims3" src="/files/qq.png" >
+    <img class="ims" src="https://z2586300277.github.io/3d-file-server/images/QQ.png" >
     <img class="ims5" src="/files/wx_gzh.png" >
   </div>
 
