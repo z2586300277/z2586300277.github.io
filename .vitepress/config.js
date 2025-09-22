@@ -27,6 +27,7 @@ export default defineConfig({
       { text: '作者资源💙', link: '/resource.md' },
       { text: '新编辑器🍏', link: 'https://z2586300277.github.io/threejs-editor/' },
       { text: 'QQ群🐧', link: 'https://qm.qq.com/q/QdsKkzo2gI' },
+      { text: '店铺🐸', link: 'https://6jcv3td7vikf3kzewfo6symw5w46ild.taobao.com/' },
       { text: 'BiBi📺', link: 'https://space.bilibili.com/245165721' },
       { text: 'CSDN📘', link: 'https://blog.csdn.net/guang2586' }
     ],
