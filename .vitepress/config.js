@@ -20,7 +20,7 @@ export default defineConfig({
     })();`]
   ],
   themeConfig: {
-    logo: 'https://z2586300277.github.io/three-editor/dist/site.png',
+    logo: 'https://z2586300277.github.io/site.png',
     nav: [
       { text: '赞赏👍', link: '/sponsor.md' },
       { text: '二维码📱', link: '/personalCode.md' },
