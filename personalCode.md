@@ -5,10 +5,9 @@ title: 个人二维码
 
 <style>
 .qrgrid {
-  margin-top: 20px;
   height: 600px;
   width: 850px;
-  margin-left: 400px;
+  margin: 20px auto 0;
   flex-wrap: wrap;
   display: flex;
   justify-content: space-between;
@@ -50,5 +49,3 @@ title: 个人二维码
     <img class="ims" src="https://z2586300277.github.io/3d-file-server/images/QQ.png" >
     <img class="ims5" src="/files/wx_gzh.png" >
   </div>
-
-<!-- …existing code… -->
