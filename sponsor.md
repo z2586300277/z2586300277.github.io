@@ -2,8 +2,8 @@
 import { ref } from 'vue';
 
 const list = [
-    { name: 'Nico', amount:  50, date: '2025-08-22', message: '', link: 'https://nicowebgl.cn', linkName: '官网' },
-  { name: 'giao66', amount:  20, date: '2025-08-31', message: '', link: 'https://github.com/giao66', linkName: 'github' },
+    { name: 'Nico', amount:  50, date: '2025-08-22', message: '为爱发电', link: 'https://nicowebgl.cn', linkName: '官网' },
+  { name: 'giao66', amount:  20, date: '2025-08-31', message: '', link: '', linkName: 'github' },
   { name: '红叶舞秋山', amount:  100 + 200 + 20, date: '2025', message: '' },
   { name: '高登坤', amount:  50, date: '2025', message: '' },
   { name: '怎么了', amount:  100, date: '2025', message: '' },
@@ -46,17 +46,15 @@ const donations = ref(list);
 </div>
 
 <style scoped>
-.content {
-    padding: 0 !important;
-}
+
 table {
-  width: 200% !important; /* 强制增加表格宽度 */
-  margin-left: -30% !important; /* 居中表格 */
+  margin-top: -20px;
+  margin-left: -10%;
 }
 .fixed-qrcode {
   position: fixed;
   top: 80px;
-  right:15%;
+  right: 20%;
   height: 540px;
   width: 260px;
   display: flex;
