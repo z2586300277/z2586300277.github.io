@@ -46,8 +46,11 @@ vec3 xyz = v.xyz; //vec3(1.0,2.0,3.0)
 vec3 xyz1 = vec(v[0],v[1],v[2]); //vec3(1.0,2.0,3.0)
 vec3 rgb = v.rgb; //vec3(1.0,2.0,3.0)
 
-vec2 xyzw = v.xyzw; //vec4(1.0,2.0,3.0,1.0);
-vec2 rgba = v.rgba; //vec4(1.0,2.0,3.0,1.0);
+vec2 xy = v.xy; //vec2(1.0,2.0);
+vec2 rg = v.rg; //vec2(1.0,2.0);
+
+vec4 xyzw = v.xyzw; //vec4(1.0,2.0,3.0,1.0);
+vec4 rgba = v.rgba; //vec4(1.0,2.0,3.0,1.0);
 
 ```
 
