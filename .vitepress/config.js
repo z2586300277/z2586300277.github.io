@@ -25,6 +25,7 @@ export default defineConfig({
       { text: '赞赏👍', link: '/sponsor.md' },
       { text: '二维码📱', link: '/personalCode.md' },
       { text: '作者资源💙', link: '/resource.md' },
+      { text: '展示🍂', link: '/works.md' },
       { text: 'BiBi📺', link: 'https://space.bilibili.com/245165721' },
       { text: '新编辑器🍏', link: 'https://z2586300277.github.io/threejs-editor/' },
       { text: '店铺🐸', link: 'https://z2586300277.taobao.com/' },

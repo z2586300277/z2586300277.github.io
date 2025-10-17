@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 const list = [
     { name: 'Nico', amount:  50, date: '2025-08-22', message: '为爱发电', link: 'https://nicowebgl.cn', linkName: '官网' },
-  { name: 'giao66', amount:  20, date: '2025-08-31', message: '', link: '', linkName: 'github' },
+  { name: 'giao66', amount:  20, date: '2025-08-31', message: '' },
   { name: '红叶舞秋山', amount:  100 + 200 + 20, date: '2025', message: '' },
   { name: '高登坤', amount:  50, date: '2025', message: '' },
   { name: '怎么了', amount:  100, date: '2025', message: '' },
