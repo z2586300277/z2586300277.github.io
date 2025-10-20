@@ -7,5 +7,6 @@ window.addon_editor_json = [
     'https://z2586300277.github.io/editorJson/v2/航班.json',
     'https://z2586300277.github.io/editorJson/v2/物理碰撞效果.json',
     'https://z2586300277.github.io/editorJson/v2/三维测量.json',
-    'https://z2586300277.github.io/editorJson/v2/mirror.json'
+    'https://z2586300277.github.io/editorJson/v2/mirror.json',
+    'https://z2586300277.github.io/editorJson/v2/个人页.json'
 ]
