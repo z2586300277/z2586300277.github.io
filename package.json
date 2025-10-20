@@ -6,6 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "vitepress dev --port 3002 --open ",
+    "dev": "vitepress dev --port 3002 --open ",
     "docs:dev": "vitepress dev --port 3002 --open ",
     "docs:build": "vitepress build",
     "docs:build2": "VITE_MODE=production  vitepress build",
