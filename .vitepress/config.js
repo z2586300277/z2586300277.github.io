@@ -25,12 +25,10 @@ export default defineConfig({
       { text: '3D展示🍂', link: '/works.md' },
       { text: '赞赏👍', link: '/sponsor.md' },
       { text: '二维码📱', link: '/personalCode.md' },
-      { text: '作者资源💙', link: '/resource.md' },
-      { text: '新编辑器🍏', link: 'https://z2586300277.github.io/threejs-editor/' },
-      { text: 'BiBi📺', link: 'https://space.bilibili.com/245165721' },
-      { text: '店铺🐸', link: 'https://z2586300277.taobao.com/' },
+      { text: '资源💙', link: '/resource.md' },
       { text: '闲鱼🐟', link: 'https://www.goofish.com/personal?userId=2885508577' },
-      { text: 'QQ群🐧', link: 'https://qm.qq.com/q/QdsKkzo2gI' },
+      { text: '淘宝🐸', link: 'https://z2586300277.taobao.com/' },
+      { text: 'BiBi📺', link: 'https://space.bilibili.com/245165721' },
       { text: 'CSDN📘', link: 'https://blog.csdn.net/guang2586' }
     ],
     footer: {
