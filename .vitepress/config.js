@@ -22,6 +22,7 @@ export default defineConfig({
   themeConfig: {
     logo: 'https://z2586300277.github.io/site.png',
     nav: [
+      { text: '留言🐳', link: '/message.md' },
       { text: '3D展示🍂', link: '/works.md' },
       { text: '赞赏👍', link: '/sponsor.md' },
       { text: '二维码📱', link: '/personalCode.md' },
