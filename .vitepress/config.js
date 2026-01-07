@@ -22,18 +22,19 @@ export default defineConfig({
   themeConfig: {
     logo: 'https://z2586300277.github.io/site.png',
     nav: [
-      { text: '留言🐳', link: '/message.md' },
+      { text: '留言📝', link: '/message.md' },
       { text: '3D展示🍂', link: '/works.md' },
       { text: '赞赏👍', link: '/sponsor.md' },
       { text: '二维码📱', link: '/personalCode.md' },
       { text: '资源💙', link: '/resource.md' },
       { text: '闲鱼🐟', link: 'https://www.goofish.com/personal?userId=2885508577' },
       { text: '淘宝🐸', link: 'https://z2586300277.taobao.com/' },
+      { text: 'Gitee🐳', link: 'https://gitee.com/zhang-jingguang' },
       { text: 'BiBi📺', link: 'https://space.bilibili.com/245165721' },
       { text: 'CSDN📘', link: 'https://blog.csdn.net/guang2586' }
     ],
     footer: {
-      copyright: `<img src="https://visitor-badge.laobi.icu/badge?page_id=z2586300277" style="float:left" > 版权所有 ©2019-2025 优雅永不过时`,
+      copyright: `<img src="https://visitor-badge.laobi.icu/badge?page_id=z2586300277" style="float:left" > 版权所有 ©2019-${new Date().getFullYear()} 优雅永不过时 `
     },
     socialLinks: [
       { icon: 'github', link: 'https://github.com/z2586300277' }
