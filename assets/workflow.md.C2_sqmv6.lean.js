@@ -1,0 +1,1 @@
+import{_ as a,c as r,o as t,ae as n}from"./chunks/framework.CDjunVez.js";const h=JSON.parse('{"title":"n8n","description":"","frontmatter":{},"headers":[],"relativePath":"workflow.md","filePath":"workflow.md"}'),o={name:"workflow.md"};function l(i,e,d,f,s,_){return t(),r("div",null,[...e[0]||(e[0]=[n("",4)])])}const p=a(o,[["render",l]]);export{h as __pageData,p as default};

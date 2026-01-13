@@ -1,0 +1,1 @@
+import{_ as i,c as a,o as t,ae as n}from"./chunks/framework.CDjunVez.js";const g=JSON.parse('{"title":"GLSL 中文手册","description":"","frontmatter":{},"headers":[],"relativePath":"glsl.md","filePath":"glsl.md"}'),h={name:"glsl.md"};function p(l,s,k,e,d,r){return t(),a("div",null,[...s[0]||(s[0]=[n("",185)])])}const y=i(h,[["render",p]]);export{g as __pageData,y as default};

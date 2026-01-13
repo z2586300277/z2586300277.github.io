@@ -1,0 +1,1 @@
+import{_ as i,c as a,o as h,ae as k}from"./chunks/framework.CDjunVez.js";const d=JSON.parse('{"title":"造型函数工具","description":"","frontmatter":{},"headers":[],"relativePath":"shader.md","filePath":"shader.md"}'),n={name:"shader.md"};function l(p,s,t,E,e,r){return h(),a("div",null,[...s[0]||(s[0]=[k("",64)])])}const y=i(n,[["render",l]]);export{d as __pageData,y as default};

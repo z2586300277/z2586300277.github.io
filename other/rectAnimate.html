@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>矩形边框动画</title>
+    <style>
+        .aroot {
+            width: 1400px;
+            height: 800px;
+            margin: auto;
+            background: aliceblue;
+            position: relative;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="aroot"></div>
+    <script>
+        const borderWidth = '2px';
+        const borderColor = 'black';
+        const borderDuration = 240; // ms
+        const padding = '10px'; // 新增padding参数
+
+        const root = document.querySelector('.aroot');
+        for (let i = 0; i < 24; i++) {
+            const box = document.createElement('div');
+            box.style.background = 'white';
+            box.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+            box.style.position = 'relative';
+            root.appendChild(box);
+            setHoverEffect(box, { borderWidth, borderColor, borderDuration, padding });
+        }
+
+        function setHoverEffect(box, params) {
+            const { borderWidth, borderColor, borderDuration, padding } = params;
+            const pad = parseFloat(padding) || 0;
+            const padUnit = padding.replace(/[\d.]/g, '') || 'px';
+            const cfgs = [
+                { w: borderWidth, h: `calc(100% - ${2 * pad}${padUnit})`, l: pad + padUnit, t: pad + padUnit, tval: 'scaleY(0)', o: 'bottom' },
+                { w: `calc(100% - ${2 * pad}${padUnit})`, h: borderWidth, l: pad + padUnit, b: pad + padUnit, tval: 'scaleX(0)', o: 'left' },
+                { w: borderWidth, h: `calc(100% - ${2 * pad}${padUnit})`, r: pad + padUnit, t: pad + padUnit, tval: 'scaleY(0)', o: 'bottom' },
+                { w: `calc(100% - ${2 * pad}${padUnit})`, h: borderWidth, l: pad + padUnit, t: pad + padUnit, tval: 'scaleX(0)', o: 'left' }
+            ];
+            const borders = cfgs.map((c) => {
+                let d = document.createElement('div'), s = d.style;
+                s.position = 'absolute';
+                s.background = borderColor;
+                s.transition = `transform ${borderDuration / 1000}s`;
+                s.width = c.w; s.height = c.h;
+                if (c.l !== undefined) s.left = c.l;
+                if (c.r !== undefined) s.right = c.r;
+                if (c.t !== undefined) s.top = c.t;
+                if (c.b !== undefined) s.bottom = c.b;
+                s.transform = c.tval;
+                s.transformOrigin = c.o;
+                box.appendChild(d);
+                return d;
+            });
+            let timer;
+            box.addEventListener('mouseenter', () => {
+                clearTimeout(timer);
+                borders[0].style.transform = 'scaleY(1)';
+                borders[1].style.transform = 'scaleX(1)';
+                timer = setTimeout(() => {
+                    borders[3].style.transform = 'scaleX(1)';
+                    borders[2].style.transform = 'scaleY(1)';
+                }, borderDuration * 0.8);
+            });
+            box.addEventListener('mouseleave', () => {
+                clearTimeout(timer);
+                borders[3].style.transform = 'scaleX(0)';
+                borders[2].style.transform = 'scaleY(0)';
+                timer = setTimeout(() => {
+                    borders[1].style.transform = 'scaleX(0)';
+                    borders[0].style.transform = 'scaleY(0)';
+                }, borderDuration * 0.8);
+            });
+        }
+    </script>
+</body>
+
+</html>

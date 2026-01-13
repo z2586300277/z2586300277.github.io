@@ -1,0 +1,1 @@
+import{_ as i,c as a,o as n,ae as h}from"./chunks/framework.CDjunVez.js";const g=JSON.parse('{"title":"一个简单的 F12 检测脚本","description":"","frontmatter":{},"headers":[],"relativePath":"f12.md","filePath":"f12.md"}'),l={name:"f12.md"};function k(p,s,t,E,e,r){return n(),a("div",null,[...s[0]||(s[0]=[h("",2)])])}const y=i(l,[["render",k]]);export{g as __pageData,y as default};
