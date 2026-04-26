@@ -27,10 +27,10 @@ export default defineConfig({
       { text: '赞赏👍', link: '/sponsor.md' },
       { text: '二维码📱', link: '/personalCode.md' },
       { text: '资源💙', link: '/resource.md' },
+      { text: 'BiBi📺', link: 'https://space.bilibili.com/245165721' },
       { text: '闲鱼🐟', link: 'https://www.goofish.com/personal?userId=2885508577' },
       { text: '淘宝🐸', link: 'https://z2586300277.taobao.com/' },
       { text: 'Gitee🐳', link: 'https://gitee.com/zhang-jingguang' },
-      { text: 'BiBi📺', link: 'https://space.bilibili.com/245165721' },
       { text: 'CSDN📘', link: 'https://blog.csdn.net/guang2586' }
     ],
     footer: {

@@ -34,8 +34,12 @@ title: 个人二维码
     object-fit: cover;
 }
 .ims5 {
-    height: 180px;
-    width: 540px;
+    width: 256px;
+    height: 260px;
+    object-fit: cover;
+}
+.ims6 {
+    height: 260px;
     object-fit: cover;
 }
 </style>
@@ -46,6 +50,7 @@ title: 个人二维码
     <img class="ims3" src="/files/qq.png" >
     <img class="ims2" src="https://z2586300277.github.io/3d-file-server/images/elegant.jpg" >
     <img class="ims4" src="https://z2586300277.github.io/3d-file-server/images/wx_min_app.jpg" >
-    <img class="ims" src="https://z2586300277.github.io/3d-file-server/images/QQ.png" >
-    <img class="ims5" src="/files/wx_gzh.png" >
+    <img class="ims" src="/files/qqq.png" >
+    <img class="ims5" src="/files/sph.jpg" >
+    <img class="ims6" src="/files/dy.jpg" >
   </div>
