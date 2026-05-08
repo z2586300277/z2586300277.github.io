@@ -22,11 +22,12 @@ export default defineConfig({
   themeConfig: {
     logo: 'https://z2586300277.github.io/site.png',
     nav: [
-      { text: '留言📝', link: '/message.md' },
-      { text: '3D展示🍂', link: '/works.md' },
-      { text: '赞赏👍', link: '/sponsor.md' },
+      { text: '官网🏡', link: 'http://site.threehub.cn/' },
       { text: '二维码📱', link: '/personalCode.md' },
+      { text: '3D展示🍂', link: '/works.md' },
       { text: '资源💙', link: '/resource.md' },
+      { text: '留言📝', link: '/message.md' },
+      { text: '赞赏👍', link: '/sponsor.md' },
       { text: 'BiBi📺', link: 'https://space.bilibili.com/245165721' },
       { text: '闲鱼🐟', link: 'https://www.goofish.com/personal?userId=2885508577' },
       { text: '淘宝🐸', link: 'https://z2586300277.taobao.com/' },
