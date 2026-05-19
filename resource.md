@@ -10,7 +10,7 @@ aside: true
 | 链接 | 链接 | 链接 | 链接 | 链接 | 链接 | 
 | ------- | ----- | ------ | ------- | ----- | ------ |
 |[🧑‍🤝‍🧑OpenThree](https://github.com/orgs/OpenThree/repositories)| [🙂emoji表情](https://emoji.muan.co/) | [🌟github排行榜](https://evanli.github.io/Github-Ranking/)| [🐋python学习](https://github.com/jackfrued/Python-100-Days) | [V2rayNG](https://github.com/2dust/v2rayNG) | [Clash](https://github.com/clash-verge-rev/clash-verge-rev)
-|[🍃Panda-vpn](https://github.com/DiningFactory/panda-vpn-pro)| [Dev-sidecar](https://github.com/docmirror/dev-sidecar) | [Watt Toolkit](https://steampp.net) | [Info](https://github.com/xgit01)
+|[🍃Panda-vpn](https://github.com/DiningFactory/panda-vpn-pro)| [Dev-sidecar](https://github.com/docmirror/dev-sidecar) | [Watt Toolkit](https://steampp.net) | [Info](https://github.com/xgit01) | [图片压缩](https://z2586300277.github.io/other/imgT.html)
 
 ## 学习
 

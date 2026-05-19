@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebP 压缩</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:#0f1419;color:#e7ecf3;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+main{width:100%;max-width:400px}
+h1{font-size:1.1rem;margin-bottom:1rem;text-align:center}
+.zone{border:2px dashed #2d3a4f;border-radius:12px;padding:2rem 1rem;text-align:center;background:#1a2332;margin-bottom:1rem;outline:none}
+.zone:focus{border-color:#3dd6c6}
+.zone p{color:#8b9cb3;font-size:.9rem}
+.zone .big{color:#e7ecf3;margin-bottom:.35rem}
+.preview{background:#0c1016;border-radius:10px;min-height:160px;display:none;align-items:center;justify-content:center;margin-bottom:1rem}
+.preview.show{display:flex}
+.preview img{max-width:100%;max-height:240px;object-fit:contain}
+.btn{width:100%;padding:.75rem;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;background:#3dd6c6;color:#0a1218}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.status{margin-top:.75rem;font-size:.85rem;color:#8b9cb3;text-align:center;min-height:1.2em}
+.status.ok{color:#3dd6c6}
+</style>
+</head>
+<body>
+<main>
+<h1>WebP 压缩</h1>
+<div class="zone" id="zone" tabindex="0">
+  <p class="big">Ctrl+V 粘贴图片</p>
+  <p>自动压缩后点下载</p>
+</div>
+<div class="preview" id="preview"></div>
+<button type="button" class="btn" id="btnDl" disabled>下载 WebP</button>
+<p class="status" id="status">等待粘贴…</p>
+</main>
+<script>
+const zone=document.getElementById("zone");
+const preview=document.getElementById("preview");
+const btnDl=document.getElementById("btnDl");
+const statusEl=document.getElementById("status");
+const TARGET_KB=10;
+let webpBlob=null,previewUrl=null,token=0;
+
+function setStatus(msg,ok){statusEl.textContent=msg;statusEl.className="status"+(ok?" ok":"");}
+
+function showPreview(blob){
+  if(previewUrl)URL.revokeObjectURL(previewUrl);
+  previewUrl=URL.createObjectURL(blob);
+  preview.innerHTML='<img src="'+previewUrl+'" alt="预览">';
+  preview.classList.add("show");
+}
+
+function hidePreview(){
+  preview.classList.remove("show");
+  preview.innerHTML="";
+  if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=null;}
+}
+
+function loadImage(blob){
+  return new Promise((res,rej)=>{
+    const u=URL.createObjectURL(blob),img=new Image();
+    img.onload=()=>{URL.revokeObjectURL(u);res(img);};
+    img.onerror=()=>{URL.revokeObjectURL(u);rej();};
+    img.src=u;
+  });
+}
+
+function encodeWebp(img,scale,q){
+  const w=Math.max(1,Math.round(img.naturalWidth*scale));
+  const h=Math.max(1,Math.round(img.naturalHeight*scale));
+  const c=document.createElement("canvas");
+  c.width=w;c.height=h;
+  c.getContext("2d").drawImage(img,0,0,w,h);
+  return new Promise(r=>{c.toBlob(b=>r(b||new Blob([])),"image/webp",q);});
+}
+
+async function compress(img,targetBytes){
+  let scale=1,best=null;
+  while(scale>=0.05){
+    let lo=0.05,hi=0.95,local=null;
+    for(let i=0;i<14;i++){
+      const q=(lo+hi)/2,blob=await encodeWebp(img,scale,q);
+      if(!blob.size)break;
+      if(blob.size<=targetBytes){local=blob;lo=q;}else hi=q;
+    }
+    if(local){best=local;if(best.size<=targetBytes)return best;}
+    const probe=await encodeWebp(img,scale,0.05);
+    if(!probe.size||probe.size<=targetBytes){if(probe.size)best=probe;break;}
+    scale*=0.75;
+  }
+  return best||await encodeWebp(img,0.05,0.05);
+}
+
+function download(){
+  if(!webpBlob)return;
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(webpBlob);
+  a.download="image.webp";
+  a.click();
+  URL.revokeObjectURL(a.href);
+  setStatus("已下载 image.webp",true);
+}
+
+async function handlePaste(file){
+  if(!file?.type.startsWith("image/"))return;
+  webpBlob=null;
+  btnDl.disabled=true;
+  hidePreview();
+  const t=++token;
+  setStatus("压缩中…");
+  try{
+    const img=await loadImage(file);
+    if(t!==token)return;
+    webpBlob=await compress(img,TARGET_KB*1024);
+    if(t!==token)return;
+    showPreview(webpBlob);
+    btnDl.disabled=false;
+    const kb=(webpBlob.size/1024).toFixed(1);
+    setStatus("完成 "+kb+" KB，可下载",true);
+  }catch{
+    if(t!==token)return;
+    setStatus("压缩失败",false);
+  }
+}
+
+document.addEventListener("paste",e=>{
+  const items=e.clipboardData?.items;
+  if(!items)return;
+  for(const item of items){
+    if(item.type.startsWith("image/")){
+      e.preventDefault();
+      const f=item.getAsFile();
+      if(f)handlePaste(f);
+      return;
+    }
+  }
+});
+
+btnDl.addEventListener("click",download);
+zone.focus();
+</script>
+</body></html>
