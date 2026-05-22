@@ -27,7 +27,7 @@ export default defineConfig({
     logo: 'https://z2586300277.github.io/site.png',
     nav: [
       { text: '案例讲解📖', link: '/examples/' },
-      { text: '官网🏡', link: 'http://site.threehub.cn/' },
+      { text: '企业🏬', link: 'http://site.threehub.cn/' },
       { text: '二维码📱', link: '/personalCode.md' },
       { text: '3D展示🍂', link: '/works.md' },
       { text: '资源💙', link: '/resource.md' },
