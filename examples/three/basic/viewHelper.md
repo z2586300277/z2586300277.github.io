@@ -1,0 +1,84 @@
+---
+title: "视图辅助 - Three.js 案例讲解"
+description: "Three.js Scene/Camera/Renderer 基础搭建。主流程在 `animate`。"
+head:
+  - - meta
+    - name: keywords
+      content: "three.js,cesium,webgl,视图辅助,基础案例"
+outline: deep
+---
+
+# 视图辅助
+
+*View Helper*
+
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=viewHelper)
+
+
+![视图辅助](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/viewHelper.jpg)
+
+
+## 效果说明
+
+Three.js Scene/Camera/Renderer 基础搭建。主流程在 `animate`。
+
+> 基础案例 · Three.js
+
+## 实现思路
+
+- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+
+- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+
+## 独立函数
+
+- `animate()` — rAF：update controls + render
+
+## 源码
+
+```js
+import * as THREE from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { ViewHelper } from 'three/examples/jsm/helpers/ViewHelper.js'
+
+const box = document.getElementById('box')
+
+const scene = new THREE.Scene()
+
+const camera = new THREE.PerspectiveCamera(50, box.clientWidth / box.clientHeight, 0.1, 1000)
+
+camera.position.set(0, 10, 10)
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
+
+renderer.setSize(box.clientWidth, box.clientHeight)
+
+box.appendChild(renderer.domElement)
+
+const controls = new OrbitControls(camera, renderer.domElement)
+
+controls.enableDamping = true
+
+scene.add(new THREE.AxesHelper(5), new THREE.GridHelper(10, 10))
+
+const viewHelper = new ViewHelper(camera, renderer.domElement)
+
+renderer.autoClear = false // 需要将自动清除关闭
+
+animate()
+
+function animate() {
+
+    controls.update()
+
+    // renderer.clear() // 可能需要的清除操作
+
+    renderer.render(scene, camera)
+
+    viewHelper.render(renderer)
+
+    requestAnimationFrame(animate)
+
+}
+```
+
