@@ -1,11 +1,14 @@
 ---
 title: "单一效果 - Cesium.js"
-outline: false
+description: "雷达、水波、火焰、动态围墙等单一可视化特效。"
+outline: deep
 ---
 
 # 单一效果
 
-地球上的 GIS 小特效
+雷达、水波、火焰、动态围墙等单一可视化特效。
+
+每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。
 
 - [粒子（火焰）](/examples/cesium/singleEffect/fire)
 - [水波纹](/examples/cesium/singleEffect/ripple)

@@ -4,25 +4,38 @@ description: "Three.js 接第三方库或扩展能力。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,高斯溅射,扩展功能"
+      content: "three.js,webgl,expand,高斯溅射"
 outline: deep
 ---
-
 # 高斯溅射
 
 *gaussianSplats3D*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=gaussianSplats3D)
 
-
 ![高斯溅射](https://z2586300277.github.io/three-cesium-examples/threeExamples/expand/gaussianSplats3D.webp)
 
+## 你将学到什么
+
+- Three.js/Cesium 场景搭建
+- 案例核心 API 用法
+- 在线编辑器调试技巧
 
 ## 效果说明
 
 Three.js 接第三方库或扩展能力。
 
 > 扩展功能 · Three.js
+
+## 核心概念
+
+- **Scene / Camera / Renderer** 是 Three.js 渲染三件套；Mesh = Geometry + Material。
+- 开发时先确认坐标系、材质是否受光、以及是否需要 rAF 循环。
+
+## 实现步骤
+
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 渲染场景并处理 resize
 
 ## 源码
 
@@ -56,3 +69,9 @@ viewer.addSplatScene(FILE_HOST + 'other/deskFlower.ksplat', {
 });
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=gaussianSplats3D) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [扩展功能目录](/examples/three/expand/)
+
+> 扩展功能 · Three.js

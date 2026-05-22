@@ -1,46 +1,52 @@
 ---
 title: "模型热力图 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `animate`、`callModel`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,模型热力图,应用场景"
+      content: "three.js,webgl,application,模型热力图"
 outline: deep
 ---
-
 # 模型热力图
 
 *Model Heatmap*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=modelHeatmap)
 
-
 ![模型热力图](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/modelHeatmap.jpg)
 
+## 你将学到什么
+
+- glTF/FBX/OBJ 外部模型加载
+- 自定义 ShaderMaterial / 修改内置 shader
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
+- GUI 面板调试参数
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `animate`、`callModel`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 应用场景 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **Loader** 异步加载模型；glTF 返回 `gltf.scene`，加载后注意 `scale` 与坐标系。Draco 需配置 `DRACOLoader`。
 
-- 手写几何：`BufferGeometry` + `Float32Array` 填 position/uv/normal，`setIndex` 拼三角面。
+- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
 
-- 外部模型 glTF/FBX 用对应 Loader，`scene.add(gltf.scene)` 后注意 scale/坐标。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+## 实现步骤
 
-## 代码结构
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. Loader 异步加载模型/纹理资源
+3. 定义材质/shader 与 uniforms，rAF 中更新
+4. rAF 循环中 update 并 render
 
-- 热力图实现
+## 代码要点
 
-## 独立函数
-
-- `animate()` — rAF：update controls + render
+- **`callModel()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -107,13 +113,48 @@ let model = null
 function callModel(e) {
     model = e
     const box3 = new THREE.Box3().setFromObject(model)
+    const { min, max } = box3
+    // 根据模型的包围盒 固定y 生成一个平面
+    const p1 = new THREE.Vector3(min.x, 0, min.z)
+    const p2 = new THREE.Vector3(min.x, 0, max.z)
+    const p3 = new THREE.Vector3(max.x, 0, max.z)
+    const p4 = new THREE.Vector3(max.x, 0, min.z)
+    const geometry = new THREE.BufferGeometry()
+    const vertices = new Float32Array([
+        p1.x, p1.y, p1.z,
+        p2.x, p2.y, p2.z,
+        p3.x, p3.y, p3.z,
+        p4.x, p4.y, p4.z,
+    ])
+    geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3))
+    geometry.setIndex([0, 1, 2, 0, 2, 3])
+    geometry.attributes.uv = new THREE.Float32BufferAttribute([
+        0, 0,
+        0, 1,
+        1, 1,
+        1, 0
+    ], 2)
+    geometry.computeVertexNormals()
 
-```
+    let list = []
 
-### 热力图实现
+    model.traverse(i => {
+        if (i.isMesh) {
+            i.material.transparent = true
+            i.material.opacity = 0.5
+            i.isMesh && list.push(i.name)
+        }
+    })
 
-```js
-const arr = list.map(i => {
+    // list 随机获取 5 - 10 个名字形成新的数组
+    const randomNum = Math.floor(Math.random() * (10 - 5 + 1)) + 5
+    list = list.sort(() => Math.random() - 0.5).slice(0, randomNum)
+
+    let w = max.x - min.x
+    let h = max.z - min.z
+
+    /* 热力图实现 */
+    const arr = list.map(i => {
         const obj = model.getObjectByName(i)
         const worldPosition = new THREE.Vector3()
         obj.getWorldPosition(worldPosition)
@@ -130,15 +171,12 @@ const arr = list.map(i => {
         uvY: { value: 1, type: 'number', unit: 'float' },
         uvX: { value: 1, type: 'number', unit: 'float' },
         opacity: { value: 0.6, type: 'number', unit: 'float' }, // 稍微降低整体不透明度
-        edgeFalloff: { value: 2.0, type: 'number', unit: 'float' } // 边缘衰减参数
-    }
-
-    const gui = new GUI()
-    gui.add(uniforms1.HEAT_MAX, 'value', 0, 10).name('HEAT_MAX')
-    gui.add(uniforms1.PointRadius, 'value', 0, 1).name('PointRadius')
-    gui.add(uniforms1.intensity, 'value', 0, 10).name('intensity')
-    gui.add(uniforms1.uvY, 'value', 0, 1).name('uvY')
-    gui.add(uniforms1.uvX, 'value', 0, 1).name('uvX')
-    gui.add(u
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=modelHeatmap) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [应用场景目录](/examples/three/application/)
+
+> 应用场景 · Three.js

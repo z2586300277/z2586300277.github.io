@@ -1,61 +1,48 @@
 ---
 title: "蓝色 - Cesium.js 案例讲解"
-description: "Cesium 离线/内网影像。"
+description: "本案例展示 **蓝色 ** 的实现。涉及：案例交互与参数可在在线编辑器中查看。"
 head:
   - - meta
     - name: keywords
-      content: "cesium.js,蓝色"
+      content: "cesium.js,webgl,offline,蓝色"
 outline: deep
 ---
-
 # 蓝色
 
 *Blue Map*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=offline&id=offlineBlue)
 
-
 ![蓝色](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/offline/blue.jpg)
 
+## 你将学到什么
+
+- 案例交互与参数可在在线编辑器中查看
 
 ## 效果说明
 
-Cesium 离线/内网影像。
+本案例展示 **蓝色 ** 的实现。涉及：案例交互与参数可在在线编辑器中查看。
 
 > 离线地图 · Cesium.js
 
-## 实现思路
+## 核心概念
 
-- 底图换 `ImageryProvider`：XYZ 模板、WMTS、ArcGIS 等，挂到 `viewer.imageryLayers`。
+- **Viewer** 管理地球与渲染；业务对象可用 **Entity**（高层）或 **Primitive**（高性能）。
+- 坐标转换：经纬高 ↔ `Cartesian3` 是 Cesium 开发基础。
+
+## 实现步骤
+
+1. 初始化 `Cesium.Viewer` 与底图图层
+2. 添加 Entity / Primitive / DataSource 等业务对象
+3. 按需 `camera.flyTo` 定位视角
 
 ## 源码
 
-```js
-import * as Cesium from 'cesium'
+完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=offline&id=offlineBlue)。
 
-const box = document.getElementById('box')
+## 小结
 
-const viewer = new Cesium.Viewer(box, {
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=offline&id=offlineBlue) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [离线地图目录](/examples/cesium/offline/)
 
-    animation: false,
-
-    baseLayerPicker: false,
-
-    baseLayer: false, // 不显示默认图层
-
-    fullscreenButton: false,
-
-    timeline: false,
-
-    infoBox: false,
-
-})
-
-let imagelayer = new Cesium.SingleTileImageryProvider({
-    url: FILE_HOST + "images/offlineLayer/world_b.jpg",
-    tileWidth: 256,
-    tileHeight: 256,
-});
-viewer.imageryLayers.addImageryProvider(imagelayer);
-```
-
+> 离线地图 · Cesium.js

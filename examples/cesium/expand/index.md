@@ -1,11 +1,14 @@
 ---
 title: "扩展功能 - Cesium.js"
-outline: false
+description: "Cesium 融合 Three、ECharts 飞线、热力图等。"
+outline: deep
 ---
 
 # 扩展功能
 
-接第三方库或扩展能力
+Cesium 融合 Three、ECharts 飞线、热力图等。
+
+每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。
 
 - [cesium融合three](/examples/cesium/expand/cesiumAndThree)
 - [Cesium Three切换](/examples/cesium/expand/cesiumSwitch)

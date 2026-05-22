@@ -1,42 +1,49 @@
 ---
 title: "cesium融合three - Cesium.js 案例讲解"
-description: "Cesium 接第三方库或扩展能力。主流程在 `initCesium`、`initThree`。"
+description: "Cesium 接第三方库或扩展能力。"
 head:
   - - meta
     - name: keywords
-      content: "cesium融合three,场景,融合"
+      content: "cesium.js,webgl,expand,cesium融合three"
 outline: deep
 ---
-
 # cesium融合three
 
 *Cesium+Three*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=expand&id=cesiumAndThree)
 
-
 ![cesium融合three](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/expand/cesiumAndThree.jpg)
 
+## 你将学到什么
+
+- Cesium Viewer 初始化
+- Cesium 影像图层
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-Cesium 接第三方库或扩展能力。主流程在 `initCesium`、`initThree`。
+Cesium 接第三方库或扩展能力。
 
 > 扩展功能 · Cesium.js
 
-## 实现思路
+## 核心概念
 
-- 底图换 `ImageryProvider`：XYZ 模板、WMTS、ArcGIS 等，挂到 `viewer.imageryLayers`。
+- **Viewer** 封装地球、相机、图层；可关闭 animation/timeline 等 UI 精简界面。
 
-## 代码结构
+- **ImageryLayer** 叠加 XYZ/WMTS/ArcGIS 等底图，`imageryLayers.add/remove` 管理。
 
-- 相机同步
+## 实现步骤
 
-## 独立函数
+1. 初始化 `Cesium.Viewer` 与底图图层
+2. 添加 Entity / Primitive / DataSource 等业务对象
+3. 按需 `camera.flyTo` 定位视角
 
-- `initThree()` — 材质 / GLSL
-- `render()` — renderer.render(scene, camera)
-- `syncCesiumThree()` — 经纬高 ↔ Cartesian3
+## 代码要点
+
+- **`initCesium()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`initThree()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`syncCesiumThree()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -105,60 +112,68 @@ function initCesium() {
 
 }
 
-functi
-```
+function initThree(threeBox, viewer) {
 
-### 相机同步
+    const scene = new THREE.Scene()
 
-```js
+    const camera = new THREE.PerspectiveCamera(45, threeBox.clientHeight / threeBox.clientHeight, 1, 100000000)
+
+    const renderer = new THREE.WebGLRenderer({ alpha: true })
+
+    renderer.setSize(threeBox.clientWidth, threeBox.clientHeight)
+
+    threeBox.appendChild(renderer.domElement)
+
+    const group = new THREE.Group()
+
+    const box = new THREE.Mesh(new THREE.BoxGeometry(4, 4, 4), new THREE.MeshNormalMaterial())
+
+    group.add(box)
+
+    const box2 = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 8), new THREE.MeshBasicMaterial({ color: 0xff0000 }))
+
+    box2.position.x += 6
+
+    group.add(box2)
+
+    group.cesium = { minWGS84, maxWGS84 }
+
+    scene.add(group)
+
+    group.scale.set(15000, 15000, 15000)
+
+    function render() {
+
+        syncCesiumThree(group, camera, viewer)
+
+        renderer.render(scene, camera)
+
+        requestAnimationFrame(render)
+
+    }
+
+    window.onresize = () => {
+
+        renderer.setSize(threeBox.clientWidth, threeBox.clientHeight)
+
+        camera.aspect = threeBox.clientWidth / threeBox.clientHeight
+
+        camera.updateProjectionMatrix()
+        
+    }
+
+    render()
+
+}
+
+/* 相机同步 */
 function syncCesiumThree(group, camera, viewer) {
-
-    // 更新相机位置
-    camera.fov = Cesium.Math.toDegrees(viewer.camera.frustum.fovy)
-
-    // 笛卡尔坐标转换
-    const cartToVec = cart => new THREE.Vector3(cart.x, cart.y, cart.z)
-
-    // 获取经纬度范围
-    const { minWGS84, maxWGS84 } = group.cesium
-
-    // 转换为笛卡尔坐标
-    const center = Cesium.Cartesian3.fromDegrees((minWGS84[0] + maxWGS84[0]) / 2, (minWGS84[1] + maxWGS84[1]) / 2)
-
-    // 获取定向模型的前进方向
-    const centerHigh = Cesium.Cartesian3.fromDegrees((minWGS84[0] + maxWGS84[0]) / 2, (minWGS84[1] + maxWGS84[1]) / 2, 1)
-
-    // 左下坐标
-    const bottomLeft = cartToVec(Cesium.Cartesian3.fromDegrees(minWGS84[0], minWGS84[1]))
-
-    // 左上坐标
-    const topLeft = cartToVec(Cesium.Cartesian3.fromDegrees(minWGS84[0], maxWGS84[1]))
-
-    // 方向向量
-    const latDir = new THREE.Vector3().subVectors(bottomLeft, topLeft).normalize()
-
-    // 设置位置
-    group.position.copy(center)
-
-    // 看向中心
-    group.lookAt(centerHigh.x, centerHigh.y, centerHigh.z)
-
-    // 设置方向
-    group.up.copy(latDir)
-
-    // 更新相机
-    camera.matrixAutoUpdate = false
-
-    // 相机视图矩阵
-    const cvm = viewer.camera.viewMatrix
-
-    // 相机逆视图矩阵
-    const civm = viewer.camera.inverseViewMatrix
-
-    camera.matrixWorld.set(
-        civm[0], civm[4], civm[8], civm[12],
-        civm[1], civm[5], civm[9], civm[13],
-        civm[2], civm[6], civm[10], civm[14],
-    
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=expand&id=cesiumAndThree) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [扩展功能目录](/examples/cesium/expand/)
+
+> 扩展功能 · Cesium.js

@@ -1,44 +1,50 @@
 ---
 title: "人物虚化 - Three.js 案例讲解"
-description: "Three.js 场景效果。主流程在 `tick`、`render`。"
+description: "本案例展示 **人物虚化** 的实现。涉及：AnimationMixer 骨骼动画播放与过渡、glTF/FBX/OBJ 外部模型加载、自定义 ShaderMaterial / 修改内置 shader。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,人物虚化,游戏复刻"
+      content: "three.js,webgl,game,人物虚化"
 outline: deep
 ---
-
 # 人物虚化
 
 *Character Blur*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=game&id=characterBlur)
 
-
 ![人物虚化](https://z2586300277.github.io/three-cesium-examples/threeExamples/game/characterBlur.jpg)
 
+## 你将学到什么
+
+- AnimationMixer 骨骼动画播放与过渡
+- glTF/FBX/OBJ 外部模型加载
+- 自定义 ShaderMaterial / 修改内置 shader
+- 相机交互控制器
+- 实时阴影 ShadowMap
 
 ## 效果说明
 
-Three.js 场景效果。主流程在 `tick`、`render`。
+本案例展示 **人物虚化** 的实现。涉及：AnimationMixer 骨骼动画播放与过渡、glTF/FBX/OBJ 外部模型加载、自定义 ShaderMaterial / 修改内置 shader。
 
 > 游戏复刻 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 外部模型 glTF/FBX 用对应 Loader，`scene.add(gltf.scene)` 后注意 scale/坐标。
+- **AnimationMixer** 驱动 glTF 骨骼动画；每帧 `mixer.update(delta)`。动作切换可用 `crossFadeTo` 平滑过渡。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **Loader** 异步加载模型；glTF 返回 `gltf.scene`，加载后注意 `scale` 与坐标系。Draco 需配置 `DRACOLoader`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
 
-## 代码结构
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- glsl
+## 实现步骤
 
-## 独立函数
-
-- `render()` — renderer.render(scene, camera)
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. Loader 异步加载模型/纹理资源
+3. 定义材质/shader 与 uniforms，rAF 中更新
+4. rAF 循环中 update 并 render
 
 ## 源码
 
@@ -89,13 +95,9 @@ model.traverse((obj) => {
         },
       };
 
-      shader.fragmentShader = shader.f
-```
-
-### glsl
-
-```js
-`
+      shader.fragmentShader = shader.fragmentShader.replace(
+        /* glsl */ `void main() {`,
+        /* glsl */ `
           // 虚化阈值
           uniform float blur;
           // 虚化区块大小
@@ -138,6 +140,41 @@ light_directional.shadow.mapSize.height = 1024;
 
 scene.add(model, light_ambient, light_directional);
 
-const camera =
+const camera = new THREE.PerspectiveCamera(90, 1, 0.1, 1000);
+camera.position.set(0, 0, 140);
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+
+const timer = new THREE.Timer();
+
+const tick = (delta, elapsed) => {
+  controls.update(delta);
+
+  // 更新动画并限制模型不进行移动
+  mixer.update(delta * 0.9);
+  model.children[2].children[0].position.set(0, 0, 0);
+};
+
+const render = () => {
+  renderer.render(scene, camera);
+};
+
+const ani = () => {
+  const elapsed = timer.getElapsed();
+  const delta = timer.getDelta();
+
+  timer.update();
+
+  tick(delta, elapsed);
+  render();
+
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=game&id=characterBlur) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [游戏复刻目录](/examples/three/game/)
+
+> 游戏复刻 · Three.js

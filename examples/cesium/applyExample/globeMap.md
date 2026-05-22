@@ -4,19 +4,20 @@ description: "Cesium 多技术组合的应用 demo。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,地球贴图,应用相关"
+      content: "cesium.js,webgl,applyExample,地球贴图"
 outline: deep
 ---
-
 # 地球贴图
 
 *Globe Map*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=applyExample&id=globeMap)
 
-
 ![地球贴图](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/application/globeMap.jpg)
 
+## 你将学到什么
+
+- 案例交互与参数可在在线编辑器中查看
 
 ## 效果说明
 
@@ -24,50 +25,24 @@ Cesium 多技术组合的应用 demo。
 
 > 应用相关 · Cesium.js
 
+## 核心概念
+
+- **Viewer** 管理地球与渲染；业务对象可用 **Entity**（高层）或 **Primitive**（高性能）。
+- 坐标转换：经纬高 ↔ `Cartesian3` 是 Cesium 开发基础。
+
+## 实现步骤
+
+1. 初始化 `Cesium.Viewer` 与底图图层
+2. 添加 Entity / Primitive / DataSource 等业务对象
+3. 按需 `camera.flyTo` 定位视角
+
 ## 源码
 
-```js
-import * as Cesium from 'cesium'
+完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=applyExample&id=globeMap)。
 
-const box = document.getElementById('box')
+## 小结
 
-const viewer = new Cesium.Viewer(box, {
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=applyExample&id=globeMap) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [应用相关目录](/examples/cesium/applyExample/)
 
-    animation: false,
-
-    baseLayerPicker: false,
-
-    baseLayer: Cesium.ImageryLayer.fromProviderAsync(Cesium.ArcGisMapServerImageryProvider.fromUrl('https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer')),
-
-    fullscreenButton: false,
-
-    timeline: false,
-
-    infoBox: false,
-
-})
-
-const primitive = viewer.scene.primitives.add(new Cesium.Primitive({
-    geometryInstances: new Cesium.GeometryInstance({
-        geometry: new Cesium.EllipsoidGeometry({
-            vertexFormat: Cesium.VertexFormat.POSITION_AND_ST,
-            radii: viewer.scene.globe.ellipsoid.radii,
-        }),
-    }),
-    appearance: new Cesium.EllipsoidSurfaceAppearance({
-        material: new Cesium.Material({
-            fabric: {
-                type: "Image",
-                uniforms: {
-                    image: FILE_HOST + 'images/map/earth_clouds.png',
-                    alpha: 0.5,
-                    // repeat: new Cesium.Cartesian2(4.0, 4.0),
-                    // color: Cesium.Color.YELLOW,
-                },
-                components: {
-                    alpha: "texture(image, fract(materialInput.st * repeat)).r * alpha",
-                    diffuse: "color.rgb", // 使用 color 作为漫反射颜色
-                },
-            
-```
-
+> 应用相关 · Cesium.js

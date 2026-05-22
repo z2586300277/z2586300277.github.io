@@ -1,77 +1,47 @@
 ---
 title: "第一人称漫游控制 - Three.js 案例讲解"
-description: "Three.js 关键帧或补间动画。主流程在 `animate`、`moveForward`。"
+description: "Three.js 关键帧或补间动画。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,第一人称漫游控制,动画效果"
+      content: "three.js,webgl,animation,第一人称漫游控制"
 outline: deep
 ---
-
 # 第一人称漫游控制
 
 *Person Move*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=animation&id=pointLockControls)
 
-
 ![第一人称漫游控制](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/pointLockControls.jpg)
 
+## 你将学到什么
+
+- 案例交互与参数可在在线编辑器中查看
 
 ## 效果说明
 
-Three.js 关键帧或补间动画。主流程在 `animate`、`moveForward`。
+Three.js 关键帧或补间动画。
 
 > 动画效果 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 外部模型 glTF/FBX 用对应 Loader，`scene.add(gltf.scene)` 后注意 scale/坐标。
+- **Scene / Camera / Renderer** 是 Three.js 渲染三件套；Mesh = Geometry + Material。
+- 开发时先确认坐标系、材质是否受光、以及是否需要 rAF 循环。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+## 实现步骤
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
-
-## 独立函数
-
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 渲染场景并处理 resize
 
 ## 源码
 
-```js
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
-import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js'
-import { GUI } from 'dat.gui'
+完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=animation&id=pointLockControls)。
 
-const box = document.getElementById('box')
+## 小结
 
-const scene = new THREE.Scene()
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=animation&id=pointLockControls) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [动画效果目录](/examples/three/animation/)
 
-const camera = new THREE.PerspectiveCamera(50, box.clientWidth / box.clientHeight, 0.1, 100000)
-camera.position.set(0, 100, 400)
-
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
-renderer.setSize(box.clientWidth, box.clientHeight)
-box.appendChild(renderer.domElement)
-
-const controls = new OrbitControls(camera, renderer.domElement)
-controls.enableDamping = true
-
-scene.add(new THREE.AmbientLight(0xffffff, 1))
-
-// 天空
-const urls = [0, 1, 2, 3, 4, 5].map(k => (FILE_HOST + 'files/sky/skyBox0/' + (k + 1) + '.png'));
-const textureCube = new THREE.CubeTextureLoader().load(urls);
-scene.background = textureCube;
-scene.backgroundBlurriness = 0.5;
-
-// 地面
-const groundGeometry = new THREE.PlaneGeometry(10000, 10000);
-const map = new THREE.TextureLoader().load(FILE_HOST + 'images/channels/black.png')
-map.wrapS = map.wrapT = THREE.RepeatWrapping;
-map.repeat.set(100, 100);
-const groundMaterial = new THREE.MeshStandardMaterial({ map, envMap: t
-```
-
+> 动画效果 · Three.js

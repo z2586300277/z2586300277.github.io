@@ -1,11 +1,16 @@
 ---
 title: "着色器 - Three.js"
-outline: false
+description: "自定义 GLSL、ShaderMaterial、onBeforeCompile 与各类视觉特效。"
+outline: deep
 ---
 
 # 着色器
 
-片元/顶点着色器改颜色与形变
+自定义 GLSL、ShaderMaterial、onBeforeCompile 与各类视觉特效。
+
+> 建议先完成 [入门案例](/examples/three/introduction/) 与 [基础案例](/examples/three/basic/)。
+
+每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。
 
 - [城市光效](/examples/three/shader/cityEffect)
 - [草地着色器](/examples/three/shader/grassShader)

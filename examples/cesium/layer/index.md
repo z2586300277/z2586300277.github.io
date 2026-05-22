@@ -1,11 +1,16 @@
 ---
 title: "在线地图 - Cesium.js"
-outline: false
+description: "XYZ、WMTS、WMS、ArcGIS、高德/百度等影像图层加载。"
+outline: deep
 ---
 
 # 在线地图
 
-在线底图图层
+XYZ、WMTS、WMS、ArcGIS、高德/百度等影像图层加载。
+
+> 图层案例核心在 ImageryProvider 与 imageryLayers。
+
+每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。
 
 - [默认图层](/examples/cesium/layer/defaultLayer)
 - [坐标参考](/examples/cesium/layer/coordLayer)

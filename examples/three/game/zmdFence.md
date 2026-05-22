@@ -1,46 +1,45 @@
 ---
 title: "终末地-据点围栏 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `tick`、`render`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,终末地-据点围栏,游戏复刻"
+      content: "three.js,webgl,game,终末地-据点围栏"
 outline: deep
 ---
-
 # 终末地-据点围栏
 
 *EndField Fence*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=game&id=zmdFence)
 
-
 ![终末地-据点围栏](https://z2586300277.github.io/three-cesium-examples/threeExamples/game/zmdFence.jpg)
 
+## 你将学到什么
+
+- 自定义 ShaderMaterial / 修改内置 shader
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
+- Clock 帧间隔计时
+- GUI 面板调试参数
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `tick`、`render`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 游戏复刻 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
 
-- 手写几何：`BufferGeometry` + `Float32Array` 填 position/uv/normal，`setIndex` 拼三角面。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+## 实现步骤
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
-
-## 代码结构
-
-- glsl
-
-## 独立函数
-
-- `render()` — renderer.render(scene, camera)
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 定义材质/shader 与 uniforms，rAF 中更新
+3. rAF 循环中 update 并 render
 
 ## 源码
 
@@ -95,76 +94,82 @@ class Fence extends THREE.Group {
         },
       },
       U_color: {
+        get value() {
+          return params.color;
+        },
+      },
+      U_width: {
+        get value() {
+          return params.width;
+        },
+      },
+      U_useSimp: {
+        get value() {
+          return params.useSimp;
+        },
+      },
+      U_time: {
+        value: 0,
+      },
+    };
+
+    // 通用材质设置
+    const commonMaterialSettings = {
+      side: THREE.DoubleSide,
+      transparent: true,
+      depthTest: false,
+      depthWrite: false,
+    };
+
+    // part_0 竖向围栏，四面包围无顶无底
+    // 竖向围栏为四个平面，仅需访问此平面内的分段数，所以使用一套着色器， segment 参数在 uniform 中设置
+    // X轴向分段材质
+    const part_0_mat_x = new THREE.ShaderMaterial({
+      uniforms: {
+        ...commonUniforms,
+        U_segment: {
+          get value() {
+            return params.segment * params.range.x;
+          },
+        },
+      },
+      vertexShader: Fence.part_0_mat_vs,
+      fragmentShader: Fence.part_0_mat_fs,
+      ...commonMaterialSettings,
+    });
+    // Z轴向分段材质
+    const part_0_mat_z = new THREE.ShaderMaterial({
+      uniforms: {
+        ...commonUniforms,
+        U_segment: {
+          get value() {
+            return params.segment * params.range.z;
+          },
+        },
+      },
+      vertexShader: Fence.part_0_mat_vs,
+      fragmentShader: Fence.part_0_mat_fs,
+      ...commonMaterialSettings,
+    });
+    this.part_0 = new THREE.Mesh(Fence.part_0_geo, [part_0_mat_z, part_0_mat_x]);
+
+    // part_1 底部条带
+    const part_1_mat = new THREE.ShaderMaterial({
+      uniforms: {
+        ...commonUniforms,
+      },
+      vertexShader: Fence.part_1_mat_vs,
+      fragmentShader: Fence.part_1_mat_fs,
+      ...commonMaterialSettings,
+    });
+    this.part_1 = new THREE.Mesh(Fence.part_1_geo, part_1_mat);
+
+// ... 完整源码见在线案例编辑器
 ```
 
-### glsl
+## 小结
 
-```js
-`
-  uniform  vec3  U_range   ;
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=game&id=zmdFence) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [游戏复刻目录](/examples/three/game/)
 
-  varying  vec3  V_mvpos   ;
-  varying  vec2  V_uv      ;
-  varying  vec3  V_normal  ;
-
-  void main() {
-    vec3 pos = position * U_range;
-    vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);
-    vec3 norm = normalMatrix * normal;
-
-    V_mvpos   =  mvPos.xyz  ;
-    V_uv      =  uv         ;
-    V_normal  =  norm       ;
-
-    gl_Position = projectionMatrix * mvPos;
-  }
-`;
-Fence.part_0_mat_fs =
-```
-
-### glsl
-
-```js
-`
-  uniform  vec3   U_color    ;
-  uniform  float  U_segment  ;
-  uniform  float  U_width    ;
-  uniform  bool   U_useSimp  ;
-
-  varying  vec3   V_mvpos    ;
-  varying  vec2   V_uv       ;
-  varying  vec3   V_normal   ;
-
-  vec4 getColor_fence() {
-    // 在较远处或法线与视角夹角较大的地方使用纯色带避免摩尔纹
-    float s = 400.0 / length(V_mvpos) * abs(dot(normalize(V_normal), normalize(-V_mvpos)));
-    float v = U_useSimp ? smoothstep(0.0, 1.0, (s - 0.9) * 0.7) : 1.0;
-
-    // Y轴上从下往上衰减
-    float vy = 1.0 - pow(V_uv.y, 1.5);
-
-    vec4 c_0 = vec4(U_color, pow(U_width, 2.0) * vy * 0.8);
-
-    if (v == 0.0) return c_0;
-
-    // 按照分段划分区块，计算区块内坐标
-    float f = fract(V_uv.x * U_segment);
-    // X轴上以 0.5 为中心，向左右两侧衰减，且宽度从下往上衰减，边界值为 0.5 +- 0.5 * U_width * vy
-    float vx = max(1.0 - pow(abs((0.5 - f) / (U_width * vy)) * 2.0, 1.5), 0.0);
-
-    vec4 c_1 = vec4(U_color, vx * vy * 0.8);
-
-    return mix(c_0, c_1, v);
-  }
-
-  void main() {
-    vec4 c_out = getColor_fence();
-
-    if (c_out.a == 0.0) discard;
-
-    gl_FragColor = c_out;
-  }
-`;
-Fence.part_1_mat_vs =
-```
-
+> 游戏复刻 · Three.js

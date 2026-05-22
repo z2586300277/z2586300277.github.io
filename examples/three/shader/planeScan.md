@@ -1,38 +1,43 @@
 ---
 title: "平面扫描 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `animate`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,平面扫描,着色器"
+      content: "three.js,webgl,shader,平面扫描"
 outline: deep
 ---
-
 # 平面扫描
 
 *Plane Scan*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=planeScan)
 
-
 ![平面扫描](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/planeScan.jpg)
 
+## 你将学到什么
+
+- 自定义 ShaderMaterial / 修改内置 shader
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `animate`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 着色器 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-## 独立函数
+## 实现步骤
 
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 定义材质/shader 与 uniforms，rAF 中更新
+3. rAF 循环中 update 并 render
 
 ## 源码
 
@@ -80,6 +85,89 @@ const uniforms = {
 
     reverseOpacity: { value: false, type: 'bool', unit: 'bool' },
 
-    circleSpeed:
+    circleSpeed: { value: 0.003, type: 'number', unit: 'float' },
+
+    diff: { value: new THREE.Color(0xfff25f), type: 'color', unit: 'vec3' },
+
+    color3: { value: new THREE.Color(0xff), type: 'color', unit: 'vec3' },
+
+    center: { value: new THREE.Vector3(0, 0, 0), type: 'position', unit: 'vec3' },
+
+    intensity: { value: 3, type: 'number', unit: 'float' },
+
+    isDisCard: { value: true, type: 'bool', unit: 'bool' },
+
+}
+
+material.onBeforeCompile = (shader) => {
+
+    Object.keys(uniforms).forEach((key) => shader.uniforms[key] = uniforms[key])
+
+    shader.vertexShader = shader.vertexShader.replace(`void main() {`, 
+    `varying vec2 vUv;
+    varying vec3 v_position;
+    void main() {
+        vUv = uv;
+        v_position = position;`
+    )
+
+    shader.fragmentShader = shader.fragmentShader.replace(
+
+        /#include <common>/,
+
+        Object.keys(uniforms).map(i => 'uniform ' + uniforms[i].unit + ' ' + i + ';').join('\n') + '\n' + 'varying vec3 v_position; varying vec2 vUv;\n'
+
+        + '\n#include <common>\n'
+
+    )
+
+    shader.fragmentShader = shader.fragmentShader.replace('vec4 diffuseColor = vec4( diffuse, opacity );', `
+        float dis = length(v_position - center);
+        vec4 diffuseColor;
+        if(dis < (innerCircleWidth + circleWidth) && dis > innerCircleWidth) {
+            float r = (dis - innerCircleWidth) / circleWidth;
+            float cOpacity = reverseOpacity ? (innerCircleWidth / circleMax) : 1. - ( innerCircleWidth / circleMax );
+            #ifdef USE_MAP
+                vec3 textureColor = texture2D(map, vUv).rgb;
+                if(isDisCard && textureColor.r < 0.1 && textureColor.g < 0.1  && textureColor.b < 0.1 ) discard;
+            #endif
+            diffuseColor = vec4( mix(diff, color3, r) * vec3(intensity, intensity, intensity)  , opacity * cOpacity * opacityScale);
+        }
+        else {
+            if(isDisCard)  discard ;
+            else diffuseColor = vec4( diffuse, opacity );
+        }
+    `)
+
+}
+
+material.needsUpdate = true
+
+mesh.rotation.x = Math.PI / 2
+
+scene.add(mesh)
+
+animate()
+
+function animate() {
+
+    uniforms.innerCircleWidth.value < uniforms.circleMax.value ? uniforms.innerCircleWidth.value += uniforms.circleSpeed.value : uniforms.innerCircleWidth.value = 0
+
+    requestAnimationFrame(animate)
+
+    controls.update()
+
+    renderer.render(scene, camera)
+
+}
+
+window.onresize = () => {
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=planeScan) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [着色器目录](/examples/three/shader/)
+
+> 着色器 · Three.js

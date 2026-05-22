@@ -1,43 +1,50 @@
 ---
 title: "粒子聚散 - Three.js 案例讲解"
-description: "大量重复物体或粒子，注意 draw call 与 update 频率。主流程在 `animate`、`createParticleAnimation1`。"
+description: "大量重复物体或粒子，注意 draw call 与 update 频率。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,粒子聚散"
+      content: "three.js,webgl,particle,粒子聚散"
 outline: deep
 ---
-
 # 粒子聚散
 
 *Scattered*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=particleScattered)
 
-
 ![粒子聚散](https://z2586300277.github.io/three-cesium-examples/threeExamples/particle/particleScattered.jpg)
 
+## 你将学到什么
+
+- 相机交互控制器
+- 点云 / 粒子 / 实例化渲染
+- Tween 补间动画
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-大量重复物体或粒子，注意 draw call 与 update 频率。主流程在 `animate`、`createParticleAnimation1`。
+大量重复物体或粒子，注意 draw call 与 update 频率。
 
 > 粒子 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 手写几何：`BufferGeometry` + `Float32Array` 填 position/uv/normal，`setIndex` 拼三角面。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **Points** 大量顶点用点精灵渲染；**InstancedMesh** 相同几何体批量绘制，降低 draw call。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+- 属性插值动画，适合相机动效、UI 过渡。
 
-- 补间动画交给 GSAP/anime/Tween，别在 rAF 里手搓 easing。
+## 实现步骤
 
-## 独立函数
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. rAF 循环中 update 并 render
 
-- `animate()` — rAF：update controls + render
-- `createParticleAnimation2()` — 材质 / GLSL
+## 代码要点
+
+- **`createParticleAnimation1()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`createParticleAnimation2()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -83,6 +90,91 @@ function createParticleAnimation1() {
     // 创建粒子
     const particlesGeometry = new THREE.BufferGeometry();
     const count = 3000;
-    const positions = new Float32Ar
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    for (let i = 0; i < count; i += 3) {
+        positions[i] = THREE.MathUtils.randFloat(-4, 4);
+        positions[i + 1] = THREE.MathUtils.randFloat(-4, 4);
+        positions[i + 2] = THREE.MathUtils.randFloat(5, 10);
+
+        colors[i] = 253;
+        colors[i + 1] = 253;
+        colors[i + 2] = 0.2;
+    }
+
+    particlesGeometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(positions, 3)
+    );
+    particlesGeometry.setAttribute(
+        "color",
+        new THREE.BufferAttribute(colors, 3)
+    );
+
+    const particleTexture = new THREE.TextureLoader().load(HOST + '/files/images/particle.jpg');
+    const pointMaterial = new THREE.PointsMaterial({
+        size: 0.1,
+        sizeAttenuation: true,
+        transparent: true,
+        opacity: 1,
+        map: particleTexture,
+        alphaMap: particleTexture,
+        alphaTest: 0.001,
+        blending: THREE.AdditiveBlending,
+        vertexColors: true,
+    });
+
+    particles = new THREE.Points(particlesGeometry, pointMaterial);
+    scene.add(particles);
+
+    const particleStartPositions = particlesGeometry.getAttribute("position");
+    for (let i = 0; i < particleStartPositions.count; i++) {
+        const tween = new TWEEN.Tween(positions);
+        tween.to(
+            {
+                [i * 3]: 0,
+                [i * 3 + 1]: 0,
+                [i * 3 + 2]: 0,
+            },
+            5000 * Math.random()
+        );
+
+        tween.easing(TWEEN.Easing.Exponential.In);
+        tween.delay(2000);
+        tween.onUpdate(() => {
+            particleStartPositions.needsUpdate = true;
+        })
+
+        tween.start();
+    }
+}
+
+function createParticleAnimation2() {
+    // 创建粒子系统
+    const particleCount = 2000; // 粒子数量
+    const particles = new THREE.BufferGeometry();
+    const particleTexture = new THREE.TextureLoader().load(HOST + '/files/images/particle.jpg');
+    const pointMaterial = new THREE.PointsMaterial({
+        size: 0.1,
+        sizeAttenuation: true,
+        transparent: true,
+        opacity: 0,
+        map: particleTexture,
+        alphaMap: particleTexture,
+        alphaTest: 0.001,
+        blending: THREE.AdditiveBlending,
+        vertexColors: true,
+    });
+
+    const cubeWidth = 0.5;
+    const cubeHeight = 2;
+    const positions = new Float32Array(particleCount * 3);
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=particleScattered) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [粒子目录](/examples/three/particle/)
+
+> 粒子 · Three.js

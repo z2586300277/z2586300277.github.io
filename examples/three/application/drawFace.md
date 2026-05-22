@@ -1,49 +1,45 @@
 ---
 title: "绘制面 - Three.js 案例讲解"
-description: "Three.js 业务向场景组合。主流程在 `animate`、`multShapeGroup`。"
+description: "Three.js 业务向场景组合。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,绘制面,应用场景"
+      content: "three.js,webgl,application,绘制面"
 outline: deep
 ---
-
 # 绘制面
 
 *Draw Face*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=drawFace)
 
-
 ![绘制面](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/drawFace.jpg)
 
+## 你将学到什么
+
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-Three.js 业务向场景组合。主流程在 `animate`、`multShapeGroup`。
+Three.js 业务向场景组合。
 
 > 应用场景 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 手写几何：`BufferGeometry` + `Float32Array` 填 position/uv/normal，`setIndex` 拼三角面。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+## 实现步骤
 
-- 点击选中：`Raycaster` + 鼠标 NDC 坐标，`intersectObjects` 取交点。
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. rAF 循环中 update 并 render
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 代码要点
 
-## 代码结构
-
-- 增加一个面
-- 开始绘制
-- 处理顶点算法
-- 根据顶点组生成物体
-
-## 独立函数
-
-- `animate()` — rAF：update controls + render
+- **`multShapeGroup()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`multShapePlaneGeometry()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`updateMultShapePlaneGeometry()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -74,11 +70,8 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 1)
 directionalLight.position.set(0, 20, 0)
 
 scene.add(directionalLight, new THREE.AmbientLight(0xffffff, 1))
-```
 
-### 增加一个面
-
-```js
+/* 增加一个面 */
 const plane = new THREE.PlaneGeometry(5, 5)
 
 const material = new THREE.MeshStandardMaterial({ color: 0xffffff })
@@ -145,11 +138,8 @@ const setPointBox = point => {
   scene.add(boxMesh)
 
 }
-```
 
-### 开始绘制
-
-```js
+/* 开始绘制 */
 const pointList = []; let drawMesh = null; let stop = false
 
 box.addEventListener('contextmenu', () => {
@@ -174,39 +164,12 @@ box.addEventListener('mousemove', (event) => {
   const { indexGroup, faceGroup, uvGroup } = multShapeGroup([...pointList, point])
 
   updateMultShapePlaneGeometry(drawMesh.geometry, faceGroup, indexGroup, uvGroup)
-
-})
-
-box.addEventListener('click', (event) => {
-
-  const point = getPoint(event)
-
-  if (!point || stop) return
-
-  setPointBox(point)
-
-  point.y += 0.001
-
-  pointList.push(point)
-
-  const { indexGroup, faceGroup, uvGroup } = multShapeGroup(pointList)
-
-  if (pointList.length < 3) return
-
-  if (!drawMesh) {
-
-    const geometry = multShapePlaneGeometry(faceGroup, indexGroup, uvGroup)
-
-    const material = new THREE.MeshStandardMaterial({ color: 0x00ff00, side: THREE.DoubleSide })
-
-    drawMesh = new THREE.Mesh(geometry, material)
-
-    scene.add(drawMesh)
-
-  }
-
-  else updateMultShapePlaneGeometry(drawMesh.geometry, faceGroup, indexGroup, uvGroup)
-
-})
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=drawFace) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [应用场景目录](/examples/three/application/)
+
+> 应用场景 · Three.js

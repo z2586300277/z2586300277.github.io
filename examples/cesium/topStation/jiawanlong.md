@@ -1,27 +1,39 @@
 ---
 title: "Cesium案例 - 点⭐ - Cesium.js 案例讲解"
-description: "Cesium 地球上的可视化效果。Cesium2024年最新demos，200多个原生示例：自定义纹理、地形开挖、可视域分析、洪水淹没、缓冲分析、日照分析、方量分析、通透分析、剖面、单体化、视频融合、视频投射、雨雪雾、天空盒、场景出图、体积云、闪电、视锥体、雷达扫描、水波纹、动态扩散点、电子围栏、粒子效果、物理引擎、克"
+description: "Cesium案例 相关工具与资源链接"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,Cesium案例 - 点⭐,首页导航"
+      content: "cesium.js,webgl,topStation,Cesium案例"
 outline: deep
 ---
-
 # Cesium案例 - 点⭐
 
 *Cesium Examples*
 
 [▶ 在线运行案例](https://jiawanlong.github.io/Cesium-Examples/examples/cesiumEx/examples.html)
 
-
 ![Cesium案例 - 点⭐](https://z2586300277.github.io/3d-file-server/images/jiawanlong.jpg)
 
+## 你将学到什么
+
+- 了解与本案例相关的 **工具 / 资源 / 社区** 入口
+- 扩展 Three.js / Cesium 开发的工作流
 
 ## 效果说明
 
-Cesium 地球上的可视化效果。Cesium2024年最新demos，200多个原生示例：自定义纹理、地形开挖、可视域分析、洪水淹没、缓冲分析、日照分析、方量分析、通透分析、剖面、单体化、视频融合、视频投射、雨雪雾、天空盒、场景出图、体积云、闪电、视锥体、雷达扫描、水波纹、动态扩散点、电子围栏、粒子效果、物理引擎、克里金、海流、大数据可视化、坐标转换、相机、飞行漫游、瓦片加载、xyz、tms、wms、wmts、天地图、高德、百度、wkt、shp、geojson、pbf、地形、entity、模型、海量数据、Primitive、gif、聚合、czml、字体图标、运动、3Dtiles、模型偏移、等等。
+本页为 **外部链接** 工具或资源导航，无本地 WebGL 源码。点击上方按钮访问目标站点。
 
 > 首页导航 · Cesium.js
 
-外链案例，无本地源码。点上方按钮在线看。
+## 使用建议
+
+1. 收藏常用工具页，建模 / 贴图 / 压缩 / shader 编辑等按流程使用
+2. 下载资源时注意 **版权与许可**（CC0 / 可商用等）
+3. 若与 three-cesium-examples 编辑器配合，可将导出资源放入 `files/` 目录加载
+
+## 小结
+
+- 工具类页面侧重 **资源效率**，建议结合 [相关工具目录](/examples/cesium/tools/) 其他条目一起使用
+
+> 首页导航 · Cesium.js

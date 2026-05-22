@@ -1,39 +1,46 @@
 ---
 title: "扩散半球 - Three.js 案例讲解"
-description: "Three.js 业务向场景组合。主流程在 `scatter3DCircle`、`animate`。"
+description: "Three.js 业务向场景组合。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,扩散半球"
+      content: "three.js,webgl,application,扩散半球"
 outline: deep
 ---
-
 # 扩散半球
 
 *3D Circle*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=3DCircle)
 
-
 ![扩散半球](https://z2586300277.github.io/3d-file-server/images/four/3DCircle.png)
 
+## 你将学到什么
+
+- 相机交互控制器
+- Tween 补间动画
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-Three.js 业务向场景组合。主流程在 `scatter3DCircle`、`animate`。
+Three.js 业务向场景组合。
 
 > 应用场景 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+- 属性插值动画，适合相机动效、UI 过渡。
 
-## 独立函数
+## 实现步骤
 
-- `scatter3DCircle()` — 材质 / GLSL
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. rAF 循环中 update 并 render
+
+## 代码要点
+
+- **`scatter3DCircle()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -85,6 +92,58 @@ renderer.render(scene, camera); //执行渲染
 document.body.appendChild(renderer.domElement);
 
 // 设置相机控件轨道控制器OrbitControls
-new OrbitControls(camera, renderer
+new OrbitControls(camera, renderer.domElement);
+
+// 圆扩散
+function scatter3DCircle(r) {
+  const geometry = new THREE.SphereGeometry(
+    r,
+    120,
+    120,
+    0,
+    Math.PI * 2,
+    0,
+    Math.PI / 2
+  );
+
+  let circle = new THREE.Mesh(
+    geometry,
+    new THREE.MeshBasicMaterial({
+      // side: THREE.DoubleSide,
+      // transparent: true,
+      // color:new THREE.Color("#ff0000")
+      map: new THREE.TextureLoader().load(
+        FILE_HOST + "images/four/gradual_red_01.png"
+      ),
+    })
+  );
+
+  return circle;
+}
+let s = 0,
+  p = 0;
+animate();
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  // animation
+  if (s > 160) {
+    (s = 0), (p = 160);
+  }
+  circle3D.scale.set(1 + s / 60, 1 + s / 80, 1 + s / 60);
+  circle3D.material.opacity = p / 160;
+  s++;
+  p--;
+
+  TWEEN.update();
+  renderer.render(scene, camera);
+}
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=3DCircle) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [应用场景目录](/examples/three/application/)
+
+> 应用场景 · Three.js

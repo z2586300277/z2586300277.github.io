@@ -1,38 +1,40 @@
 ---
 title: "相机属性 - Three.js 案例讲解"
-description: "Three.js Scene/Camera/Renderer 基础搭建。主流程在 `animate`、`onChange`。"
+description: "本案例展示 **相机属性** 的实现。涉及：相机交互控制器、requestAnimationFrame 渲染循环、GUI 面板调试参数。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,相机属性,基础案例"
+      content: "three.js,webgl,basic,相机属性"
 outline: deep
 ---
-
 # 相机属性
 
 *Camera*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=cameraAttribute)
 
-
 ![相机属性](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/cameraAttribute.jpg)
 
+## 你将学到什么
+
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
+- GUI 面板调试参数
 
 ## 效果说明
 
-Three.js Scene/Camera/Renderer 基础搭建。主流程在 `animate`、`onChange`。
+本案例展示 **相机属性** 的实现。涉及：相机交互控制器、requestAnimationFrame 渲染循环、GUI 面板调试参数。
 
 > 基础案例 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 实现步骤
 
-## 独立函数
-
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. rAF 循环中 update 并 render
 
 ## 源码
 
@@ -91,6 +93,40 @@ function animate() {
 
 }
 
-scene.add(new THREE.AxesHelper(10), new THREE.GridHelper(10,
+scene.add(new THREE.AxesHelper(10), new THREE.GridHelper(10, 10))
+
+const folder = new GUI()
+
+const onChange = () => camera.updateProjectionMatrix()
+
+folder.add(camera.layers, 'mask').name('图层').onChange(onChange).listen()
+
+folder.add({ '切换此图层的状态': () => camera.layers.toggle(1) }, '切换此图层的状态')
+
+folder.add(camera, 'fov').min(0).name('视角').onChange(onChange)
+
+folder.add(camera, 'near').min(0.001).name('近平面').onChange(onChange)
+
+folder.add(camera, 'far').min(0).name('远平面').onChange(onChange)
+
+folder.add(camera, 'zoom').min(0).name('缩放').onChange(onChange)
+
+folder.add(camera, 'filmOffset').name('胶片偏移').onChange(onChange)
+
+folder.add(camera, 'filmGauge').name('胶片尺寸').onChange(onChange)
+
+folder.add(camera.position, 'x').name('相机位置x').listen()
+
+folder.add(camera.position, 'y').name('相机位置y').listen()
+
+folder.add(camera.position, 'z').name('相机位置z').listen()
+
+folder.add({ fn: () => folder.reset() }, 'fn').name('重置')
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=cameraAttribute) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [基础案例目录](/examples/three/basic/)
+
+> 基础案例 · Three.js

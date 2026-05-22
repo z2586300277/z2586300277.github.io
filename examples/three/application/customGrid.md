@@ -1,40 +1,39 @@
 ---
 title: "自定义网格 - Three.js 案例讲解"
-description: "Three.js 业务向场景组合。主流程在 `animate`。"
+description: "Three.js 业务向场景组合。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,自定义网格,应用场景"
+      content: "three.js,webgl,application,自定义网格"
 outline: deep
 ---
-
 # 自定义网格
 
 *Custom Grid*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=customGrid)
 
-
 ![自定义网格](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/customGrid.jpg)
 
+## 你将学到什么
+
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-Three.js 业务向场景组合。主流程在 `animate`。
+Three.js 业务向场景组合。
 
 > 应用场景 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 手写几何：`BufferGeometry` + `Float32Array` 填 position/uv/normal，`setIndex` 拼三角面。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+## 实现步骤
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
-
-## 独立函数
-
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. rAF 循环中 update 并 render
 
 ## 源码
 
@@ -99,6 +98,36 @@ for (let i = -width / 2; i <= width / 2; i += dx) {
 
     const color = (i === 0) ? colorA : colorB // 颜色
 
-    co
+    colors.push(...Array(2).fill(color.toArray()).flat())
+
+}
+
+// 垂直线
+for (let j = -height / 2; j <= height / 2; j += dy) {
+
+    vertices.push(-width / 2, j, 0, width / 2, j, 0) // 垂直线
+
+    const color = (j === 0) ? colorA : colorB // 颜色
+
+    colors.push(...Array(2).fill(color.toArray()).flat())
+    
+}
+
+// 创建 BufferGeometry 和材质
+const geometry = new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3))
+
+geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3))
+
+const material = new THREE.LineBasicMaterial({ vertexColors: true })
+
+const grid = new THREE.LineSegments(geometry, material)
+
+scene.add(grid)
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=customGrid) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [应用场景目录](/examples/three/application/)
+
+> 应用场景 · Three.js

@@ -1,11 +1,14 @@
 ---
 title: "高级特效 - Cesium.js"
-outline: false
+description: "雨雪、光晕、智慧城市 shader、3D Tiles 着色等高级效果。"
+outline: deep
 ---
 
 # 高级特效
 
-Shader、3D Tiles 等进阶
+雨雪、光晕、智慧城市 shader、3D Tiles 着色等高级效果。
+
+每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。
 
 - [雪景](/examples/cesium/advancedEffect/snow)
 - [下雨](/examples/cesium/advancedEffect/rain)

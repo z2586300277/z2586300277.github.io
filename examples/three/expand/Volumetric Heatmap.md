@@ -1,125 +1,47 @@
 ---
 title: "3d热力图-体积版 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `initPalette`、`animate`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,3d热力图-体积版,扩展功能"
+      content: "three.js,webgl,expand,3d热力图-体积版"
 outline: deep
 ---
-
 # 3d热力图-体积版
 
 *volumeHeatmap*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=Volumetric Heatmap)
 
-
 ![3d热力图-体积版](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/volumeHeatmap.webp)
 
+## 你将学到什么
+
+- 案例交互与参数可在在线编辑器中查看
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `initPalette`、`animate`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 扩展功能 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **Scene / Camera / Renderer** 是 Three.js 渲染三件套；Mesh = Geometry + Material。
+- 开发时先确认坐标系、材质是否受光、以及是否需要 rAF 循环。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+## 实现步骤
 
-- 点击选中：`Raycaster` + 鼠标 NDC 坐标，`intersectObjects` 取交点。
-
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
-
-## 独立函数
-
-- `animate()` — rAF：update controls + render
-- `onMouseMove()` — 材质 / GLSL
-- `checkIntersection()` — 材质 / GLSL
-
-## 着色器
-
-### 顶点
-
-- 顶点阶段：改 gl_Position 或传 varying
-
-```glsl
-varying vec3 vWorldPosition;
-    varying vec3 vLocalPosition; // 新增局部坐标传递
-    void main() {
-      vWorldPosition = (modelMatrix * vec4(position, 1.0)).xyz;
-       vLocalPosition = position; // 传递局部坐标（-size/2到size/2）
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
-```
-
-### 片元
-
-```glsl
-uniform sampler3D uVolume;
-      uniform vec3 uResolution;
-      uniform float uThreshold;
-      uniform sampler2D uColorMap; // 取色带纹理
-      uniform int uSteps;
-      varying vec3 vWorldPosition;
-      varying vec3 vLocalPosition;
-
-      uniform vec3 uCursorPos;
-      uniform float uCursorRadius;
-
-      // 热力值转颜色（保持不变）
-      vec3 heatmap(float value) {
-        return texture2D(uColorMap, vec2(clamp(value, 0.0, 1.0), 0.5)).rgb;
-      }
-
-    void main() {
-      // 1. 计算光线起点（相机位置）和方向（指向当前像素）
-      vec3 rayOrigin = cameraPosition;
-      vec3 rayDir = normalize(vWorldPosition - c
-```
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 渲染场景并处理 resize
 
 ## 源码
 
-```js
-import * as THREE from 'three';
-import Stats from 'three/examples/jsm/libs/stats.module.js';
-import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js'
-import {GUI} from "three/addons/libs/lil-gui.module.min.js"
-import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js'
-console.log('Three.js 版本:', THREE.REVISION);
-const gui = new GUI()
+完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=Volumetric Heatmap)。
 
-// 初始化场景、相机、渲染器
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
-camera.position.set(50, 100, 100)
-camera.lookAt(0, 0, 0)
-scene.add(camera);
-const renderer = new THREE.WebGLRenderer({
-    antialias: true,
-    alpha: true,
-    logarithmicDepthBuffer: true
-});
-renderer.outputColorSpace = 'srgb'
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setClearColor(0x000000);
-document.body.appendChild(renderer.domElement);
+## 小结
 
-const cssRender = new CSS2DRenderer()
-cssRender.setSize(window.innerWidth, window.innerHeight)
-cssRender.domElement.style.position = "absolute"
-cssRender.domElement.style.top = "0"
-cssRender.domElement.style.zIndex = "3"
-cssRender.domElement.style.pointerEvents = "none"
-document.body.appendChild(cssRender.domElement)
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=Volumetric Heatmap) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [扩展功能目录](/examples/three/expand/)
 
-// 添加性能监控
-const stats = new Stats();
-document.body.appendChild(stats.dom);
-// 初始化控制器
-const controls = new OrbitControls(camera, renderer.do
-```
-
+> 扩展功能 · Three.js

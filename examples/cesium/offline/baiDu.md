@@ -4,19 +4,20 @@ description: "Cesium 离线/内网影像。入口在 `BaiduImageryProvider`。"
 head:
   - - meta
     - name: keywords
-      content: "cesium.js,内网百度"
+      content: "cesium.js,webgl,offline,内网百度"
 outline: deep
 ---
-
 # 内网百度
 
 *Intranet Baidu*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=offline&id=baiDu)
 
-
 ![内网百度](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/offline/baidu.jpg)
 
+## 你将学到什么
+
+- 案例交互与参数可在在线编辑器中查看
 
 ## 效果说明
 
@@ -24,85 +25,24 @@ Cesium 离线/内网影像。入口在 `BaiduImageryProvider`。
 
 > 离线地图 · Cesium.js
 
-## 实现思路
+## 核心概念
 
-- 底图换 `ImageryProvider`：XYZ 模板、WMTS、ArcGIS 等，挂到 `viewer.imageryLayers`。
+- **Viewer** 管理地球与渲染；业务对象可用 **Entity**（高层）或 **Primitive**（高性能）。
+- 坐标转换：经纬高 ↔ `Cartesian3` 是 Cesium 开发基础。
 
-## 代码结构
+## 实现步骤
 
-- 百度 影像服务
-
-## 类与方法
-
-### BaiduImageryProvider
-
-- `constructor()` — 参数：options
-- `requestImage()`
+1. 初始化 `Cesium.Viewer` 与底图图层
+2. 添加 Entity / Primitive / DataSource 等业务对象
+3. 按需 `camera.flyTo` 定位视角
 
 ## 源码
 
-```js
-import * as Cesium from 'cesium'
+完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=offline&id=baiDu)。
 
-const box = document.getElementById('box')
+## 小结
 
-const viewer = new Cesium.Viewer(box, {
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=offline&id=baiDu) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [离线地图目录](/examples/cesium/offline/)
 
-    animation: false,
-
-    baseLayerPicker: false,
-
-    baseLayer: false, // 不显示默认图层
-
-    fullscreenButton: false,
-
-    timeline: false,
-
-    infoBox: false,
-
-})
-
-// 这里 https://github.com/z2586300277/3d-file-server 是我存放离线地图瓦片资源的仓库 
-
-// 瓦片下载 - 可通过多种方式 例如 望远网 地图资源下载 
-
-// 这里我只下载了 3 - 5 级的瓦片
-```
-
-### 百度 影像服务
-
-```js
-class BaiduImageryProvider {
-    constructor(options) {
-        this._errorEvent = new Cesium.Event();
-        this._tileWidth = 256;
-        this._tileHeight = 256;
-        this._maximumLevel = 18;
-        this._minimumLevel = 1;
-        this._tilingScheme = new Cesium.WebMercatorTilingScheme({
-            rectangleSouthwestInMeters: new Cesium.Cartesian2(-33554054, -33746824),
-            rectangleNortheastInMeters: new Cesium.Cartesian2(33554054, 33746824)
-        });
-        this._rectangle = this._tilingScheme.rectangle;
-        this._resource = Cesium.Resource.createIfNeeded(options.url);
-    }
-
-    get url() { return this._resource.url; }
-    get proxy() { return this._resource.proxy; }
-    get tileWidth() { return this._tileWidth; }
-    get tileHeight() { return this._tileHeight; }
-    get maximumLevel() { return this._maximumLevel; }
-    get minimumLevel() { return this._minimumLevel; }
-    get tilingScheme() { return this._tilingScheme; }
-    get tileDiscardPolicy() { return this._tileDiscardPolicy; }
-    get rectangle() { return this._rectangle; }
-    get errorEvent() { return this._errorEvent; }
-    get ready() { return this._resource; }
-    get readyPromise() { return this._readyPromise; }
-    get credit() { return this._credit; }
-
-    requestImage(x, y, level) {
-        let url = this.url
-            .replace("{x}", x - this._tilingS
-```
-
+> 离线地图 · Cesium.js

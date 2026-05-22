@@ -1,210 +1,47 @@
 ---
 title: "绘制面_内置点 - Three.js 案例讲解"
-description: "Three.js 业务向场景组合。主流程在 `animate`、`draw_shape`。"
+description: "Three.js 业务向场景组合。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,绘制面_内置点,应用场景"
+      content: "three.js,webgl,application,绘制面_内置点"
 outline: deep
 ---
-
 # 绘制面_内置点
 
 *Draw Face*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=drawFace_improve)
 
-
 ![绘制面_内置点](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/draw_face_improve.jpg)
 
+## 你将学到什么
+
+- 案例交互与参数可在在线编辑器中查看
 
 ## 效果说明
 
-Three.js 业务向场景组合。主流程在 `animate`、`draw_shape`。
+Three.js 业务向场景组合。
 
 > 应用场景 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **Scene / Camera / Renderer** 是 Three.js 渲染三件套；Mesh = Geometry + Material。
+- 开发时先确认坐标系、材质是否受光、以及是否需要 rAF 循环。
 
-- 点击选中：`Raycaster` + 鼠标 NDC 坐标，`intersectObjects` 取交点。
+## 实现步骤
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
-
-## 代码结构
-
-- 增加一个面
-- 开始绘制
-
-## 独立函数
-
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 渲染场景并处理 resize
 
 ## 源码
 
-```js
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=drawFace_improve)。
 
-const box = document.getElementById('box')
+## 小结
 
-const scene = new THREE.Scene()
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=drawFace_improve) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [应用场景目录](/examples/three/application/)
 
-const camera = new THREE.PerspectiveCamera(75, box.clientWidth / box.clientHeight, 0.1, 1000)
-
-camera.position.set(0, 3, 3)
-
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
-
-renderer.setSize(box.clientWidth, box.clientHeight)
-
-box.appendChild(renderer.domElement)
-
-const controls = new OrbitControls(camera, renderer.domElement)
-
-controls.enableDamping = true
-
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1)
-
-directionalLight.position.set(0, 20, 0)
-
-scene.add(directionalLight, new THREE.AmbientLight(0xffffff, 1))
-```
-
-### 增加一个面
-
-```js
-const plane = new THREE.PlaneGeometry(5, 5)
-
-const material = new THREE.MeshStandardMaterial({ color: 0xffffff })
-
-const planeMesh = new THREE.Mesh(plane, material)
-
-planeMesh.rotation.x -= Math.PI / 2
-
-scene.add(planeMesh)
-
-animate()
-
-function animate() {
-
-  requestAnimationFrame(animate)
-
-  controls.update()
-
-  renderer.render(scene, camera)
-
-}
-
-window.onresize = () => {
-
-  renderer.setSize(box.clientWidth, box.clientHeight)
-
-  camera.aspect = box.clientWidth / box.clientHeight
-
-  camera.updateProjectionMatrix()
-
-}
-
-// 事件
-const raycaster = new THREE.Raycaster()
-
-const getPoint = event => {
-
-  const mouse = new THREE.Vector2(
-
-    (event.offsetX / event.target.clientWidth) * 2 - 1,
-
-    -(event.offsetY / event.target.clientHeight) * 2 + 1
-
-  )
-
-  raycaster.setFromCamera(mouse, camera)
-
-  const intersects = raycaster.intersectObjects(scene.children)
-
-  if (intersects.length > 0) return intersects[0].point
-
-}
-
-const setPointBox = point => {
-
-  const box = new THREE.BoxGeometry(0.04, 0.04, 0.04)
-
-  const material = new THREE.MeshStandardMaterial({ color: 0xff0000 })
-
-  const boxMesh = new THREE.Mesh(box, material)
-
-  boxMesh.position.copy(point)
-
-  scene.add(boxMesh)
-
-}
-```
-
-### 开始绘制
-
-```js
-const pointList = []; let drawMesh = null; let stop = false
-
-box.addEventListener('contextmenu', () => {
-
-  stop = true
-
-  // const { indexGroup, faceGroup, uvGroup } = multShapeGroup(pointList)
-
-  // if (drawMesh) updateMultShapePlaneGeometry(drawMesh.geometry, faceGroup, indexGroup, uvGroup)
-
-})
-
-// 移动
-box.addEventListener('mousemove', (event) => {
-
-  if (stop) return
-
-  const point = getPoint(event)
-    
-  if (!point || !drawMesh || pointList.length < 2) return
-
-    // update_shape(pointList)
-
-})
-
-box.addEventListener('click', (event) => {
-
-  const point = getPoint(event)
-
-  if (!point || stop) return
-
-  setPointBox(point)
-
-  point.y += 0.001
-
-  pointList.push(point)
-  if (pointList.length < 4) return
-
-  if (!drawMesh) {
-    draw_shape_v2(pointList)
-  }else{
-    update_shape(pointList)
-  }
-})
-
-// 此方法也可使用
-const draw_shape = (pointList)=>{
-    let v2_p = []
-    pointList.map(item=>{
-        v2_p.push(new THREE.Vector2(item.x,item.z))
-    })
-    const shape = new THREE.Shape(v2_p)
-    const geometry = new THREE.ShapeGeometry(shape);
-    const positions = geometry.getAttribute('position')
-    for (let i = 0; i < positions.count; i++) {
-        let y = positions.array[i*3+1]
-        positions.array[i*3+1] = positions.array[i*3+2] + 0.01
-        positions.array[i*3+2] = y
-    }
-    geometry.attributes.position.needsUpdate =
-```
-
+> 应用场景 · Three.js

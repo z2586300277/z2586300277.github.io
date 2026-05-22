@@ -1,73 +1,43 @@
 ---
 title: "能量球 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `animate`、`createBuildings`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,能量球,着色器"
+      content: "three.js,webgl,shader,能量球"
 outline: deep
 ---
-
 # 能量球
 
 *Energy Ball*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=energyBallShader)
 
-
 ![能量球](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/energyBallShader.jpg)
 
+## 你将学到什么
+
+- 自定义 ShaderMaterial / 修改内置 shader
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `animate`、`createBuildings`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 着色器 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 实现步骤
 
-## 独立函数
-
-- `animate()` — rAF：update controls + render
-
-## 着色器
-
-### 顶点
-
-- 顶点阶段：改 gl_Position 或传 varying
-
-```glsl
-varying vec2 vUv;
-    void main() {
-      vUv = uv;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
-```
-
-### 片元
-
-- 片元输出 gl_FragColor
-- `time` uniform 驱动动画
-
-```glsl
-uniform float time;
-    uniform vec3 color;
-    varying vec2 vUv;
-    void main() {
-      vec2 center = vec2(0.5, 0.5);
-      float dist = length(vUv - center);
-      float pulse = sin(time * 2.0) * 0.5 + 0.5;
-      float alpha = smoothstep(0.5, 0.0, dist) * pulse;
-      vec3 finalColor = mix(color, vec3(1.0), 1.0 - dist);
-      gl_FragColor = vec4(finalColor, alpha);
-    }
-```
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 定义材质/shader 与 uniforms，rAF 中更新
+3. rAF 循环中 update 并 render
 
 ## 源码
 
@@ -111,6 +81,58 @@ const energyBallShader = new THREE.ShaderMaterial({
     varying vec2 vUv;
     void main() {
       vUv = uv;
-      gl_Pos
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    uniform float time;
+    uniform vec3 color;
+    varying vec2 vUv;
+    void main() {
+      vec2 center = vec2(0.5, 0.5);
+      float dist = length(vUv - center);
+      float pulse = sin(time * 2.0) * 0.5 + 0.5;
+      float alpha = smoothstep(0.5, 0.0, dist) * pulse;
+      vec3 finalColor = mix(color, vec3(1.0), 1.0 - dist);
+      gl_FragColor = vec4(finalColor, alpha);
+    }
+  `,
+  transparent: true,
+  side: THREE.DoubleSide
+})
+
+// 创建能量球
+const energyBall = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), energyBallShader)
+energyBall.rotation.x = -Math.PI / 2
+energyBall.position.y = 0.1
+scene.add(energyBall)
+
+// 添加环境光和点光源
+scene.add(new THREE.AmbientLight(0x333333))
+const pointLight = new THREE.PointLight(0xff9900, 2, 20)
+pointLight.position.set(0, 5, 0)
+scene.add(pointLight)
+
+// 创建建筑物
+createBuildings()
+
+// 调整相机位置
+camera.position.set(0, 5, 5)
+camera.lookAt(0, 2, 0)
+
+animate()
+
+function animate() {
+  requestAnimationFrame(animate)
+  controls.update()
+  energyBallShader.uniforms.time.value += 0.016
+  renderer.render(scene, camera)
+}
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=energyBallShader) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [着色器目录](/examples/three/shader/)
+
+> 着色器 · Three.js

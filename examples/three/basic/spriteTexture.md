@@ -1,38 +1,39 @@
 ---
 title: "精灵标签 - Three.js 案例讲解"
-description: "Three.js Scene/Camera/Renderer 基础搭建。主流程在 `animate`、`setText`。"
+description: "本案例展示 **精灵标签** 的实现。涉及：相机交互控制器、requestAnimationFrame 渲染循环。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,精灵标签,基础案例"
+      content: "three.js,webgl,basic,精灵标签"
 outline: deep
 ---
-
 # 精灵标签
 
 *Sprite Text*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=spriteTexture)
 
-
 ![精灵标签](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/spriteTexture.jpg)
 
+## 你将学到什么
+
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-Three.js Scene/Camera/Renderer 基础搭建。主流程在 `animate`、`setText`。
+本案例展示 **精灵标签** 的实现。涉及：相机交互控制器、requestAnimationFrame 渲染循环。
 
 > 基础案例 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 实现步骤
 
-## 独立函数
-
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. rAF 循环中 update 并 render
 
 ## 源码
 
@@ -94,6 +95,61 @@ canvas.height = logicalHeight * devicePixelRatio;
 canvas.style.width = `${logicalWidth}px`;
 canvas.style.height = `${logicalHeight}px`;
 
-ctx.scal
+ctx.scale(devicePixelRatio, devicePixelRatio);
+
+const img = new Image();
+img.src = HOST + 'files/author/z2586300277.png';
+
+const text = '测试文本';
+
+const setText = () => {
+
+    // 画图
+    const imglong = 124;
+    const left = (logicalWidth - imglong) / 2;
+    ctx.drawImage(img, left, 40, imglong, imglong); // 向下移动图片
+
+    // 写字
+    ctx.fillStyle = '#fff';
+    ctx.font = 'Bold 30px Arial';
+
+    const textWidth = ctx.measureText(text).width;
+    ctx.fillText(text, (logicalWidth - textWidth) / 2, 30); // 放在图片上方
+
+    // 纹理图
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.needsUpdate = true;
+
+    // 纹理生成材质
+    const material = new THREE.SpriteMaterial({ map: texture });
+
+    // 创建精灵几何体
+    const sprite = new THREE.Sprite(material);
+    sprite.center = new THREE.Vector2(0.5, 0);
+
+    return sprite;
+
+}
+
+img.onload = () => {
+
+    for (let i = 0; i < 5; i++) {
+
+        const sprite = setText()
+
+        sprite.position.set(i, i, i)
+
+        scene.add(sprite)
+
+    }
+
+}
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=spriteTexture) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [基础案例目录](/examples/three/basic/)
+
+> 基础案例 · Three.js

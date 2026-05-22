@@ -1,44 +1,52 @@
 ---
 title: "模型热力图 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `animate`、`setHeat`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,模型热力图,扩展功能"
+      content: "three.js,webgl,expand,模型热力图"
 outline: deep
 ---
-
 # 模型热力图
 
 *Heatmap Model*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=heatmapModel)
 
-
 ![模型热力图](https://z2586300277.github.io/three-cesium-examples/threeExamples/expand/heatmapModel.jpg)
 
+## 你将学到什么
+
+- glTF/FBX/OBJ 外部模型加载
+- 自定义 ShaderMaterial / 修改内置 shader
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
+- GUI 面板调试参数
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `animate`、`setHeat`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 扩展功能 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **Loader** 异步加载模型；glTF 返回 `gltf.scene`，加载后注意 `scale` 与坐标系。Draco 需配置 `DRACOLoader`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-## 代码结构
+## 实现步骤
 
-- glsl
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. Loader 异步加载模型/纹理资源
+3. 定义材质/shader 与 uniforms，rAF 中更新
+4. rAF 循环中 update 并 render
 
-## 独立函数
+## 代码要点
 
-- `animate()` — rAF：update controls + render
+- **`setHeat()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -97,13 +105,21 @@ class InterpolatedGradientMaterial extends THREE.ShaderMaterial {
         dataValues = [],
         colorLow = new THREE.Color(0x0000FF),
         colorHigh = new THREE.Color(0xFF0000),
-     
-```
+        minValue = 0,
+        maxValue = 1,
+        opacity = 1,
+        weightFunction = 'inverse_square',
+        smoothstepEdges = { min: 0.0, max: 1.0 }
+    }) {
+        // 如果数据为空，填充假数据
+        if (dataPoints.length === 0 || dataValues.length === 0) {
+            console.warn("dataPoints and dataValues are empty. Using default fake data.")
+            const fakeDataLength = 10 // 假数据长度
+            dataPoints = Array.from({ length: fakeDataLength }, (_, i) => new THREE.Vector3(i, 0, 0)) // 填充简单的假数据
+            dataValues = Array.from({ length: fakeDataLength }, (_, i) => i) // 填充简单的假数据
+        }
 
-### glsl
-
-```js
-`
+        const vertexShader = /* glsl */`
             varying vec3 vPosition;
             void main() {
                 vPosition = position;
@@ -111,13 +127,7 @@ class InterpolatedGradientMaterial extends THREE.ShaderMaterial {
             }
         `
 
-        const fragmentShader =
-```
-
-### glsl
-
-```js
-`
+        const fragmentShader = /* glsl */`
             varying vec3 vPosition;
             uniform vec3 dataPoints[DATA_POINTS_LENGTH];
             uniform float dataValues[DATA_POINTS_LENGTH];
@@ -148,6 +158,25 @@ class InterpolatedGradientMaterial extends THREE.ShaderMaterial {
                 if (weightFunctionType == 0) { // inverse
                     return 1.0 / distance;
                 } else if (weightFunctionType == 1) { // inverse square
-                    return 1.
+                    return 1.0 / (distance * distance);
+                } else if (weightFunctionType == 2) { // exponential
+                    return exp(-distance);
+                }
+                return 1.0 / (distance * distance); // default to inverse square
+            }
+
+            void main() {
+                float totalWeight = 0.0;
+                float weightedValue = 0.0;
+                for(int i = 0; i < DATA_POINTS_LENGTH; i++) {
+                    float distance = length(vPosition - dataPoints[i]);
+                    float weight = getWeight(distance);
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=heatmapModel) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [扩展功能目录](/examples/three/expand/)
+
+> 扩展功能 · Three.js

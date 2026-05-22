@@ -1,111 +1,58 @@
 ---
 title: "延迟光照 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `updateBloom`、`animate`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,延迟光照,后期处理"
+      content: "three.js,webgl,effectComposer,延迟光照"
 outline: deep
 ---
-
 # 延迟光照
 
 *Deferred Lighting*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=effectComposer&id=deferredLighting)
 
-
 ![延迟光照](https://z2586300277.github.io/three-cesium-examples/threeExamples/effectComposer/deferredLighting.webp)
 
+## 你将学到什么
+
+- glTF/FBX/OBJ 外部模型加载
+- 自定义 ShaderMaterial / 修改内置 shader
+- EffectComposer 后期处理管线
+- 相机交互控制器
+- 离屏渲染 RenderTarget
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `updateBloom`、`animate`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 后期处理 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **Loader** 异步加载模型；glTF 返回 `gltf.scene`，加载后注意 `scale` 与坐标系。Draco 需配置 `DRACOLoader`。
 
-- 后期：`EffectComposer` 串 Pass，先 `RenderPass` 出场景，再 bloom/SSAO 等屏幕 Pass。
+- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
 
-- 外部模型 glTF/FBX 用对应 Loader，`scene.add(gltf.scene)` 后注意 scale/坐标。
+- **EffectComposer** 多 Pass 链式渲染：RenderPass → 特效 Pass → 输出屏幕。`composer.render()` 替代 `renderer.render()`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-## 独立函数
+## 实现步骤
 
-- `updateBloom()` — 材质 / GLSL
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. Loader 异步加载模型/纹理资源
+3. 定义材质/shader 与 uniforms，rAF 中更新
+4. EffectComposer 组装 Pass 链并 render
 
-## 着色器
+## 代码要点
 
-### 顶点
-
-- 顶点阶段：改 gl_Position 或传 varying
-
-```glsl
-out vec3 vNormal;
-        out vec3 vWorldPosition;
-        void main() {
-            vNormal = normal;
-            // 计算顶点的世界坐标，模型矩阵将顶点从模型空间转换到世界空间
-            vec4 worldPosition = modelMatrix * vec4(position, 1.0);
-            vWorldPosition = worldPosition.xyz;
-            gl_Position = projectionMatrix * viewMatrix * worldPosition;
-        }
-```
-
-### 片元
-
-```glsl
-in vec3 vNormal;
-        in vec3 vWorldPosition;
-        layout(location = 0) out vec4 gPosition;
-        layout(location = 1) out vec4 gNormal;
-        void main() {
-          gPosition = vec4(vWorldPosition, 1.0);
-          gNormal = normalize(vec4(vNormal, 1.0));
-      }
-```
-
-### 顶点
-
-- 顶点阶段：改 gl_Position 或传 varying
-
-```glsl
-out vec2 vUv;
-      void main() {
-          vUv = uv;
-          gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
-      }
-```
-
-### 片元
-
-```glsl
-precision highp float;
-    precision highp int;
-    // 从 G-buffer 中读取的位置、法线和颜色纹理
-    uniform sampler2D tPosition;
-    uniform sampler2D tNormal;
-    uniform sampler2D tDiffuse;
-    uniform sampler2D tLightData;
-    uniform vec2 resolution;
-    uniform int offset;
-    // 输入 UV 坐标
-    in vec2 vUv;
-    // 输出最终颜色
-    out vec4 pc_FragColor;
-    const int MAX_LIGHTS_PER_PASS = 50;
-    float maxDistance=100.0;
-    float smoothFactor=300.0;
-    void main() {
-     vec3 diffuse = texture(tDiffuse, vUv).rgb;
-     vec3 normal = texture(tNormal, vUv).rbg;
-     vec3 position = texture(tPo
-```
+- **`updateBloom()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`initPostprocessing()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`addLight()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`updateLights()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`onWindowResize()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -145,6 +92,94 @@ const ambientLight = new THREE.AmbientLight('#fff', 2);
 scene.add(ambientLight);
 // 添加性能监控
 const stats = new Stats();
-document.body.appendCh
+document.body.appendChild(stats.dom);
+// 初始化控制器
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+
+const lightGroup = new THREE.Group();
+const geometry = new THREE.PlaneGeometry( 10000, 10000);
+const material = new THREE.MeshBasicMaterial( {color: 0xcccccc} );
+const plane = new THREE.Mesh( geometry, material );
+plane.rotation.x = -Math.PI/2;
+scene.add(plane);
+// 加载模型 fbx  未使用预览图模型 使用仓库已有的模型,最终效果与外部预览图不一致
+new FBXLoader().load(HOST + '/files/model/city.FBX', (object3d) => {
+    object3d.scale.multiplyScalar(0.1)
+    object3d.position.set(0, -1, 0)
+    scene.add(object3d)
+})
+
+//后处理管理对象
+const postprocessing = {}
+const numLights = 1000;
+const width = numLights; // 每行存储 numLights 个光源信息
+const height = 2; // 两行
+// 创建一个 Float32Array 来存储数据
+const data = new Float32Array(width * height * 4); // 4 通道 (RGBA)
+let effectComposer,renderPass,bloomPass
+const lightTexture = new THREE.DataTexture(data, width, height, THREE.RGBAFormat, THREE.FloatType);
+
+function updateBloom() {
+    bloomPass.strength = bloomParams.bloomStrength;
+    bloomPass.radius = bloomParams.bloomRadius;
+    bloomPass.threshold = bloomParams.bloomThreshold;
+}
+
+const WIDTH = window.innerWidth;
+const HEIGHT = window.innerHeight;
+initPostprocessing(WIDTH,HEIGHT)
+addLight()
+updateLights()
+// 动画渲染
+function animate() {
+    requestAnimationFrame(animate)
+    updateLights()
+    scene.overrideMaterial = null
+    //写入原场景渲染图
+    renderer.setRenderTarget(postprocessing.texture1)
+    renderer.render(scene, camera)
+    //将定点数据 法相数据存入通道
+    scene.overrideMaterial = postprocessing.gBufferPass
+    renderer.setRenderTarget(postprocessing.gBuffer)
+    renderer.render(scene, camera)
+    renderer.setRenderTarget(null)
+    renderer.render(postprocessing.scene, postprocessing.camera);
+    effectComposer.render()
+    stats.update()
+    controls.update();
+}
+
+animate();
+
+function initPostprocessing(renderTargetWidth, renderTargetHeight) {
+    postprocessing.scene = new THREE.Scene();
+    postprocessing.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    postprocessing.scene.add(postprocessing.camera);
+    postprocessing.texture1 = new THREE.WebGLRenderTarget(renderTargetWidth, renderTargetHeight, {
+        format: THREE.RGBAFormat,
+        type: THREE.FloatType,
+        colorSpace: THREE.SRGBColorSpace,
+        depthBuffer: true,
+        stencilBuffer: false
+    })
+    postprocessing.gBuffer = new THREE.WebGLRenderTarget(renderTargetWidth, renderTargetHeight, {
+        format: THREE.RGBAFormat, // 使用 RGBAFormat 确保有 alpha 通道
+        type: THREE.FloatType, // 使用 FloatType 以确保存储精度
+        depthBuffer: true, // 确保有深度缓冲
+        count: 2
+    })
+
+    // G-BUFFER 管线
+    postprocessing.gBufferPass = new THREE.ShaderMaterial({
+        vertexShader: `
+        out vec3 vNormal;
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=effectComposer&id=deferredLighting) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [后期处理目录](/examples/three/effectComposer/)
+
+> 后期处理 · Three.js

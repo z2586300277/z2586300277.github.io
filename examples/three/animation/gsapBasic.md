@@ -1,48 +1,52 @@
 ---
 title: "gsap使用 - Three.js 案例讲解"
-description: "Three.js 关键帧或补间动画。主流程在 `animate`、`createMesh`。"
+description: "Three.js 关键帧或补间动画。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,gsap使用,动画效果"
+      content: "three.js,webgl,animation,gsap使用"
 outline: deep
 ---
-
 # gsap使用
 
 *GSAP Basic*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=animation&id=gsapBasic)
 
-
 ![gsap使用](https://z2586300277.github.io/three-cesium-examples/threeExamples/animation/animejsBasic.jpg)
 
+## 你将学到什么
+
+- 相机交互控制器
+- GSAP / anime.js 属性动画
+- Tween 补间动画
+- requestAnimationFrame 渲染循环
+- GUI 面板调试参数
 
 ## 效果说明
 
-Three.js 关键帧或补间动画。主流程在 `animate`、`createMesh`。
+Three.js 关键帧或补间动画。
 
 > 动画效果 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+- 时间线库驱动 position/rotation/uniform，与 rAF 渲染循环配合。
 
-- 补间动画交给 GSAP/anime/Tween，别在 rAF 里手搓 easing。
+- 属性插值动画，适合相机动效、UI 过渡。
 
-## 代码结构
+## 实现步骤
 
-- 第3步：Timeline 控制方法
-- 第4步：label 标签
-- 第5步：嵌套时间线
-- 第6步：综合实战 - 方块编队表演
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. rAF 循环中 update 并 render
 
-## 独立函数
+## 代码要点
 
-- `animate()` — rAF：update controls + render
-- `createMesh()` — 材质 / GLSL
+- **`createMesh()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`bounceUp()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`slideRight()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -90,53 +94,89 @@ gsap.defaults({ ease: "none", duration: 2 });
  * 所有参数
  * duration: 2, // 动画持续时间
  * delay: 0, // 动画延迟时间
- * rep
+ * repeat: 0, // 重复次数
+ * repeatDelay: 0, // 重复之间的延迟时间
+ * yoyo: false, // 是否往返动画
+ * ease: "none", // 动画缓动函数
+ * onStart: null, // 动画开始回调函数
+ * onUpdate: null, // 动画更新回调函数
+ * onComplete: null, // 动画完成回调函数
+ * onRepeat: null, // 动画重复回调函数
+ * reversed: false, // 是否反向播放动画
+ * overwrite: false, // 是否覆盖同一目标的其他动画
+ * startAt: { x: 0, y: 0, z: 0, opacity: 1 }, // 动画开始时的属性值
+ * 属性同名方法基本是 获取或者设置动画属性值
+ * gsap.killTweensOf(mesh6.position) // 终止 mesh6 上的所有动画
+ */
+
+let tween = gsap.to(
+    mesh.position, { z: 30, delay: 0.5 }
+).repeat(1) // 重复一次 等同于设置 repeat: 1
+// .timeScale(0.5) // 设置动画的时间缩放，值为 0.5 时动画将以正常速度的一半播放
+// .then(() => console.log('动画完成')) // tween 就会变成Promise 对象
+
+// tween.progress(0.3) // 将动画的进度设置为 0.3 会待过 delay 的时间
+tween.pause() // 停止
+// tween.paused(true) // 也可以这样停止 获取或设置动画的暂停状态
+
+const gui = new GUI()
+
+const folder = gui.addFolder('动画类型')
+folder.add({ fn: () => gsap.from(mesh.position, { y: 30, duration: 2 }) }, 'fn').name('from从指定值到当前值')
+folder.add({ fn: () => gsap.fromTo(mesh.position, { y: 25 }, { y: 15, duration: 2 }) }, 'fn').name('fromTo从指定值到指定值')
+
+const folder1 = gui.addFolder('基础动画控制')
+// folder1.open()
+
+folder1.add({ play: () => tween.play() }, 'play').name('播放动画')
+folder1.add({ pause: () => tween.pause() }, 'pause').name('停止动画')
+
+folder1.add({ restart: () => tween.restart() }, 'restart').name('重新开始动画')
+folder1.add({ reverse: () => tween.reverse() }, 'reverse').name('反向播放动画')
+
+folder1.add({ resume: () => tween.resume() }, 'resume').name('继续动画') // 仅在动画暂停（pause）时使用
+folder1.add({ revert: () => tween.revert() }, 'revert').name('回退并终止动画') // 回退动画并终止它，将目标恢复到动画之前的状态
+folder1.add({ kill: () => tween.kill() }, 'kill').name('终止动画') // 终止动画并将其从内存中移除，无法再对其进行控制
+
+// 不会终止 tween 的播放，但会将其时间跳转设置为 value 的值
+folder1.add({ seek: 0 }, 'seek').step(0.01).onChange(value => tween.seek(value, false)).name('跳转到指定时间') // 第二个参数表示是否跳过 delay 的时间
+
+folder1.add({
+    fn: () => {
+
+        // 由于gsap3 本身就是全局时间线, 所以可以接受第三个参数 => 位置参数  
+        gsap.to(mesh.position, {
+            y: 30,
+            duration: 0.5,
+            repeat: 1
+        }, 2) //此处位置参数表示2秒后开始动画
+
+    }
+}, 'fn').name('第三个参数')
+
+const mesh2 = createMesh(0xff0000, [5, 0, 0])
+const mesh3 = createMesh(0x00ff00, [10, 0, 0])
+
+folder1.add({
+    fn: () => {
+        gsap.to([mesh.position, mesh2.position, mesh3.position], {
+            y: 30,
+            duration: 0.5,
+            repeat: 1,
+            stagger: 0.2 // 每个动画之间的延迟时间
+        })
+    }
+}, 'fn').name('多个目标-间隔错开')
+
+const mesh4 = createMesh(0x0000ff, [5, 0, 5])
+folder1.add({
+    fn: () =>
+// ... 完整源码见在线案例编辑器
 ```
 
-### 第3步：Timeline 控制方法
+## 小结
 
-```js
-// timeline 和 tween 一样，支持 play/pause/reverse/seek 等全部控制方法
-let mainTl = gsap.timeline({
-    defaults: { duration: 0.6, ease: 'power2.inOut' },
-    paused: true,  // 创建时暂停，手动控制播放
-    repeat: 1,
-    yoyo: true
-})
-mainTl.to(mesh6.position, { y: 15 })
-    .to(mesh8.position, { y: 15 }, "<")
-    .to(mesh9.position, { y: 15 }, "<0.2")
-    .to(mesh6.position, { x: 10 })
-    .to(mesh8.position, { x: 15 }, "<")
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=animation&id=gsapBasic) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [动画效果目录](/examples/three/animation/)
 
-folder2.addFn(() => mainTl.play()).name('6-tl.play()')
-folder2.addFn(() => mainTl.pause()).name('6-tl.pause()')
-folder2.addFn(() => mainTl.reverse()).name('6-tl.reverse()')
-folder2.addFn(() => mainTl.restart()).name('6-tl.restart()')
-folder2.add({ progress: 0 }, 'progress', 0, 1).step(0.01).onChange(v => {
-    mainTl.progress(v) // 拖拽滑块控制整条时间线的进度
-}).name('6-tl.progress滑块')
-```
-
-### 第4步：label 标签
-
-```js
-// label 可以给时间线的某个时间点命名，方便跳转和定位
-folder2.addFn(() => {
-    const tl = gsap.timeline({ defaults: { duration: 0.6, ease: 'bounce.out' } })
-
-    tl.to(mesh6.position, { y: 10 })
-      .addLabel("middle")                            // 在此处添加标签 "middle"
-      .to(mesh8.position, { y: 10 }, "middle")       // 从 "middle" 标签处开始
-      .to(mesh9.position, { y: 10 }, "middle+=0.2")  // 从 "middle" 标签后 0.2s 开始
-      .addLabel("end")
-
-    // 也可以跳转到标签
-    // tl.play("middle")   // 从 middle 标签处开始播放
-    // tl.seek("end")      // 直接跳到 end 标签
-
-    console.log('标签 middle 的时间点:', tl.labels.middle, 's')
-    console.log('标签 end 的时间点:', tl.labels.end, 's')
-}).name('7-label标签')
-```
-
+> 动画效果 · Three.js

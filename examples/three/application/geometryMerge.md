@@ -1,43 +1,53 @@
 ---
 title: "几何合并 - Three.js 案例讲解"
-description: "Three.js 业务向场景组合。主流程在 `animate`、`mergeModelGeometries`。"
+description: "Three.js 业务向场景组合。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,几何合并,应用场景"
+      content: "three.js,webgl,application,几何合并"
 outline: deep
 ---
-
 # 几何合并
 
 *Geometry Merge*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=geometryMerge)
 
-
 ![几何合并](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/geometryMerge.jpg)
 
+## 你将学到什么
+
+- glTF/FBX/OBJ 外部模型加载
+- 相机交互控制器
+- 实时阴影 ShadowMap
+- 天空盒与环境贴图
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-Three.js 业务向场景组合。主流程在 `animate`、`mergeModelGeometries`。
+Three.js 业务向场景组合。
 
 > 应用场景 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 手写几何：`BufferGeometry` + `Float32Array` 填 position/uv/normal，`setIndex` 拼三角面。
+- **Loader** 异步加载模型；glTF 返回 `gltf.scene`，加载后注意 `scale` 与坐标系。Draco 需配置 `DRACOLoader`。
 
-- 外部模型 glTF/FBX 用对应 Loader，`scene.add(gltf.scene)` 后注意 scale/坐标。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- 阴影四步：`renderer.shadowMap.enabled`、光源 `castShadow`、物体 `castShadow`、地面 `receiveShadow`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+- **CubeTexture** 六面贴图作 `scene.background`；`scene.environment` 供 PBR 材质反射。
 
-## 独立函数
+## 实现步骤
 
-- `animate()` — rAF：update controls + render
-- `mergeModelGeometries()` — 材质 / GLSL
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. Loader 异步加载模型/纹理资源
+3. rAF 循环中 update 并 render
+
+## 代码要点
+
+- **`mergeModelGeometries()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -82,6 +92,92 @@ function animate() {
     controls.update()
     requestAnimationFrame(animate)
 }
-animate
+animate()
+
+// 几何体合并函数
+function mergeModelGeometries(model, options = {}) {
+    const { 
+        material = new THREE.MeshStandardMaterial({ 
+            color: 0x666666, metalness: 0.5, roughness: 0.5,
+            polygonOffset: true, polygonOffsetFactor: 1.0, polygonOffsetUnits: 1.0
+        }), 
+        ignoreHidden = true,
+        mergeThreshold = 1e-4
+    } = options;
+    
+    model.updateWorldMatrix(true, true);
+    
+    // 收集网格
+    const meshes = [];
+    model.traverse(object => {
+        if (object.isMesh && object.geometry && (!ignoreHidden || object.visible)) {
+            meshes.push(object);
+        }
+    });
+    
+    if (meshes.length === 0) return null;
+    
+    // 找出共有属性
+    const commonAttribs = new Set();
+    let refGeom = null;
+    
+    meshes.forEach(mesh => {
+        const geom = mesh.geometry;
+        if (!refGeom) {
+            refGeom = geom;
+            Object.keys(geom.attributes).forEach(name => commonAttribs.add(name));
+        } else {
+            for (const name of [...commonAttribs]) {
+                if (!geom.attributes[name]) commonAttribs.delete(name);
+            }
+        }
+    });
+    
+    if (!commonAttribs.has('position')) commonAttribs.add('position');
+    
+    try {
+        // 预处理几何体
+        const geometries = meshes.map(mesh => {
+            const geom = mesh.geometry.clone();
+            
+            commonAttribs.forEach(name => {
+                if (!geom.attributes[name]) {
+                    if (name === 'normal') {
+                        geom.computeVertexNormals();
+                    } else if (name !== 'position') {
+                        const itemSize = refGeom.attributes[name].itemSize;
+                        geom.setAttribute(name, new THREE.BufferAttribute(
+                            new Float32Array(geom.attributes.position.count * itemSize), itemSize
+                        ));
+                    }
+                }
+            });
+            
+            Object.keys(geom.attributes).forEach(name => {
+                if (!commonAttribs.has(name)) geom.deleteAttribute(name);
+            });
+            
+            geom.applyMatrix4(mesh.matrixWorld);
+            return geom;
+        });
+        
+        const mergedGeometry = BufferGeometryUtils.mergeGeometries(geometries);
+        
+        if (mergeThreshold > 0 && mergedGeometry.mergeVertices) {
+            mergedGeometry.mergeVertices(mergeThreshold);
+        }
+        
+        return new THREE.Mesh(mergedGeometry, material);
+        
+    } catch (error) {
+        console.error('模型合并失败:', error);
+        return null;
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=geometryMerge) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [应用场景目录](/examples/three/application/)
+
+> 应用场景 · Three.js

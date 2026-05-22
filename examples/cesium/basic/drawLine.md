@@ -1,47 +1,58 @@
 ---
 title: "绘制线段 - Cesium.js 案例讲解"
-description: "Cesium Scene/Camera/Renderer 基础搭建。主流程在 `clearLineEntities`、`initLineDrawing`。"
+description: "本案例展示 **绘制线段 ** 的实现。涉及：Cesium Viewer 初始化、Cesium Entity 高层 API、Cesium 鼠标拾取交互。"
 head:
   - - meta
     - name: keywords
-      content: "cesium.js,绘制线段"
+      content: "cesium.js,webgl,basic,绘制线段"
 outline: deep
 ---
-
 # 绘制线段
 
 *Draw drawLine*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=drawLine)
 
-
 ![绘制线段](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/drawLine.jpg)
 
+## 你将学到什么
+
+- Cesium Viewer 初始化
+- Cesium Entity 高层 API
+- Cesium 鼠标拾取交互
+- Cesium 影像图层
+- GUI 面板调试参数
 
 ## 效果说明
 
-Cesium Scene/Camera/Renderer 基础搭建。主流程在 `clearLineEntities`、`initLineDrawing`。
+本案例展示 **绘制线段 ** 的实现。涉及：Cesium Viewer 初始化、Cesium Entity 高层 API、Cesium 鼠标拾取交互。
 
 > 基础功能 · Cesium.js
 
-## 实现思路
+## 核心概念
 
-- Entity.polyline 传 `Cartesian3[]` 或 CallbackProperty，`width` + 自定义 MaterialProperty 做流动线/发光线。
+- **Viewer** 封装地球、相机、图层；可关闭 animation/timeline 等 UI 精简界面。
 
-- 拾取用 `ScreenSpaceEventHandler` + `scene.pick` / `pickPosition`，注意地形深度。
+- **Entity** 加点线面、模型、标签；适合业务对象与交互。
 
-## 代码结构
+- **ScreenSpaceEventHandler** 监听点击；`scene.pick` 取 Entity，`pickPosition` 取地表坐标。
 
-- 初始化区域
-- 功能操作区域
-- 实体管理区域
-- 图形绘制区域
+- **ImageryLayer** 叠加 XYZ/WMTS/ArcGIS 等底图，`imageryLayers.add/remove` 管理。
 
-## 独立函数
+## 实现步骤
 
-- `clearLineEntities()` — 移除 Entity / 解绑监听
-- `calculateAndDisplayDistance()` — 经纬高 ↔ Cartesian3
-- `updateRealTimeDistance()` — 经纬高 ↔ Cartesian3
+1. 初始化 `Cesium.Viewer` 与底图图层
+2. 添加 Entity / Primitive / DataSource 等业务对象
+3. 配置 ScreenSpaceEventHandler 交互
+4. 按需 `camera.flyTo` 定位视角
+
+## 代码要点
+
+- **`clearLineEntities()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`initLineDrawing()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`calculateAndDisplayDistance()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`updateRealTimeDistance()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`customLabel()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -94,12 +105,29 @@ const CONFIG = {
      * @memberof CONFIG
      * @property {number} width - 宽度
      * @property {Cesium.Color} material - 材质
-     *
-```
+     * @property {boolean} clampToGround - 是否贴地
+     */
+    line: {
+        width: 5,
+        material: Cesium.Color.RED.withAlpha(1),
+        clampToGround: true,
+    },
 
-### 初始化区域
+    /**
+     * @namespace tempLine
+     * @memberof CONFIG
+     * @property {number} width - 宽度
+     * @property {Cesium.Color} material - 材质
+     * @property {boolean} clampToGround - 是否贴地
+     */
+    tempLine: {
+        width: 3,
+        material: Cesium.Color.RED.withAlpha(0.5),
+        clampToGround: true,
+    }
+};
 
-```js
+// ==================== 初始化区域 ====================
 /**
  * 初始化Cesium Viewer
  * @type {Cesium.Viewer}
@@ -149,40 +177,12 @@ let drawLinePositions = [];
  * @type {Cesium.Entity}
  */
 let distanceLabelEntity = null;
-
-/** 
- * 创建GUI控制面板
- * @type {dat.GUI}
- */
-const gui = new GUI();
-
-/** 
- * 全局事件处理器
- * @type {Cesium.ScreenSpaceEventHandler}
- */
-let globalHandler = null;
+// ... 完整源码见在线案例编辑器
 ```
 
-### 功能操作区域
+## 小结
 
-```js
-/** 
- * 定义图形绘制操作对象
- * @namespace obj
- */
-const obj = {
-    /** 
-     * 绘制线功能
-     * @function
-     * @memberof obj
-     */
-    '绘制线': () => {
-        clearLineEntities();
-        initLineDrawing();
-    },
-};
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=drawLine) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [基础功能目录](/examples/cesium/basic/)
 
-// 将操作对象添加到GUI控制面板
-for (const key in obj) gui.add(obj, key)
-```
-
+> 基础功能 · Cesium.js

@@ -1,11 +1,14 @@
 ---
 title: "应用相关 - Cesium.js"
-outline: false
+description: "飞线、管道、导航、实例化、行政区渐变等业务 Demo。"
+outline: deep
 ---
 
 # 应用相关
 
-多技术组合的应用 demo
+飞线、管道、导航、实例化、行政区渐变等业务 Demo。
+
+每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。
 
 - [流动飞线运动](/examples/cesium/applyExample/flyLine)
 - [曲线管道](/examples/cesium/applyExample/curvePipe)

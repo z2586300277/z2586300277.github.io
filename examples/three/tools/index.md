@@ -1,11 +1,16 @@
 ---
 title: "相关工具 - Three.js"
-outline: false
+description: "建模、贴图、压缩、Shader 社区等外部工具与资源链接。"
+outline: deep
 ---
 
 # 相关工具
 
+建模、贴图、压缩、Shader 社区等外部工具与资源链接。
 
+> 工具页多为外链，用于提升资产生产效率。
+
+每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。
 
 - [sketchfab免费模型](/examples/three/tools/sketchfab_model)
 - [开源shader社区](/examples/three/tools/shaderToy)

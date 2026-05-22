@@ -1,32 +1,45 @@
 ---
 title: "天地图 - Cesium.js 案例讲解"
-description: "Cesium 在线底图图层。"
+description: "本案例展示 **天地图 ** 的实现。涉及：天空盒与环境贴图、Cesium Viewer 初始化、Cesium 影像图层。"
 head:
   - - meta
     - name: keywords
-      content: "cesium.js,天地图"
+      content: "cesium.js,webgl,layer,天地图"
 outline: deep
 ---
-
 # 天地图
 
 *Tianditu Layer*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=layer&id=tiandituLayer)
 
-
 ![天地图](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/layer/tiandituLayer.jpg)
 
+## 你将学到什么
+
+- 天空盒与环境贴图
+- Cesium Viewer 初始化
+- Cesium 影像图层
 
 ## 效果说明
 
-Cesium 在线底图图层。
+本案例展示 **天地图 ** 的实现。涉及：天空盒与环境贴图、Cesium Viewer 初始化、Cesium 影像图层。
 
 > 在线地图 · Cesium.js
 
-## 实现思路
+## 核心概念
 
-- 底图换 `ImageryProvider`：XYZ 模板、WMTS、ArcGIS 等，挂到 `viewer.imageryLayers`。
+- **CubeTexture** 六面贴图作 `scene.background`；`scene.environment` 供 PBR 材质反射。
+
+- **Viewer** 封装地球、相机、图层；可关闭 animation/timeline 等 UI 精简界面。
+
+- **ImageryLayer** 叠加 XYZ/WMTS/ArcGIS 等底图，`imageryLayers.add/remove` 管理。
+
+## 实现步骤
+
+1. 初始化 `Cesium.Viewer` 与底图图层
+2. 添加 Entity / Primitive / DataSource 等业务对象
+3. 按需 `camera.flyTo` 定位视角
 
 ## 源码
 
@@ -37,31 +50,31 @@ const box = document.getElementById('box')
 
 const viewer = new Cesium.Viewer(box, {
 
-    animation: false,
+    animation: false,//是否创建动画小器件，左下角仪表    
 
-    baseLayerPicker: false,
+    baseLayerPicker: false,//是否显示图层选择器，右上角图层选择按钮
 
-    fullscreenButton: false,
+    fullscreenButton: false,//是否显示全屏按钮，右下角全屏选择按钮
 
-    geocoder: false,
+    geocoder: false,//是否显示geocoder小器件，右上角查询按钮    
 
-    homeButton: false,
+    homeButton: false,//是否显示Home按钮，右上角home按钮 
 
     sceneMode: Cesium.SceneMode.SCENE3D,//初始场景模式
 
-    sceneModePicker: false,
+    sceneModePicker: false,//是否显示3D/2D选择器，右上角按钮 
 
-    navigationHelpButton: false,
+    navigationHelpButton: false,//是否显示右上角的帮助按钮  
 
-    selectionIndicator: false,
+    selectionIndicator: false,//是否显示选取指示器组件   
 
-    timeline: false,
+    timeline: false,//是否显示时间轴    
 
-    infoBox: false,
+    infoBox: false,//是否显示信息框   
 
     scene3DOnly: true,//如果设置为true，则所有几何图形以3D模式绘制以节约GPU资源  
 
-    orderIndependentTranslucency: false,
+    orderIndependentTranslucency: false, //是否启用无序透明
 
     contextOptions: { webgl: { alpha: true } },
 
@@ -92,6 +105,56 @@ viewer.imageryLayers.addImageryProvider(
 
         style: "default",
 
-        format: "image/jp
+        format: "image/jpeg",
+
+        tileMatrixSetID: "GoogleMapsCompatible"
+
+    })
+
+)
+
+// 天地图注记图层
+viewer.imageryLayers.addImageryProvider(
+
+    new Cesium.WebMapTileServiceImageryProvider({
+
+        url: "https://t0.tianditu.gov.cn/cva_w/wmts?tk=c4e3a9d54b4a79e885fff9da0fca712a&service=wmts&request=GetTile&version=1.0.0&LAYER=cva&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles",
+
+        layer: "tdtAnnoLayer",
+
+        style: "default",
+
+        format: "image/jpeg",
+
+        tileMatrixSetID: "GoogleMapsCompatible"
+
+    })
+
+)
+
+// 天地图境界线
+viewer.imageryLayers.addImageryProvider(
+
+    new Cesium.WebMapTileServiceImageryProvider({
+
+        url: "https://t0.tianditu.gov.cn/ibo_w/wmts?tk=c4e3a9d54b4a79e885fff9da0fca712a&service=wmts&request=GetTile&version=1.0.0&LAYER=ibo&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles",
+
+        layer: "tdtBoundaryLayer",
+
+        style: "default",
+
+        format: "image/jpeg",
+
+        tileMatrixSetID: "GoogleMapsCompatible"
+
+    })
+
+)
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=layer&id=tiandituLayer) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [在线地图目录](/examples/cesium/layer/)
+
+> 在线地图 · Cesium.js

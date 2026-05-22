@@ -1,11 +1,14 @@
 ---
 title: "首页导航 - Three.js"
-outline: false
+description: "友链、编辑器、资源库等导航入口。"
+outline: deep
 ---
 
 # 首页导航
 
+友链、编辑器、资源库等导航入口。
 
+每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。
 
 - [感谢来自BiBi的支持](/examples/three/friendStation/thanksBibi)
 - [低代码组态编辑器](/examples/three/friendStation/z2586300277_3d_editor)

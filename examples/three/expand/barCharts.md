@@ -1,94 +1,47 @@
 ---
 title: "柱状图 - Three.js 案例讲解"
-description: "Three.js 接第三方库或扩展能力。主流程在 `onWindowResize`、`animate`。"
+description: "Three.js 接第三方库或扩展能力。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,柱状图,扩展功能"
+      content: "three.js,webgl,expand,柱状图"
 outline: deep
 ---
-
 # 柱状图
 
 *Bar Charts*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=barCharts)
 
-
 ![柱状图](https://z2586300277.github.io/three-cesium-examples/threeExamples/expand/barCharts.jpg)
 
+## 你将学到什么
+
+- 案例交互与参数可在在线编辑器中查看
 
 ## 效果说明
 
-Three.js 接第三方库或扩展能力。主流程在 `onWindowResize`、`animate`。
+Three.js 接第三方库或扩展能力。
 
 > 扩展功能 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 手写几何：`BufferGeometry` + `Float32Array` 填 position/uv/normal，`setIndex` 拼三角面。
+- **Scene / Camera / Renderer** 是 Three.js 渲染三件套；Mesh = Geometry + Material。
+- 开发时先确认坐标系、材质是否受光、以及是否需要 rAF 循环。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+## 实现步骤
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
-
-- 点精灵/粒子：`Points` + `PointsMaterial`，或自定义 shader 控 size/颜色。
-
-## 代码结构
-
-- 坐标轴标签：清爽灰色，无干扰
-- 轴名称标签 (ECharts 风格：加粗，深色)
-- 柱顶数值标签：醒目红褐色，类似ECharts 强调
-- 简单辅助：去掉滚动条，干净视图
-
-## 独立函数
-
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 渲染场景并处理 resize
 
 ## 源码
 
-```js
-<!DOCTYPE html>
-<html lang="zh-CN">
+完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=barCharts)。
 
-<head>
-    <meta charset="UTF-8">
-    <title>Three.js 柱状图 · ECharts 标准风格</title>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            font-family: "Microsoft YaHei", sans-serif;
-        }
+## 小结
 
-        canvas {
-            display: block;
-        }
-```
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=barCharts) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [扩展功能目录](/examples/three/expand/)
 
-### 坐标轴标签：清爽灰色，无干扰
-
-```js
-.axis-tick-label {
-            color: #4a4a4a;
-            font-size: 13px;
-            font-weight: normal;
-            white-space: nowrap;
-            pointer-events: none;
-            text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
-        }
-```
-
-### 轴名称标签 (ECharts 风格：加粗，深色)
-
-```js
-.axis-name-label {
-            color: #2c3e50;
-            font-size: 16px;
-            font-weight: 600;
-            white-space: nowrap;
-            pointer-events: none;
-            text-shadow: 0 0 3px rgba(255, 255, 255, 0.9);
-        }
-```
-
+> 扩展功能 · Three.js

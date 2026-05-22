@@ -1,42 +1,45 @@
 ---
 title: "轮廓光 - Three.js 案例讲解"
-description: "原场景 + 后期 Pass 叠加。主流程在 `animate`。"
+description: "原场景 + 后期 Pass 叠加。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,轮廓光"
+      content: "three.js,webgl,basic,轮廓光"
 outline: deep
 ---
-
 # 轮廓光
 
 *Outline Pass*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=outlinePass)
 
-
 ![轮廓光](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/outlinePass.jpg)
 
+## 你将学到什么
+
+- EffectComposer 后期处理管线
+- 相机交互控制器
+- 轮廓高亮 OutlinePass
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-原场景 + 后期 Pass 叠加。主流程在 `animate`。
+原场景 + 后期 Pass 叠加。
 
 > 基础案例 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 后期：`EffectComposer` 串 Pass，先 `RenderPass` 出场景，再 bloom/SSAO 等屏幕 Pass。
+- **EffectComposer** 多 Pass 链式渲染：RenderPass → 特效 Pass → 输出屏幕。`composer.render()` 替代 `renderer.render()`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 点击选中：`Raycaster` + 鼠标 NDC 坐标，`intersectObjects` 取交点。
+- 选中物体外轮廓发光，常用于编辑器选中态。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 实现步骤
 
-## 独立函数
-
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. EffectComposer 组装 Pass 链并 render
 
 ## 源码
 
@@ -89,6 +92,77 @@ composer.addPass(outputPass);
 // 渲染
 animate()
 
-function animate
+function animate() {
+
+    requestAnimationFrame(animate)
+
+    controls.update()
+
+    composer.render()
+
+}
+
+// 适配
+window.onresize = () => {
+
+    renderer.setSize(box.clientWidth, box.clientHeight)
+
+    camera.aspect = box.clientWidth / box.clientHeight
+
+    camera.updateProjectionMatrix()
+
+}
+
+// 点击事件
+
+const raycaster = new THREE.Raycaster()
+
+box.addEventListener('click', (event) => {
+
+    const mouse = new THREE.Vector2(
+
+        (event.offsetX / event.target.clientWidth) * 2 - 1,
+
+        -(event.offsetY / event.target.clientHeight) * 2 + 1
+
+    )
+
+    raycaster.setFromCamera(mouse, camera)
+
+    const intersects = raycaster.intersectObjects(scene.children)
+
+    if (intersects.length > 0) outlinePass.selectedObjects = [intersects[0].object]
+
+    else outlinePass.selectedObjects = []
+
+})
+
+// 辅助
+scene.add(new THREE.AxesHelper(500), new THREE.GridHelper(100, 20))
+
+// 物体
+for (let i = 0; i < 10; i++) {
+
+    const geometry = new THREE.BoxGeometry()
+
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 * Math.random() })
+
+    const cube = new THREE.Mesh(geometry, material)
+
+    cube.position.x = Math.random() * 10
+
+    cube.position.y = Math.random() * 10
+
+    cube.position.z = Math.random() * 10
+
+    scene.add(cube)
+
+}
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=outlinePass) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [基础案例目录](/examples/three/basic/)
+
+> 基础案例 · Three.js

@@ -1,44 +1,48 @@
 ---
 title: "DOM遮挡 - Three.js 案例讲解"
-description: "Three.js Scene/Camera/Renderer 基础搭建。主流程在 `createRender`、`createDom`。"
+description: "本案例展示 **DOM遮挡** 的实现。涉及：相机交互控制器、CSS2D/3D 标签渲染、requestAnimationFrame 渲染循环。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,DOM遮挡,基础案例"
+      content: "three.js,webgl,basic,DOM遮挡"
 outline: deep
 ---
-
 # DOM遮挡
 
 *DOM Display*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=domDisplay)
 
-
 ![DOM遮挡](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/domDisplay.jpg)
 
+## 你将学到什么
+
+- 相机交互控制器
+- CSS2D/3D 标签渲染
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-Three.js Scene/Camera/Renderer 基础搭建。主流程在 `createRender`、`createDom`。
+本案例展示 **DOM遮挡** 的实现。涉及：相机交互控制器、CSS2D/3D 标签渲染、requestAnimationFrame 渲染循环。
 
 > 基础案例 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 点击选中：`Raycaster` + 鼠标 NDC 坐标，`intersectObjects` 取交点。
+- DOM 元素叠加在 3D 坐标上，适合信息面板（注意与 WebGL 深度关系）。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 实现步骤
 
-## 代码结构
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. rAF 循环中 update 并 render
 
-- css3d 渲染
+## 代码要点
 
-## 独立函数
-
-- `animate()` — rAF：update controls + render
+- **`createRender()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`createDom()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`setCss3DRenderer()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -97,70 +101,78 @@ function createRender(mesh) {
 
     const raycaster = new THREE.Raycaster(camera.position, direction, 0, mesh.position.distanceTo(camera.position))
 
-    const intersects = rayc
-```
+    const intersects = raycaster.intersectObjects(meshs)
 
-### css3d 渲染
+    mesh.div.style.opacity = intersects.length > 0 ? 0 : 1
 
-```js
-function setCss3DRenderer(DOM) {
+}
 
-    const css3DRender = new CSS3DRenderer()
+for (let i = 0; i < 100; i++) {
 
-    css3DRender.resize = () => {
+    const mesh = setCss3dDOM(createDom('顽皮宝' + i), { x: R(), y: R(), z: R() })
 
-        css3DRender.setSize(DOM.clientWidth, DOM.clientHeight)
+    mesh.scale.multiplyScalar(0.02)
 
-        css3DRender.domElement.style.zIndex = 0
+    mesh.lookAt(R(), R(), R())
 
-        css3DRender.domElement.style.position = 'relative'
+    mesh.update = () => createRender(mesh)
 
-        css3DRender.domElement.style.top = -DOM.clientHeight + 'px'
+    list.push(mesh)
 
-        css3DRender.domElement.style.height = DOM.clientHeight + 'px'
+    if (i % 40 === 0) {
 
-        css3DRender.domElement.style.width = DOM.clientWidth + 'px'
+        const boxGeometry = new THREE.TorusKnotGeometry( 4, 0.6, 100, 16 )
 
-        css3DRender.domElement.style.pointerEvents = 'none'
+        const boxMesh = new THREE.Mesh(boxGeometry, new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff , transparent: true, opacity: 0.45 }))
+
+        boxMesh.position.copy({ x: R(), y: R(), z: R() })
+
+        meshs.push(boxMesh)
+
+        scene.add(boxMesh)
 
     }
 
-    css3DRender.resize()
+}
 
-    DOM.appendChild(css3DRender.domElement)
+// 创建dom
+function createDom(text) {
 
-    return css3DRender
+    const div = document.createElement('div')
+
+    div.style.position = 'absolute'
+
+    div.style.transition = 'all 0.2s'
+
+    const img = document.createElement('img')
+
+    img.src = HOST + '/files/author/flowers-10.jpg'
+
+    img.style.width = '50px'
+
+    img.style.height = '50px'
+
+    div.appendChild(img)
+
+    div.innerHTML += text
+
+    div.style.color = 'white'
+
+    document.body.appendChild(div)
+
+    return div
 
 }
 
-animate()
+/* css3d 渲染 */
+function setCss3DRenderer(DOM) {
 
-function animate() {
-
-    meshs.forEach(mesh => { mesh.rotation.y += 0.01; mesh.rotation.x += 0.01 })
-
-    list.forEach(mesh => mesh.update())
-
-    requestAnimationFrame(animate)
-
-    controls.update()
-
-    renderer.render(scene, camera)
-
-    css3DRender.render(scene, camera) 
-
-}
-
-window.onresize = () => {
-
-    renderer.setSize(DOM.clientWidth, DOM.clientHeight)
-
-    camera.aspect = DOM.clientWidth / DOM.clientHeight
-
-    camera.updateProjectionMatrix()
-
-    css3DRender.resize()
-
-}
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=domDisplay) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [基础案例目录](/examples/three/basic/)
+
+> 基础案例 · Three.js

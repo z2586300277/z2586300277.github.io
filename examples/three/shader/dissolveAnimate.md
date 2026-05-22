@@ -1,92 +1,50 @@
 ---
 title: "溶解动画 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `init`、`animate`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,溶解动画"
+      content: "three.js,webgl,shader,溶解动画"
 outline: deep
 ---
-
 # 溶解动画
 
 *Dissolve*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=dissolveAnimate)
 
-
 ![溶解动画](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/dissolveAnimate.jpg)
 
+## 你将学到什么
+
+- 自定义 ShaderMaterial / 修改内置 shader
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
+- Clock 帧间隔计时
+- Stats 性能监视
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `init`、`animate`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 着色器 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 实现步骤
 
-## 独立函数
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 定义材质/shader 与 uniforms，rAF 中更新
+3. rAF 循环中 update 并 render
 
-- `init()` — Scene / Camera / Renderer 初始化
-- `animate()` — rAF：update controls + render
-- `updateMaterial()` — 材质 / GLSL
+## 代码要点
 
-## 着色器
-
-### 顶点
-
-- 顶点阶段：改 gl_Position 或传 varying
-
-```glsl
-varying vec2 vUv;
-  varying vec3 worldPos;
-  void main() {
-      vUv = uv;
-      worldPos = (modelMatrix * vec4(position, 1.0)).xyz;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-  }
-```
-
-### 片元
-
-- `time` uniform 驱动动画
-
-```glsl
-varying vec2 vUv;
- 
-  uniform sampler2D dissolveMap;
-  uniform sampler2D texture2;
-  uniform float time;
-  varying vec3 worldPos;
-  uniform bool flag;
-  void main() {
-    
-    float bottom = -2.0;
-    float top = 2.0;
-    float yScale = (worldPos.y - bottom)/(top - bottom);
- 
-    vec4 color = texture2D( texture2, vUv);
-    //vec4 color = vec4(1.0, 0.0, 0.0, 0.3);
-    
-    //float t = 1. - fract(time);
-    float t;
-    if(flag) {
-      t = fract(time);
-    }else {
-      t = 1. - fract(time);
-    }
-    
-    float h = texture2D( dissolveMap, vUv).r;
-
-    float dissolveWi
-```
+- **`updateMaterial()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`onResize()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -136,6 +94,87 @@ function init() {
                 value: true
             }
         },
-        vertexShader: `    varying vec2 vUv
+        vertexShader: `    varying vec2 vUv;
+  varying vec3 worldPos;
+  void main() {
+      vUv = uv;
+      worldPos = (modelMatrix * vec4(position, 1.0)).xyz;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }`,
+        fragmentShader: `
+  varying vec2 vUv;
+ 
+  uniform sampler2D dissolveMap;
+  uniform sampler2D texture2;
+  uniform float time;
+  varying vec3 worldPos;
+  uniform bool flag;
+  void main() {
+    
+    float bottom = -2.0;
+    float top = 2.0;
+    float yScale = (worldPos.y - bottom)/(top - bottom);
+ 
+    vec4 color = texture2D( texture2, vUv);
+    //vec4 color = vec4(1.0, 0.0, 0.0, 0.3);
+    
+    //float t = 1. - fract(time);
+    float t;
+    if(flag) {
+      t = fract(time);
+    }else {
+      t = 1. - fract(time);
+    }
+    
+    float h = texture2D( dissolveMap, vUv).r;
+
+    float dissolveWidth = 4.0; // 值越大越窄
+
+    float condition_if_1 = step(h + yScale*dissolveWidth, t*(dissolveWidth + 1.0) + 0.04);
+    float condition_if_2 = step(h + yScale*dissolveWidth, t*(dissolveWidth + 1.0));
+    color = mix(color, vec4(1.0 ,1.0 , 0.0, 1.0), condition_if_1 );
+    color = color * (1. - condition_if_2);
+    
+    gl_FragColor = color;
+  }`,
+        transparent: true,
+        depthWrite: false
+    });
+    dissolveMaterials.push(shader_material)
+
+    var axisHelper = new THREE.AxesHelper(10);
+    scene.add(axisHelper)
+    stats = new Stats()
+    document.body.appendChild(stats.dom);
+
+    var geometry = new THREE.BoxGeometry(4, 4, 4);
+    var cube = new THREE.Mesh(geometry, shader_material);
+    scene.add(cube);
+
+    controller = new OrbitControls(camera, renderer.domElement);
+    document.body.appendChild(renderer.domElement);
+    window.onresize = onResize;
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+    stats.update();
+    controller.update(clock.getDelta());
+    updateMaterial()
+}
+
+function updateMaterial() {
+    dissolveMaterials.map(m => {
+        m.uniforms.time.value += 0.005
+        if (m.uniforms.time.value >= 1) {
+            m.uniforms.time.value = 0
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=dissolveAnimate) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [着色器目录](/examples/three/shader/)
+
+> 着色器 · Three.js

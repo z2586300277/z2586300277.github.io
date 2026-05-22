@@ -1,11 +1,16 @@
 ---
 title: "粒子 - Three.js"
-outline: false
+description: "Points、粒子着色器、火焰雨雪等大量点精灵效果。"
+outline: deep
 ---
 
 # 粒子
 
-大量点/面片模拟粒子
+Points、粒子着色器、火焰雨雪等大量点精灵效果。
+
+> 粒子案例关注 BufferGeometry 与 GPU 点数性能。
+
+每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。
 
 - [优雅永不过时](/examples/three/particle/z2586300277)
 - [随机粒子效果](/examples/three/particle/RandomParticle)

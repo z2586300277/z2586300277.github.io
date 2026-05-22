@@ -1,40 +1,43 @@
 ---
 title: "渐变三角形 - Three.js 案例讲解"
-description: "Three.js Scene/Camera/Renderer 基础搭建。主流程在 `initObject`、`animate`。"
+description: "本案例展示 **渐变三角形** 的实现。涉及：相机交互控制器、requestAnimationFrame 渲染循环。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,渐变三角形"
+      content: "three.js,webgl,basic,渐变三角形"
 outline: deep
 ---
-
 # 渐变三角形
 
 *Triangle*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=gradientTriangle)
 
-
 ![渐变三角形](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/gradientTriangle.jpg)
 
+## 你将学到什么
+
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-Three.js Scene/Camera/Renderer 基础搭建。主流程在 `initObject`、`animate`。
+本案例展示 **渐变三角形** 的实现。涉及：相机交互控制器、requestAnimationFrame 渲染循环。
 
 > 基础案例 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 手写几何：`BufferGeometry` + `Float32Array` 填 position/uv/normal，`setIndex` 拼三角面。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+## 实现步骤
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. rAF 循环中 update 并 render
 
-## 独立函数
+## 代码要点
 
-- `animate()` — rAF：update controls + render
+- **`initObject()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -94,6 +97,31 @@ function initObject() {
   let indices = [
     0, 1, 2 // 索引0, 1, 2 表示顶点数组中的p1, p2, p3
   ];
-  let indexAttribute = new THREE.BufferA
+  let indexAttribute = new THREE.BufferAttribute(new Uint16Array(indices), 1);
+  geometry.setIndex(indexAttribute);
+
+  let material = new THREE.MeshBasicMaterial({
+    vertexColors: true,
+    side: THREE.DoubleSide,
+    wireframe: false
+  });
+
+  let obj = new THREE.Mesh(geometry, material);
+  scene.add(obj);
+}
+function animate() {
+
+  requestAnimationFrame(animate)
+  renderer.render(scene, camera)
+
+}
+
+animate()
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=gradientTriangle) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [基础案例目录](/examples/three/basic/)
+
+> 基础案例 · Three.js

@@ -4,19 +4,20 @@ description: "Three.js 业务向场景组合。入口在 `InfiniteRoad`。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,无限行驶,应用场景"
+      content: "three.js,webgl,application,无限行驶"
 outline: deep
 ---
-
 # 无限行驶
 
 *Driving*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=driving)
 
-
 ![无限行驶](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/drivingCar.jpg)
 
+## 你将学到什么
+
+- 案例交互与参数可在在线编辑器中查看
 
 ## 效果说明
 
@@ -24,80 +25,23 @@ Three.js 业务向场景组合。入口在 `InfiniteRoad`。
 
 > 应用场景 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **Scene / Camera / Renderer** 是 Three.js 渲染三件套；Mesh = Geometry + Material。
+- 开发时先确认坐标系、材质是否受光、以及是否需要 rAF 循环。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 实现步骤
 
-## 类与方法
-
-### InfiniteRoad
-
-- `constructor()` — 初始化成员
-- `createPlane()` — 材质 / GLSL
-- `createRoadMarkings()` — 材质 / GLSL
-- `createTrees()` — 材质 / GLSL
-- `update()` — 每帧更新 geometry uniform 或实例矩阵
-- `updateRoadElements()`
-
-### Car
-
-- `constructor()` — 初始化成员
-- `createWheels()` — 材质 / GLSL
-- `addLights()` — 材质 / GLSL
-- `update()` — 每帧更新 geometry uniform 或实例矩阵
-
-## 独立函数
-
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 渲染场景并处理 resize
 
 ## 源码
 
-```js
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=driving)。
 
-// 基础场景设置
-const container = document.getElementById('box')
-const scene = new THREE.Scene()
-scene.background = new THREE.Color(0x87CEEB)
+## 小结
 
-// 相机和渲染器
-const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000)
-camera.position.set(0, 5, 10)
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=driving) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [应用场景目录](/examples/three/application/)
 
-const renderer = new THREE.WebGLRenderer({ antialias: true })
-renderer.setSize(container.clientWidth, container.clientHeight)
-renderer.shadowMap.enabled = true
-container.appendChild(renderer.domElement)
-
-// 控制器
-const controls = new OrbitControls(camera, renderer.domElement)
-controls.enableDamping = true
-
-// 光照
-scene.add(new THREE.AmbientLight(0xffffff, 0.5))
-const dirLight = new THREE.DirectionalLight(0xffffff, 0.8)
-dirLight.position.set(10, 10, 10)
-dirLight.castShadow = true
-dirLight.shadow.mapSize.width = dirLight.shadow.mapSize.height = 1024
-scene.add(dirLight)
-
-// 无限道路系统类
-class InfiniteRoad {
-  constructor() {
-    this.speed = 0.2
-    this.roadLength = 200
-    
-    // 创建共享纹理加载器
-    const textureLoader = new THREE.TextureLoader()
-    
-    // 创建道路和草地
-    this.road = this.createPlane(10, this.roadLength, 
-      textureLoader.load('https://threejs.org/examples/textures/roads/road1.jpg'),
-      { repeat: [1, 10], y: 0.01, color: 0x444444 })
-    
-    t
-```
-
+> 应用场景 · Three.js

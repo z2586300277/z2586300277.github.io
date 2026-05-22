@@ -1,77 +1,47 @@
 ---
 title: "简单碰撞检测 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `reset`、`update_player`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,简单碰撞检测,应用场景"
+      content: "three.js,webgl,application,简单碰撞检测"
 outline: deep
 ---
-
 # 简单碰撞检测
 
 *Simple Coll*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=simple_collision)
 
-
 ![简单碰撞检测](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/simple_coll.jpg)
 
+## 你将学到什么
+
+- 案例交互与参数可在在线编辑器中查看
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `reset`、`update_player`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 应用场景 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **Scene / Camera / Renderer** 是 Three.js 渲染三件套；Mesh = Geometry + Material。
+- 开发时先确认坐标系、材质是否受光、以及是否需要 rAF 循环。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 实现步骤
+
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 渲染场景并处理 resize
 
 ## 源码
 
-```js
-import { Scene, Fog, Color, PerspectiveCamera, WebGLRenderer, DirectionalLight, AmbientLight, PlaneGeometry, MeshLambertMaterial, Mesh, GridHelper, Vector2, Line3, MeshStandardMaterial, Vector3, Box3, Matrix4, Clock, CapsuleGeometry, Box3Helper, } from "three";
-import { OrbitControls } from "three/examples/jsm/Addons.js";
-let scene, terrain, camera, controls, clock, renderer;
-// 碰撞参数/三维世界参数
-const params = {
-    firstPerson: false,
-    displayCollider: false,
-    displayBVH: false,
-    visualizeDepth: 10,
-    gravity: -30,
-    playerSpeed: 10,
-    // 步长
-    physicsSteps: 5,
-};
-// 分数布朗运动 用于生成随机地形
-let fbm = `
-    // https://github.com/yiwenl/glsl-fbm/blob/master/3d.glsl
-    #define NUM_OCTAVES 6
+完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=simple_collision)。
 
-    float mod289(float x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
-    vec4 mod289(vec4 x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
-    vec4 perm(vec4 x){return mod289(((x * 34.0) + 1.0) * x);}
+## 小结
 
-    float noise(vec3 p){
-        vec3 a = floor(p);
-        vec3 d = p - a;
-        d = d * d * (3.0 - 2.0 * d);
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=simple_collision) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [应用场景目录](/examples/three/application/)
 
-        vec4 b = a.xxyy + vec4(0.0, 1.0, 0.0, 1.0);
-        vec4 k1 = perm(b.xyxy);
-        vec4 k2 = perm(k1.xyxy + b.zzww);
-
-        vec4 c = k2 + a.zzzz;
-        vec4 k3 = perm(c);
-        vec4 k4 = perm(c + 1.0);
-
-        vec4 o1 = fract(k3 * (1.0 / 41.0));
-        vec4 o2 = fract(k4 * (1.0 / 41.0));
-
-        vec4 o3 = o2 * d.z + o1 
-```
-
+> 应用场景 · Three.js

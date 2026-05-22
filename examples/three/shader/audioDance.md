@@ -1,46 +1,53 @@
 ---
 title: "音乐舞动 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `initOrthographicCamera`、`initRenderer`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,音乐舞动,着色器"
+      content: "three.js,webgl,shader,音乐舞动"
 outline: deep
 ---
-
 # 音乐舞动
 
 *Audio Dance*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=audioDance)
 
-
 ![音乐舞动](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/audioDance.jpg)
 
+## 你将学到什么
+
+- 自定义 ShaderMaterial / 修改内置 shader
+- 相机交互控制器
+- 实时阴影 ShadowMap
+- requestAnimationFrame 渲染循环
+- GUI 面板调试参数
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `initOrthographicCamera`、`initRenderer`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 着色器 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+- 阴影四步：`renderer.shadowMap.enabled`、光源 `castShadow`、物体 `castShadow`、地面 `receiveShadow`。
 
-## 代码结构
+## 实现步骤
 
-- glsl
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 定义材质/shader 与 uniforms，rAF 中更新
+3. rAF 循环中 update 并 render
 
-## 独立函数
+## 代码要点
 
-- `init()` — Scene / Camera / Renderer 初始化
-- `update()` — 材质 / GLSL
-- `render()` — renderer.render(scene, camera)
+- **`initOrthographicCamera()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`initRenderer()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`update()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -105,13 +112,14 @@ window.onload = () => {
 
 const colors = [
   new Color(0.5, 0.0, 1.0), // 紫色
-  ne
-```
+  new Color(0.0, 0.0, 1.0), // 蓝色
+  new Color(0.0, 1.0, 1.0), // 青色
+  new Color(0.0, 1.0, 0.0), // 绿色
+  new Color(1.0, 1.0, 0.0), // 黄色
+  new Color(1.0, 0.0, 0.0), // 红色
+];
 
-### glsl
-
-```js
-`
+const vertexShader = /*glsl*/ `
     varying vec4 vPosition;
     void main() {
       vPosition = modelMatrix * vec4(position, 1.0);
@@ -119,13 +127,7 @@ const colors = [
     }
   `;
 
-const fragmentShader =
-```
-
-### glsl
-
-```js
-`
+const fragmentShader = /*glsl*/ `
     varying vec4 vPosition;
     uniform float uScale;
     uniform vec3 colors[6];
@@ -170,10 +172,12 @@ function init() {
     const bar = new Mesh(geometry, material.clone());
     bar.position.x = offset;
     scene.add(bar);
-    bars.push(bar);
-
-    const mirrorBar = new Mesh(geometry, material.clone());
-    mirrorBar.position.x = -offset;
-    scene.add(
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=audioDance) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [着色器目录](/examples/three/shader/)
+
+> 着色器 · Three.js

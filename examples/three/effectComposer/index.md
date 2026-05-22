@@ -1,11 +1,16 @@
 ---
 title: "后期处理 - Three.js"
-outline: false
+description: "EffectComposer、Bloom、模糊、色调等全屏后处理。"
+outline: deep
 ---
 
 # 后期处理
 
-屏幕空间后期
+EffectComposer、Bloom、模糊、色调等全屏后处理。
+
+> 后期管线用 composer.render() 替代 renderer.render()。
+
+每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。
 
 - [辉光-postprocessing](/examples/three/effectComposer/selectBloomPass)
 - [自定义遮罩通道](/examples/three/effectComposer/customMaskPass)

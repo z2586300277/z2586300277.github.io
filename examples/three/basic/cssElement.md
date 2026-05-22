@@ -1,43 +1,48 @@
 ---
 title: "CSS元素 - Three.js 案例讲解"
-description: "Three.js Scene/Camera/Renderer 基础搭建。主流程在 `animate`、`createDom`。"
+description: "本案例展示 **CSS元素** 的实现。涉及：相机交互控制器、CSS2D/3D 标签渲染、requestAnimationFrame 渲染循环。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,CSS元素"
+      content: "three.js,webgl,basic,CSS元素"
 outline: deep
 ---
-
 # CSS元素
 
 *CSS Element*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=cssElement)
 
-
 ![CSS元素](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/cssElement.jpg)
 
+## 你将学到什么
+
+- 相机交互控制器
+- CSS2D/3D 标签渲染
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-Three.js Scene/Camera/Renderer 基础搭建。主流程在 `animate`、`createDom`。
+本案例展示 **CSS元素** 的实现。涉及：相机交互控制器、CSS2D/3D 标签渲染、requestAnimationFrame 渲染循环。
 
 > 基础案例 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+- DOM 元素叠加在 3D 坐标上，适合信息面板（注意与 WebGL 深度关系）。
 
-## 代码结构
+## 实现步骤
 
-- css2d渲染
-- css3d 渲染
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. rAF 循环中 update 并 render
 
-## 独立函数
+## 代码要点
 
-- `animate()` — rAF：update controls + render
+- **`createDom()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`setCss2DRenderer()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`setCss3DRenderer()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -101,74 +106,70 @@ for (let i = 0; i < 5; i++) {
 
     setCss2dDOM(createDom('2D' + i), { x: 0, y: 0, z: i * 2 }) // 2d dom
 
-    setCss3dDOM(createDom('3D' + i), { x: 0, y: i * 2, z: 0 })
-```
-
-### css2d渲染
-
-```js
-function setCss2DRenderer(DOM) {
-
-    const css2DRender = new CSS2DRenderer()
-
-    css2DRender.resize = () => {
-
-        css2DRender.setSize(DOM.clientWidth, DOM.clientHeight)
-
-        css2DRender.domElement.style.zIndex = 0
-
-        css2DRender.domElement.style.position = 'relative'
-
-        css2DRender.domElement.style.top = -DOM.clientHeight * 2 + 'px'
-
-        css2DRender.domElement.style.height = DOM.clientHeight + 'px'
-
-        css2DRender.domElement.style.width = DOM.clientWidth + 'px'
-
-        css2DRender.domElement.style.pointerEvents = 'none'
-
-    }
-
-    css2DRender.resize()
-
-    DOM.appendChild(css2DRender.domElement)
-
-    return css2DRender
+    setCss3dDOM(createDom('3D' + i), { x: 0, y: i * 2, z: 0 }).scale.multiplyScalar(0.02) // 3d dom
 
 }
-```
 
-### css3d 渲染
+animate()
 
-```js
-function setCss3DRenderer(DOM) {
+function animate() {
 
-    const css3DRender = new CSS3DRenderer()
+    requestAnimationFrame(animate)
 
-    css3DRender.resize = () => {
+    renderer.render(scene, camera)
 
-        css3DRender.setSize(DOM.clientWidth, DOM.clientHeight)
+    css3DRender.render(scene, camera) // Css3D渲染
 
-        css3DRender.domElement.style.zIndex = 0
+    css2DRender.render(scene, camera) // Css2D渲染
 
-        css3DRender.domElement.style.position = 'relative'
+}
 
-        css3DRender.domElement.style.top = -DOM.clientHeight + 'px'
+window.onresize = () => {
 
-        css3DRender.domElement.style.height = DOM.clientHeight + 'px'
+    renderer.setSize(box.clientWidth, box.clientHeight)
 
-        css3DRender.domElement.style.width = DOM.clientWidth + 'px'
+    camera.aspect = box.clientWidth / box.clientHeight
 
-        css3DRender.domElement.style.pointerEvents = 'none'
-
-    }
+    camera.updateProjectionMatrix()
 
     css3DRender.resize()
 
-    DOM.appendChild(css3DRender.domElement)
-
-    return css3DRender
+    css2DRender.resize()
 
 }
+
+// 创建dom
+function createDom(text) {
+
+    const div = document.createElement('div')
+
+    const img = document.createElement('img')
+
+    img.src = HOST + '/files/author/z2586300277.png'
+
+    img.style.width = '50px'
+
+    img.style.height = '50px'
+
+    div.appendChild(img)
+
+    div.innerHTML += text
+
+    div.style.color = 'white'
+
+    return div
+
+}
+
+/* css2d渲染 */
+function setCss2DRenderer(DOM) {
+
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=cssElement) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [基础案例目录](/examples/three/basic/)
+
+> 基础案例 · Three.js

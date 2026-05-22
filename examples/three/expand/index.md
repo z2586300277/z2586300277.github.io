@@ -1,11 +1,14 @@
 ---
 title: "扩展功能 - Three.js"
-outline: false
+description: "3D Tiles、ECharts、热力图、多视口等扩展集成。"
+outline: deep
 ---
 
 # 扩展功能
 
-接第三方库或扩展能力
+3D Tiles、ECharts、热力图、多视口等扩展集成。
+
+每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。
 
 - [本地模型加载](/examples/three/expand/localModel)
 - [IndexedDB使用](/examples/three/expand/useIndexDB)

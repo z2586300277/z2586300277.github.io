@@ -1,88 +1,43 @@
 ---
 title: "粒子星空 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `animate`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,粒子星空,粒子"
+      content: "three.js,webgl,particle,粒子星空"
 outline: deep
 ---
-
 # 粒子星空
 
 *Starry Sky*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=starrySky)
 
-
 ![粒子星空](https://z2586300277.github.io/three-cesium-examples/threeExamples/particle/starrySky.jpg)
 
+## 你将学到什么
+
+- 自定义 ShaderMaterial / 修改内置 shader
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `animate`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 粒子 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 实现步骤
 
-## 独立函数
-
-- `animate()` — rAF：update controls + render
-
-## 着色器
-
-### 顶点
-
-- 顶点阶段：改 gl_Position 或传 varying
-
-```glsl
-varying vec3 vPosition;
-      varying vec2 vUv;
-      void main() { 
-          vUv = uv; 
-          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-          gl_Position = projectionMatrix * mvPosition;
-      }
-```
-
-### 片元
-
-```glsl
-uniform float iTime; 
-  uniform vec2 iResolution; 
-  varying vec2 vUv;  
-
-  #define PASS_COUNT 1
-  vec4 iMouse = vec4(.0, 0, 0.2, 0);
-float fBrightness = 2.5;
-
-// Number of angular segments
-float fSteps = 121.0;
-
-float fParticleSize = 0.015;
-float fParticleLength = 0.5 / 60.0;
-
-// Min and Max star position radius. Min must be present to prevent stars too near camera
-float fMinDist = 0.8;
-float fMaxDist = 5.0;
-
-float fRepeatMin = 1.0;
-float fRepeatMax = 2.0;
-
-// fog density
-float fDepthFade = 0.8;
-
-float Random(float x)
-{
-return fract(sin(x * 123.456) * 23.4567 + sin(x
-```
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 定义材质/shader 与 uniforms，rAF 中更新
+3. rAF 循环中 update 并 render
 
 ## 源码
 
@@ -154,62 +109,65 @@ const material = new THREE.ShaderMaterial({
       }
   `,
 	fragmentShader: `
+  uniform float iTime; 
+  uniform vec2 iResolution; 
+  varying vec2 vUv;  
+
+  #define PASS_COUNT 1
+  vec4 iMouse = vec4(.0, 0, 0.2, 0);
+float fBrightness = 2.5;
+
+// Number of angular segments
+float fSteps = 121.0;
+
+float fParticleSize = 0.015;
+float fParticleLength = 0.5 / 60.0;
+
+// Min and Max star position radius. Min must be present to prevent stars too near camera
+float fMinDist = 0.8;
+float fMaxDist = 5.0;
+
+float fRepeatMin = 1.0;
+float fRepeatMax = 2.0;
+
+// fog density
+float fDepthFade = 0.8;
+
+float Random(float x)
+{
+return fract(sin(x * 123.456) * 23.4567 + sin(x * 345.678) * 45.6789 + sin(x * 456.789) * 56.789);
+}
+
+vec3 GetParticleColour( const in vec3 vParticlePos, const in float fParticleSize, const in vec3 vRayDir )
+{		
+vec2 vNormDir = normalize(vRayDir.xy);
+float d1 = dot(vParticlePos.xy, vNormDir.xy) / length(vRayDir.xy);
+vec3 vClosest2d = vRayDir * d1;
+
+vec3 vClampedPos = vParticlePos;
+
+vClampedPos.z = clamp(vClosest2d.z, vParticlePos.z - fParticleLength, vParticlePos.z + fParticleLength);
+
+float d = dot(vClampedPos, vRayDir);
+
+vec3 vClosestPos = vRayDir * d;
+
+vec3 vDeltaPos = vClampedPos - vClosestPos;	
   
+float fClosestDist = length(vDeltaPos) / fParticleSize;
+
+float fShade = 	clamp(1.0 - fClosestDist, 0.0, 1.0);
+  
+fShade = fShade * exp2(-d * fDepthFade) * fBrightness;
+
+return vec3(fShade);
+}
+// ... 完整源码见在线案例编辑器
 ```
 
-```js
-/*	vec2 vScreenUV = fragCoord.xy / iResolution.xy;
+## 小结
 
-vec2 vScreenPos = vScreenUV * 2.0 - 1.0;
-vScreenPos.x *= iResolution.x / iResolution.y;
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=starrySky) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [粒子目录](/examples/three/particle/)
 
-vec3 vRayDir = normalize(vec3(vScreenPos, 1.0));
-
-vec3 vEuler = vec3(0.5 + sin(iTime * 0.2) * 0.125, 0.5 + sin(iTime * 0.1) * 0.125, iTime * 0.1 + sin(iTime * 0.3) * 0.5);
-	  
-if(iMouse.z > 0.0)
-{
-  vEuler.x = -((iMouse.y / iResolution.y) * 2.0 - 1.0);
-  vEuler.y = -((iMouse.x / iResolution.x) * 2.0 - 1.0);
-  vEuler.z = 0.0;
-}
-  
-vRayDir = RotateX(vRayDir, vEuler.x);
-vRayDir = RotateY(vRayDir, vEuler.y);
-vRayDir = RotateZ(vRayDir, vEuler.z);
-*/	
-float fShade = 0.0;
-  
-float a = 0.2;
-float b = 10.0;
-float c = 1.0;
-float fZPos = 5.0 + iTime * c + sin(iTime * a) * b;
-float fSpeed = c + a * b * cos(a * iTime);
-
-fParticleLength = 0.25 * fSpeed / 60.0;
-
-float fSeed = 0.0;
-
-vec3 vResult = mix(vec3(0.005, 0.0, 0.01), vec3(0.01, 0.005, 0.0), vRayDir.y * 0.5 + 0.5);
-
-for(int i=0; i<PASS_COUNT; i++)
-{
-  vResult += Starfield(vRayDir, fZPos, fSeed);
-  fSeed += 1.234;
-}
-
-fragColor = vec4(sqrt(vResult),1.0);
-}
-
-  void main(void) { 
-	   
-	  vec2 vScreenUV = (vUv - 0.5) * 10.0;
-
-vec2 vScreenPos = vScreenUV * 2.0 - 1.0;
-vScreenPos.x *= iResolution.x / iResolution.y;
-
-vec3 vRayDir = normalize(vec3(vScreenPos, 1.0));
-
-vec3 vEuler = vec3(0.5 + sin(iTime * 0.2) * 0.125, 0.5 + sin(iTime * 0.1) * 0.125, iTime * 
-```
-
+> 粒子 · Three.js

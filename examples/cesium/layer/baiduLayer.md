@@ -4,19 +4,22 @@ description: "Cesium 在线底图图层。入口在 `BaiduImageryProvider`。"
 head:
   - - meta
     - name: keywords
-      content: "cesium.js,百度图层"
+      content: "cesium.js,webgl,layer,百度图层"
 outline: deep
 ---
-
 # 百度图层
 
 *Baidu Layer*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=layer&id=baiduLayer)
 
-
 ![百度图层](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/layer/baiduLayer.jpg)
 
+## 你将学到什么
+
+- 天空盒与环境贴图
+- Cesium Viewer 初始化
+- Cesium 影像图层
 
 ## 效果说明
 
@@ -24,20 +27,19 @@ Cesium 在线底图图层。入口在 `BaiduImageryProvider`。
 
 > 在线地图 · Cesium.js
 
-## 实现思路
+## 核心概念
 
-- 底图换 `ImageryProvider`：XYZ 模板、WMTS、ArcGIS 等，挂到 `viewer.imageryLayers`。
+- **CubeTexture** 六面贴图作 `scene.background`；`scene.environment` 供 PBR 材质反射。
 
-## 代码结构
+- **Viewer** 封装地球、相机、图层；可关闭 animation/timeline 等 UI 精简界面。
 
-- 百度 影像服务
+- **ImageryLayer** 叠加 XYZ/WMTS/ArcGIS 等底图，`imageryLayers.add/remove` 管理。
 
-## 类与方法
+## 实现步骤
 
-### BaiduImageryProvider
-
-- `constructor()` — 参数：options
-- `requestImage()`
+1. 初始化 `Cesium.Viewer` 与底图图层
+2. 添加 Entity / Primitive / DataSource 等业务对象
+3. 按需 `camera.flyTo` 定位视角
 
 ## 源码
 
@@ -48,33 +50,33 @@ const box = document.getElementById('box')
 
 const viewer = new Cesium.Viewer(box, {
 
-    animation: false,
+    animation: false,//是否创建动画小器件，左下角仪表    
 
-    baseLayerPicker: false,
+    baseLayerPicker: false,//是否显示图层选择器，右上角图层选择按钮
 
     baseLayer: false,
 
-    fullscreenButton: false,
+    fullscreenButton: false,//是否显示全屏按钮，右下角全屏选择按钮
 
-    geocoder: false,
+    geocoder: false,//是否显示geocoder小器件，右上角查询按钮    
 
-    homeButton: false,
+    homeButton: false,//是否显示Home按钮，右上角home按钮 
 
     sceneMode: Cesium.SceneMode.SCENE3D,//初始场景模式
 
-    sceneModePicker: false,
+    sceneModePicker: false,//是否显示3D/2D选择器，右上角按钮 
 
-    navigationHelpButton: false,
+    navigationHelpButton: false,//是否显示右上角的帮助按钮  
 
-    selectionIndicator: false,
+    selectionIndicator: false,//是否显示选取指示器组件   
 
-    timeline: false,
+    timeline: false,//是否显示时间轴    
 
-    infoBox: false,
+    infoBox: false,//是否显示信息框   
 
     scene3DOnly: true,//如果设置为true，则所有几何图形以3D模式绘制以节约GPU资源  
 
-    orderIndependentTranslucency: false,
+    orderIndependentTranslucency: false, //是否启用无序透明
 
     contextOptions: { webgl: { alpha: true } },
 
@@ -91,11 +93,8 @@ viewer.scene.skyBox.show = false
 viewer.scene.backgroundColor = new Cesium.Color(0.0, 0.0, 0.0, 0.0)
 
 viewer._cesiumWidget._creditContainer.style.display = "none"
-```
 
-### 百度 影像服务
-
-```js
+/* 百度 影像服务 */
 class BaiduImageryProvider {
 
     constructor(options) {
@@ -159,6 +158,18 @@ class BaiduImageryProvider {
 
         if (!this.ready) throw new Cesium.DeveloperError('tileWidth must not be called before the imagery provider is ready.')
 
-        return this._tile
+        return this._tileWidth
+    }
+
+    get tileHeight() {
+
+        if (!this.ready) throw new Cesium.DeveloperError('tileHeight must not be called before the imagery provider is ready.')
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=layer&id=baiduLayer) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [在线地图目录](/examples/cesium/layer/)
+
+> 在线地图 · Cesium.js

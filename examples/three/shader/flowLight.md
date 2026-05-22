@@ -1,42 +1,48 @@
 ---
 title: "流光 - Three.js 案例讲解"
-description: "原场景 + 后期 Pass 叠加。主流程在 `animate`。"
+description: "原场景 + 后期 Pass 叠加。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,流光"
+      content: "three.js,webgl,shader,流光"
 outline: deep
 ---
-
 # 流光
 
 *Flow Light*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=flowLight)
 
-
 ![流光](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/flowLight.jpg)
 
+## 你将学到什么
+
+- EffectComposer 后期处理管线
+- 相机交互控制器
+- 天空盒与环境贴图
+- GSAP / anime.js 属性动画
+- 轮廓高亮 OutlinePass
 
 ## 效果说明
 
-原场景 + 后期 Pass 叠加。主流程在 `animate`。
+原场景 + 后期 Pass 叠加。
 
 > 着色器 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 后期：`EffectComposer` 串 Pass，先 `RenderPass` 出场景，再 bloom/SSAO 等屏幕 Pass。
+- **EffectComposer** 多 Pass 链式渲染：RenderPass → 特效 Pass → 输出屏幕。`composer.render()` 替代 `renderer.render()`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+- **CubeTexture** 六面贴图作 `scene.background`；`scene.environment` 供 PBR 材质反射。
 
-- 补间动画交给 GSAP/anime/Tween，别在 rAF 里手搓 easing。
+- 时间线库驱动 position/rotation/uniform，与 rAF 渲染循环配合。
 
-## 独立函数
+## 实现步骤
 
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. EffectComposer 组装 Pass 链并 render
 
 ## 源码
 
@@ -81,6 +87,38 @@ const textureLoader = new TextureLoader()
 const lineTexture = textureLoader.load(FILE_HOST + 'images/channels/flowLight.png')
 lineTexture.offset.x = -0.6
 
-const g
+const geometry = new TorusKnotGeometry( 10, 0.2, 800, 16 )
+
+const material = new MeshBasicMaterial({ color: 0xffffff, map: lineTexture, side: DoubleSide })
+const torus = new Mesh(geometry, material)
+scene.add(torus)
+
+gsap.to(lineTexture.offset, {
+	x: 0.6,
+	duration: 5,
+	repeat: -1
+})
+
+const renderPass = new RenderPass(scene, camera)
+const composer = new EffectComposer(renderer)
+const bloomPass = new UnrealBloomPass(new Vector2(size.width, size.height), 3, 0.8, 0.85)
+const outputPass = new OutputPass()
+composer.addPass(renderPass)
+composer.addPass(bloomPass)
+composer.addPass(outputPass)
+
+const animate = () => {
+	requestAnimationFrame(animate)
+	controls.update()
+	composer.render()
+}
+
+animate()
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=flowLight) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [着色器目录](/examples/three/shader/)
+
+> 着色器 · Three.js

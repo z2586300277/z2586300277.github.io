@@ -1,11 +1,16 @@
 ---
 title: "应用场景 - Three.js"
-outline: false
+description: "智慧城市、管道、测量、导航等完整业务向 Demo。"
+outline: deep
 ---
 
 # 应用场景
 
-业务向场景组合
+智慧城市、管道、测量、导航等完整业务向 Demo。
+
+> 应用案例代码量较大，建议配合在线编辑器分模块阅读。
+
+每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。
 
 - [优雅永不过时](/examples/three/application/z2586300277)
 - [魔法阵](/examples/three/application/magicCircle)

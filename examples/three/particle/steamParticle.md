@@ -1,84 +1,53 @@
 ---
 title: "蒸汽粒子 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `buildGeometry`、`animate`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,蒸汽粒子,粒子"
+      content: "three.js,webgl,particle,蒸汽粒子"
 outline: deep
 ---
-
 # 蒸汽粒子
 
 *Steam Particle*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=steamParticle)
 
-
 ![蒸汽粒子](https://z2586300277.github.io/three-cesium-examples/threeExamples/particle/steamParticle.jpg)
 
+## 你将学到什么
+
+- 自定义 ShaderMaterial / 修改内置 shader
+- 相机交互控制器
+- 天空盒与环境贴图
+- 点云 / 粒子 / 实例化渲染
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `buildGeometry`、`animate`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 粒子 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
 
-- 手写几何：`BufferGeometry` + `Float32Array` 填 position/uv/normal，`setIndex` 拼三角面。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **CubeTexture** 六面贴图作 `scene.background`；`scene.environment` 供 PBR 材质反射。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+- **Points** 大量顶点用点精灵渲染；**InstancedMesh** 相同几何体批量绘制，降低 draw call。
 
-## 独立函数
+## 实现步骤
 
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 定义材质/shader 与 uniforms，rAF 中更新
+3. rAF 循环中 update 并 render
 
-## 着色器
+## 代码要点
 
-### 顶点
-
-- 顶点阶段：改 gl_Position 或传 varying
-
-```glsl
-attribute float size;
-        attribute float phase;
-        attribute vec3 velocity;
-        uniform float time;
-        uniform float height;
-        uniform float turbulence;
-        varying float vAlpha;
-        varying float vAge;
-        void main() {
-            float age = mod(time * 0.3 + phase, 1.0);
-            vAge = age;
-            vec3 pos = position + velocity * age * height;
-            pos.x += sin(age * 8.0 + phase * 20.0) * turbulence * (0.5 + age);
-            pos.z += cos(age * 6.0 + phase * 15.0) * turbulence * (0.3 + age * 0.5);
-            pos.x *= (1.0 +
-```
-
-### 片元
-
-- 片元输出 gl_FragColor
-
-```glsl
-uniform vec3 baseColor;
-        uniform float density;
-        varying float vAlpha;
-        varying float vAge;
-        void main() {
-            float dist = length(gl_PointCoord - 0.5) * 2.0;
-            if (dist > 1.0) discard;
-            float edge = 1.0 - smoothstep(0.3, 1.0, dist);
-            vec3 color = mix(baseColor, vec3(0.85, 0.88, 0.92), vAge * 0.3);
-            gl_FragColor = vec4(color, vAlpha * edge * density);
-        }
-```
+- **`buildGeometry()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -136,6 +105,79 @@ const material = new THREE.ShaderMaterial({
         attribute float size;
         attribute float phase;
         attribute vec3 velocity;
-        uniform float tim
+        uniform float time;
+        uniform float height;
+        uniform float turbulence;
+        varying float vAlpha;
+        varying float vAge;
+        void main() {
+            float age = mod(time * 0.3 + phase, 1.0);
+            vAge = age;
+            vec3 pos = position + velocity * age * height;
+            pos.x += sin(age * 8.0 + phase * 20.0) * turbulence * (0.5 + age);
+            pos.z += cos(age * 6.0 + phase * 15.0) * turbulence * (0.3 + age * 0.5);
+            pos.x *= (1.0 + age * 1.5);
+            pos.z *= (1.0 + age * 0.8);
+            vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+            gl_Position = projectionMatrix * mvPosition;
+            gl_PointSize = size * (1.0 + age * 3.0) * (250.0 / -mvPosition.z);
+            float fadeIn = smoothstep(0.0, 0.1, age);
+            float fadeOut = 1.0 - smoothstep(0.6, 1.0, age);
+            vAlpha = fadeIn * fadeOut;
+        }
+    `,
+    fragmentShader: `
+        uniform vec3 baseColor;
+        uniform float density;
+        varying float vAlpha;
+        varying float vAge;
+        void main() {
+            float dist = length(gl_PointCoord - 0.5) * 2.0;
+            if (dist > 1.0) discard;
+            float edge = 1.0 - smoothstep(0.3, 1.0, dist);
+            vec3 color = mix(baseColor, vec3(0.85, 0.88, 0.92), vAge * 0.3);
+            gl_FragColor = vec4(color, vAlpha * edge * density);
+        }
+    `,
+    blending: THREE.NormalBlending,
+    depthWrite: false,
+    transparent: true,
+})
+
+function buildGeometry() {
+    const geo = new THREE.BufferGeometry()
+    const positions = [], sizes = [], phases = [], velocities = []
+    for (let i = 0; i < config.particleCount; i++) {
+        positions.push(
+            (Math.random() - 0.5) * config.width,
+            Math.random() * 0.3,
+            (Math.random() - 0.5) * config.depth
+        )
+        sizes.push(config.particleSize * (0.6 + Math.random() * 0.8))
+        phases.push(Math.random())
+        velocities.push(
+            (Math.random() - 0.5) * config.spread,
+            config.riseSpeed * (0.8 + Math.random() * 0.4),
+            (Math.random() - 0.5) * config.spread * 0.5
+        )
+    }
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
+    geo.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1))
+    geo.setAttribute('phase', new THREE.Float32BufferAttribute(phases, 1))
+    geo.setAttribute('velocity', new THREE.Float32BufferAttribute(velocities, 3))
+    return geo
+}
+
+const steam = new THREE.Points(buildGeometry(), material)
+scene.add(steam)
+
+// GUI
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=steamParticle) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [粒子目录](/examples/three/particle/)
+
+> 粒子 · Three.js

@@ -1,40 +1,43 @@
 ---
 title: "Opt解压(su7 模型) - Three.js 案例讲解"
-description: "Three.js Scene/Camera/Renderer 基础搭建。主流程在 `animate`。"
+description: "本案例展示 **Opt解压(su7 模型)** 的实现。涉及：glTF/FBX/OBJ 外部模型加载、相机交互控制器、requestAnimationFrame 渲染循环。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,Opt解压(su7 模型),基础案例"
+      content: "three.js,webgl,basic,Opt解压(su7 模型)"
 outline: deep
 ---
-
 # Opt解压(su7 模型)
 
 *GLTF Opt*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=gltfOptLoader)
 
-
 ![Opt解压(su7 模型)](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/gltfOptLoader.jpg)
 
+## 你将学到什么
+
+- glTF/FBX/OBJ 外部模型加载
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-Three.js Scene/Camera/Renderer 基础搭建。主流程在 `animate`。
+本案例展示 **Opt解压(su7 模型)** 的实现。涉及：glTF/FBX/OBJ 外部模型加载、相机交互控制器、requestAnimationFrame 渲染循环。
 
 > 基础案例 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 外部模型 glTF/FBX 用对应 Loader，`scene.add(gltf.scene)` 后注意 scale/坐标。
+- **Loader** 异步加载模型；glTF 返回 `gltf.scene`，加载后注意 `scale` 与坐标系。Draco 需配置 `DRACOLoader`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 实现步骤
 
-## 独立函数
-
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. Loader 异步加载模型/纹理资源
+3. rAF 循环中 update 并 render
 
 ## 源码
 
@@ -93,5 +96,38 @@ const texture = new RGBELoader().load(FILE_HOST + '/files/hdr/1k.hdr', (t) => {
     const map = pmremGenerator.fromEquirectangular(t).texture
 
     pmremGenerator.dispose()
+
+    return map
+
+})
+
+texture.mapping = THREE.EquirectangularReflectionMapping
+
+// GLTF
+const loader = new GLTFLoader()
+
+loader.setMeshoptDecoder(MeshoptDecoder)
+
+loader.load(FILE_HOST + 'models/su7/sm_car.gltf', gltf => {
+
+    scene.add(gltf.scene)
+
+    gltf.scene.traverse(obj => {
+
+        if (obj.isMesh) {
+
+            obj.material.envMap = texture
+
+        }
+
+    })
+
+})
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=gltfOptLoader) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [基础案例目录](/examples/three/basic/)
+
+> 基础案例 · Three.js

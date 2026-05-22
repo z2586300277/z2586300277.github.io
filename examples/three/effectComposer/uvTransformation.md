@@ -1,34 +1,49 @@
 ---
 title: "UV图像变换 - Three.js 案例讲解"
-description: "原场景 + 后期 Pass 叠加。主流程在 `resize`。"
+description: "原场景 + 后期 Pass 叠加。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,UV图像变换"
+      content: "three.js,webgl,effectComposer,UV图像变换"
 outline: deep
 ---
-
 # UV图像变换
 
 *UV Transform*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=effectComposer&id=uvTransformation)
 
-
 ![UV图像变换](https://z2586300277.github.io/3d-file-server/images/four/uvTransformation.png)
 
+## 你将学到什么
+
+- EffectComposer 后期处理管线
+- 相机交互控制器
+- 轮廓高亮 OutlinePass
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-原场景 + 后期 Pass 叠加。主流程在 `resize`。
+原场景 + 后期 Pass 叠加。
 
 > 后期处理 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 后期：`EffectComposer` 串 Pass，先 `RenderPass` 出场景，再 bloom/SSAO 等屏幕 Pass。
+- **EffectComposer** 多 Pass 链式渲染：RenderPass → 特效 Pass → 输出屏幕。`composer.render()` 替代 `renderer.render()`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
+
+- 选中物体外轮廓发光，常用于编辑器选中态。
+
+## 实现步骤
+
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. EffectComposer 组装 Pass 链并 render
+
+## 代码要点
+
+- **`resize()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -73,6 +88,61 @@ const mat = new THREE.MeshLambertMaterial({
   alphaTest: 0.15,
   map: image_tex,
 });
-const mesh = new THREE.Mesh(g
+const mesh = new THREE.Mesh(geom, mat);
+scene.add(mesh);
+
+const wall = new THREE.Mesh(
+  geom,
+  new THREE.MeshBasicMaterial({
+    alphaMap: alpha_tex,
+    alphaTest: 0.15,
+    map: image_tex,
+  })
+);
+wall.scale.setScalar(1.2);
+wall.position.z = -0.1;
+scene.add(wall);
+
+// ----
+// render
+// ----
+
+const composer = new EffectComposer(renderer);
+const renderPass = new RenderPass(scene, camera);
+const effect = new GodRaysEffect(camera, wall, {
+  density: 1,
+  decay: 0.96,
+  weight: 1,
+});
+const effectPass = new EffectPass(camera, effect);
+composer.addPass(renderPass);
+composer.addPass(effectPass);
+
+renderer.setAnimationLoop((t) => {
+  composer.render();
+  controls.update();
+  alpha_tex.offset.y = t * -0.001;
+});
+
+// ----
+// view
+// ----
+
+function resize(w, h, dpr = devicePixelRatio) {
+  renderer.setPixelRatio(dpr);
+  // renderer.setSize(w, h, false)
+  composer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+addEventListener("resize", () => resize(innerWidth, innerHeight));
+dispatchEvent(new Event("resize"));
+document.body.prepend(renderer.domElement);
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=effectComposer&id=uvTransformation) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [后期处理目录](/examples/three/effectComposer/)
+
+> 后期处理 · Three.js

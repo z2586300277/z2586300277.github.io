@@ -1,40 +1,44 @@
 ---
 title: "流动围栏 - Three.js 案例讲解"
-description: "Three.js 业务向场景组合。主流程在 `createFenceGeometry`、`animate`。"
+description: "Three.js 业务向场景组合。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,流动围栏,应用场景"
+      content: "three.js,webgl,application,流动围栏"
 outline: deep
 ---
-
 # 流动围栏
 
 *Sport Fence*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=sportFence)
 
-
 ![流动围栏](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/sportFence.jpg)
 
+## 你将学到什么
+
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
+- GUI 面板调试参数
 
 ## 效果说明
 
-Three.js 业务向场景组合。主流程在 `createFenceGeometry`、`animate`。
+Three.js 业务向场景组合。
 
 > 应用场景 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 手写几何：`BufferGeometry` + `Float32Array` 填 position/uv/normal，`setIndex` 拼三角面。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+## 实现步骤
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. rAF 循环中 update 并 render
 
-## 独立函数
+## 代码要点
 
-- `animate()` — rAF：update controls + render
+- **`createFenceGeometry()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -83,6 +87,88 @@ const fence = new THREE.Mesh(fenceGeometry, material);
 scene.add(fence);
 
 const texture = new THREE.TextureLoader().load(FILE_HOST + 'images/channels/wall_line.png')
-texture.wrapS = TH
+texture.wrapS = THREE.RepeatWrapping;
+texture.wrapT = THREE.RepeatWrapping;
+texture.repeat.x = 2
+
+const fence2 = new THREE.Mesh(fenceGeometry.clone(), new THREE.MeshBasicMaterial({
+    color,
+    map: texture,
+    transparent: true,
+    side: THREE.DoubleSide,
+}));
+scene.add(fence2);
+
+function createFenceGeometry(points, height) {
+    const positions = [];
+    const uvs = [];
+    const indices = [];
+
+    let totalLength = 0;
+    for (let i = 0; i < points.length; i++) {
+        const current = points[i];
+        const next = points[(i + 1) % points.length];
+        totalLength += current.distanceTo(next);
+    }
+
+    let currentLength = 0;
+
+    for (let i = 0; i < points.length; i++) {
+        const current = points[i];
+        const next = points[(i + 1) % points.length];
+
+        const segmentLength = current.distanceTo(next);
+
+        positions.push(
+            current.x, current.y, current.z,
+            next.x, next.y, next.z
+        );
+
+        positions.push(
+            next.x, current.y + height, next.z,
+            current.x, current.y + height, current.z
+        );
+
+        const segmentUStart = currentLength / totalLength;
+        const segmentUEnd = (currentLength + segmentLength) / totalLength;
+        uvs.push(
+            segmentUStart * 2, 0,
+            segmentUEnd * 2, 0,
+            segmentUEnd * 2, 1,
+            segmentUStart * 2, 1
+        );
+
+        const vertexOffset = i * 4;
+        indices.push(
+            vertexOffset, vertexOffset + 1, vertexOffset + 2,
+            vertexOffset, vertexOffset + 2, vertexOffset + 3
+        );
+        currentLength += segmentLength;
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+    geometry.setIndex(indices);
+    geometry.computeVertexNormals();
+    return geometry;
+}
+
+animate()
+
+function animate() {
+    texture.offset.y -= 0.005;
+    requestAnimationFrame(animate)
+    renderer.render(scene, camera)
+}
+
+window.onresize = () => {
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=sportFence) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [应用场景目录](/examples/three/application/)
+
+> 应用场景 · Three.js

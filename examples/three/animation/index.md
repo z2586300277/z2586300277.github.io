@@ -1,11 +1,14 @@
 ---
 title: "动画效果 - Three.js"
-outline: false
+description: "GSAP、anime.js、Theatre.js、路径动画与漫游控制。"
+outline: deep
 ---
 
 # 动画效果
 
-关键帧或补间动画
+GSAP、anime.js、Theatre.js、路径动画与漫游控制。
+
+每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。
 
 - [animejs使用](/examples/three/animation/animejsBasic)
 - [gsap使用](/examples/three/animation/gsapBasic)

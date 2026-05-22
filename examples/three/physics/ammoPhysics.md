@@ -1,38 +1,42 @@
 ---
 title: "物理ammo使用 - Three.js 案例讲解"
-description: "Three.js 物理引擎联动。主流程在 `animate`。"
+description: "Three.js 物理引擎联动。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,物理ammo使用,物理应用"
+      content: "three.js,webgl,physics,物理ammo使用"
 outline: deep
 ---
-
 # 物理ammo使用
 
 *Ammo Physics*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=physics&id=ammoPhysics)
 
-
 ![物理ammo使用](https://z2586300277.github.io/three-cesium-examples/threeExamples/physics/ammoPhysics.jpg)
 
+## 你将学到什么
+
+- 相机交互控制器
+- 物理引擎集成
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-Three.js 物理引擎联动。主流程在 `animate`。
+Three.js 物理引擎联动。
 
 > 物理应用 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+- 物理世界步进与 Three.js mesh 位置同步，注意单位比例。
 
-## 独立函数
+## 实现步骤
 
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. rAF 循环中 update 并 render
 
 ## 源码
 
@@ -90,6 +94,18 @@ physics.addScene(scene) // 启动物理引擎
 
 animate()
 
-functi
+function animate() {
+
+    renderer.render(scene, camera)
+
+    requestAnimationFrame(animate)
+    
+}
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=physics&id=ammoPhysics) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [物理应用目录](/examples/three/physics/)
+
+> 物理应用 · Three.js

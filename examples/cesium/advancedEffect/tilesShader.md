@@ -1,79 +1,48 @@
 ---
 title: "智慧城市着色器 - Cesium.js 案例讲解"
-description: "Cesium Shader、3D Tiles 等进阶。主流程在 `task`。"
+description: "Cesium Shader、3D Tiles 等进阶。"
 head:
   - - meta
     - name: keywords
-      content: "cesium.js,智慧城市着色器"
+      content: "cesium.js,webgl,advancedEffect,智慧城市着色器"
 outline: deep
 ---
-
 # 智慧城市着色器
 
 *SmartCity*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=advancedEffect&id=tilesShader)
 
-
 ![智慧城市着色器](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/tilesShader.jpg)
 
+## 你将学到什么
+
+- 案例交互与参数可在在线编辑器中查看
 
 ## 效果说明
 
-Cesium Shader、3D Tiles 等进阶。主流程在 `task`。
+Cesium Shader、3D Tiles 等进阶。
 
 > 高级特效 · Cesium.js
 
-## 实现思路
+## 核心概念
 
-- 3D Tiles 倾斜摄影/白膜：`Cesium3DTileset.fromUrl`，可配 `heightReference`、style。
+- **Viewer** 管理地球与渲染；业务对象可用 **Entity**（高层）或 **Primitive**（高性能）。
+- 坐标转换：经纬高 ↔ `Cartesian3` 是 Cesium 开发基础。
 
-- Model / 3D Tiles 上挂 `CustomShader`，直接写 GLSL 改 `czm_modelMaterial`。
+## 实现步骤
+
+1. 初始化 `Cesium.Viewer` 与底图图层
+2. 添加 Entity / Primitive / DataSource 等业务对象
+3. 按需 `camera.flyTo` 定位视角
 
 ## 源码
 
-```js
-import * as Cesium from 'cesium'
+完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=advancedEffect&id=tilesShader)。
 
-const box = document.getElementById('box')
+## 小结
 
-const viewer = new Cesium.Viewer(box, {
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=advancedEffect&id=tilesShader) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [高级特效目录](/examples/cesium/advancedEffect/)
 
-    animation: false,
-
-    baseLayerPicker: false,
-
-    baseLayer: Cesium.ImageryLayer.fromProviderAsync(Cesium.ArcGisMapServerImageryProvider.fromUrl('https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer')),
-
-    fullscreenButton: false,
-
-    timeline: false,
-
-    infoBox: false,
-
-})
-
-const tileset = await Cesium.Cesium3DTileset.fromUrl(`https://g2657.github.io/gz-city/tileset.json`)
-
-viewer.scene.primitives.add(tileset)
-
-viewer.camera.viewBoundingSphere(tileset.boundingSphere, new Cesium.HeadingPitchRange(0, -0.1, tileset.boundingSphere.radius * 0.5))
-
-class SweepShader extends Cesium.CustomShader {
-
-    constructor(opt = {}) {
-        const { sweepColor = new Cesium.Color.fromCssColorString('green'),
-            mixColor1 = new Cesium.Color.fromCssColorString('red'),
-            mixColor2 = new Cesium.Color.fromCssColorString('white')
-        } = opt;
-
-        super({
-            vertexShaderText: `void vertexMain(VertexInput vsInput, inout czm_modelVertexOutput vsOutput) {
-                // 注意这里的uv，详情看本系列第一篇文章
-                v_uv = vec2(vsInput.attributes.positionMC.z / 80., vsInput.attributes.positionMC.z / 250.);
-              }`,
-            fragmentShaderText: `float random(vec2 st) {
-
-      
-```
-
+> 高级特效 · Cesium.js

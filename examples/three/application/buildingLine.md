@@ -1,40 +1,46 @@
 ---
 title: "建筑线条 - Three.js 案例讲解"
-description: "Three.js 业务向场景组合。主流程在 `animate`。"
+description: "Three.js 业务向场景组合。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,建筑线条,应用场景"
+      content: "three.js,webgl,application,建筑线条"
 outline: deep
 ---
-
 # 建筑线条
 
 *Building Line*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=buildingLine)
 
-
 ![建筑线条](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/buildingLine.jpg)
 
+## 你将学到什么
+
+- glTF/FBX/OBJ 外部模型加载
+- 相机交互控制器
+- 天空盒与环境贴图
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-Three.js 业务向场景组合。主流程在 `animate`。
+Three.js 业务向场景组合。
 
 > 应用场景 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 外部模型 glTF/FBX 用对应 Loader，`scene.add(gltf.scene)` 后注意 scale/坐标。
+- **Loader** 异步加载模型；glTF 返回 `gltf.scene`，加载后注意 `scale` 与坐标系。Draco 需配置 `DRACOLoader`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+- **CubeTexture** 六面贴图作 `scene.background`；`scene.environment` 供 PBR 材质反射。
 
-## 独立函数
+## 实现步骤
 
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. Loader 异步加载模型/纹理资源
+3. rAF 循环中 update 并 render
 
 ## 源码
 
@@ -88,6 +94,44 @@ window.onresize = () => {
 
 const urls = [0, 1, 2, 3, 4, 5].map(k => (FILE_HOST + 'files/sky/skyBox0/' + (k + 1) + '.png'));
 
-const textureCube = new THREE.CubeTex
+const textureCube = new THREE.CubeTextureLoader().load(urls);
+
+new GLTFLoader().load(FILE_HOST + 'models/whitebuild.glb', (gltf) => {
+
+    const model = gltf.scene
+
+    model.traverse((child) => {
+
+        if (child.isMesh) {
+
+            child.material.envMap = textureCube
+
+            const { geometry } = child
+            const edges = new THREE.EdgesGeometry(geometry)
+            let lineGeometry = new LineSegmentsGeometry().fromEdgesGeometry(edges)
+            const material = new LineMaterial({
+                color: 0xfcde8c,
+                linewidth: 2.5,
+                envMap: textureCube,
+                resolution: new THREE.Vector2(box.clientWidth, box.clientHeight)
+            })
+
+            const lines = new LineSegments2(lineGeometry, material)
+            lines.computeLineDistances()
+            lines.applyMatrix4(child.matrixWorld)
+
+            scene.add(lines)
+        }
+
+    })
+
+    scene.add(model)
+})
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=buildingLine) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [应用场景目录](/examples/three/application/)
+
+> 应用场景 · Three.js

@@ -1,80 +1,43 @@
 ---
 title: "中国旗帜 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `animate`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,中国旗帜,着色器"
+      content: "three.js,webgl,shader,中国旗帜"
 outline: deep
 ---
-
 # 中国旗帜
 
 *China Flag*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=chinaFlag)
 
-
 ![中国旗帜](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/chinaFlag.jpg)
 
+## 你将学到什么
+
+- 自定义 ShaderMaterial / 修改内置 shader
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `animate`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 着色器 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 实现步骤
 
-## 独立函数
-
-- `animate()` — rAF：update controls + render
-
-## 着色器
-
-### 顶点
-
-- 顶点阶段：改 gl_Position 或传 varying
-
-```glsl
-uniform mat4 projectionMatrix;
-        uniform mat4 modelMatrix;
-        uniform mat4 viewMatrix;
-        uniform vec2 uFrequency;
-        uniform float uTime;
-        uniform float uStrength;
-        attribute vec3 position;
-        attribute vec2 uv;
-        varying float vDark;
-        varying vec2 vUv;
-        void main() {
-            vec4 modelPosition = modelMatrix * vec4(position, 1.0);
-            float xFactor = clamp((modelPosition.x + 1.25) / 2.0, 0.0, 2.0); 
-            float vWave = sin(modelPosition.x * uFrequency.x - uTime ) * xFactor * uStrength ;
-            vWa
-```
-
-### 片元
-
-- 片元输出 gl_FragColor
-
-```glsl
-precision mediump float;
-        varying float vDark;
-        uniform sampler2D uTexture;
-        varying vec2 vUv;
-        void main(){
-            vec4 textColor = texture2D(uTexture, vUv);
-            textColor.rgb *= vDark + 0.85;
-            gl_FragColor = textColor;
-        }
-```
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 定义材质/shader 与 uniforms，rAF 中更新
+3. rAF 循环中 update 并 render
 
 ## 源码
 
@@ -125,6 +88,65 @@ const flagMaterial = new THREE.RawShaderMaterial({
         void main() {
             vec4 modelPosition = modelMatrix * vec4(position, 1.0);
             float xFactor = clamp((modelPosition.x + 1.25) / 2.0, 0.0, 2.0); 
-            float vWave = 
+            float vWave = sin(modelPosition.x * uFrequency.x - uTime ) * xFactor * uStrength ;
+            vWave += sin(modelPosition.y * uFrequency.y - uTime) * xFactor * uStrength * 0.5;
+            modelPosition.y += sin(modelPosition.x * 2.0 + uTime * 0.5) * 0.05 * xFactor;
+            modelPosition.z += vWave;
+            vec4 viewPosition = viewMatrix * modelPosition;
+            vec4 projectedPosition = projectionMatrix * viewPosition;
+            gl_Position = projectedPosition;
+            vUv = uv;
+            vDark = vWave;
+        }`,
+
+    fragmentShader: `precision mediump float;
+        varying float vDark;
+        uniform sampler2D uTexture;
+        varying vec2 vUv;
+        void main(){
+            vec4 textColor = texture2D(uTexture, vUv);
+            textColor.rgb *= vDark + 0.85;
+            gl_FragColor = textColor;
+        }`,
+
+    side: THREE.DoubleSide,
+
+    uniforms: {
+        
+        uFrequency: { value: new THREE.Vector2(3, 3) },
+        
+        uTime: { value: 0 },
+        
+        uTexture: { value: flagTexture },
+        
+        uStrength: { value: 0.2 }
+        
+    }
+
+})
+
+const flagGeometry = new THREE.BoxGeometry(3, 2, 0.025, 64, 64)
+
+const flagMesh = new THREE.Mesh(flagGeometry, flagMaterial)
+
+scene.add(flagMesh)
+
+animate()
+
+function animate() {
+
+    flagMaterial.uniforms.uTime.value += 0.06
+
+    renderer.render(scene, camera)
+
+    requestAnimationFrame(animate)
+
+}
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=chinaFlag) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [着色器目录](/examples/three/shader/)
+
+> 着色器 · Three.js

@@ -1,80 +1,47 @@
 ---
 title: "随机城市白膜 - Three.js 案例讲解"
-description: "Three.js 业务向场景组合。主流程在 `animationLoop`、`generateCityModel`。"
+description: "Three.js 业务向场景组合。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,随机城市白膜,应用场景"
+      content: "three.js,webgl,application,随机城市白膜"
 outline: deep
 ---
-
 # 随机城市白膜
 
 *White Model*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=white model)
 
-
 ![随机城市白膜](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/white_model.jpg)
 
+## 你将学到什么
+
+- 案例交互与参数可在在线编辑器中查看
 
 ## 效果说明
 
-Three.js 业务向场景组合。主流程在 `animationLoop`、`generateCityModel`。
+Three.js 业务向场景组合。
 
 > 应用场景 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **Scene / Camera / Renderer** 是 Three.js 渲染三件套；Mesh = Geometry + Material。
+- 开发时先确认坐标系、材质是否受光、以及是否需要 rAF 循环。
+
+## 实现步骤
+
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 渲染场景并处理 resize
 
 ## 源码
 
-```js
-import * as THREE from 'three';
-import { OrbitControls } from "three/examples/jsm/Addons.js";
-const DOM = document.getElementById('box')
+完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=white model)。
 
-var scene = new THREE.Scene();
+## 小结
 
-var camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight);
-camera.position.set(-1, 0.5, 1).setLength(75);
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=white model) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [应用场景目录](/examples/three/application/)
 
-camera.lookAt(scene.position);
-
-var renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(innerWidth, innerHeight);
-renderer.setAnimationLoop(animationLoop);
-function animationLoop() {
-    renderer.render(scene, camera);
-}
-DOM.appendChild(renderer.domElement);
-
-window.addEventListener("resize", () => {
-    camera.aspect = innerWidth / innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(innerWidth, innerHeight);
-});
-
-var controls = new OrbitControls(camera, renderer.domElement);
-controls.target.set(0, 12, 0);
-
-controls.update();
-controls.enableDamping = true;
-controls.autoRotate = true;
-
-var light = new THREE.DirectionalLight('white', 3);
-light.position.set(1, 1, 1);
-scene.add(light);
-import { Mesh, MathUtils, PlaneGeometry, Color,BoxGeometry,MeshBasicMaterial } from 'three';
-
-/**
- * 生成仿真城市白膜
- */
-const buildingGeometry = new BoxGeometry(1, 1, 1);
-buildingGeometry.translate(0, 0.5, 0); // 调整几何中心点
-const buildingMaterial = new MeshBasicMaterial({ color: 0xcccccc });
-function generateCityModel() {
-    const citySize =
-```
-
+> 应用场景 · Three.js

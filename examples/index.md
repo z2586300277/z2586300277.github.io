@@ -7,9 +7,21 @@ outline: [2, 3]
 
 # 案例讲解
 
-380 个案例，按源码结构说明实现方式。在线运行与源码均在 [three-cesium-examples](https://z2586300277.github.io/three-cesium-examples/)。
+380 个 WebGL / Three.js / Cesium.js 案例，每篇按 **效果说明 → 核心概念 → 实现步骤 → 代码要点 → 源码** 的结构讲解。在线运行与完整源码见 [three-cesium-examples](https://z2586300277.github.io/three-cesium-examples/)。
 
 [▶ 案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/example)
+
+## 推荐学习路径
+
+| 阶段 | 目录 | 说明 |
+|------|------|------|
+| 1️⃣ 入门 | [Three.js 入门案例](/examples/three/introduction/) | 15 篇：Scene / Camera / Renderer、几何体、动画循环 |
+| 2️⃣ 基础 | [Three.js 基础案例](/examples/three/basic/) | 模型加载、阴影、控制器、后期处理入门 |
+| 3️⃣ 进阶 | [着色器](/examples/three/shader/) · [粒子](/examples/three/particle/) · [后期](/examples/three/effectComposer/) | 自定义 GLSL、特效合成 |
+| 4️⃣ 地球 | [Cesium 基础](/examples/cesium/basic/) · [图层](/examples/cesium/layer/) | Viewer、Entity、3D Tiles、影像地形 |
+| 5️⃣ 实战 | [应用场景](/examples/three/application/) · [Cesium 应用](/examples/cesium/applyExample/) | 智慧城市、飞线、导航等完整场景 |
+
+> 每篇案例文末标注所属分类；入门系列建议按顺序阅读，其余可按兴趣跳转。
 
 ## Three.js (301)
 

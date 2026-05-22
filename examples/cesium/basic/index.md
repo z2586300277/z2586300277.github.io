@@ -1,11 +1,16 @@
 ---
 title: "基础功能 - Cesium.js"
-outline: false
+description: "Viewer、Entity、绘制、拾取、相机、GeoJSON 等 Cesium 基础。"
+outline: deep
 ---
 
 # 基础功能
 
-Scene/Camera/Renderer 基础搭建
+Viewer、Entity、绘制、拾取、相机、GeoJSON 等 Cesium 基础。
+
+> 建议从 [加载模型](/examples/cesium/basic/loadModel) 开始。
+
+每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。
 
 - [视角切换](/examples/cesium/basic/switchView)
 - [记录视角](/examples/cesium/basic/cameraView)

@@ -1,42 +1,47 @@
 ---
 title: "球体线条 - Three.js 案例讲解"
-description: "大量重复物体或粒子，注意 draw call 与 update 频率。主流程在 `getPos`、`animate`。"
+description: "大量重复物体或粒子，注意 draw call 与 update 频率。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,球体线条,粒子"
+      content: "three.js,webgl,particle,球体线条"
 outline: deep
 ---
-
 # 球体线条
 
 *Sphere Line*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=sphereLine)
 
-
 ![球体线条](https://z2586300277.github.io/three-cesium-examples/threeExamples/particle/sphereLine.jpg)
 
+## 你将学到什么
+
+- 相机交互控制器
+- 点云 / 粒子 / 实例化渲染
+- requestAnimationFrame 渲染循环
+- GUI 面板调试参数
 
 ## 效果说明
 
-大量重复物体或粒子，注意 draw call 与 update 频率。主流程在 `getPos`、`animate`。
+大量重复物体或粒子，注意 draw call 与 update 频率。
 
 > 粒子 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 手写几何：`BufferGeometry` + `Float32Array` 填 position/uv/normal，`setIndex` 拼三角面。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **Points** 大量顶点用点精灵渲染；**InstancedMesh** 相同几何体批量绘制，降低 draw call。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 实现步骤
 
-- 点精灵/粒子：`Points` + `PointsMaterial`，或自定义 shader 控 size/颜色。
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. rAF 循环中 update 并 render
 
-## 独立函数
+## 代码要点
 
-- `animate()` — rAF：update controls + render
+- **`getPos()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -97,6 +102,75 @@ let pMaterial = new THREE.PointsMaterial({
     size: 3,
     blending: THREE.AdditiveBlending,
     transparent: true,
-    sizeAtten
+    sizeAttenuation: false
+});
+
+particles = new THREE.BufferGeometry();
+particlePositions = new Float32Array(maxParticleCount * 3);
+
+function getPos(radius, a, b) {
+    const x = radius * Math.sin(a) * Math.cos(b);
+    const y = radius * Math.sin(a) * Math.sin(b);
+    const z = radius * Math.cos(a);
+    return { x, y, z };
+}
+
+for (let i = 0; i < maxParticleCount; i++) {
+
+    const p = getPos(r, Math.PI * 2 * Math.random(), Math.PI * 2 * Math.random())
+
+    let x = p.x;
+    let y = p.y;
+    let z = p.z;
+
+    particlePositions[i * 3] = x;
+    particlePositions[i * 3 + 1] = y;
+    particlePositions[i * 3 + 2] = z;
+
+    particlesData.push({
+        velocity: new THREE.Vector3(- 1 + Math.random() * 2, - 1 + Math.random() * 2, - 1 + Math.random() * 2),
+        numConnections: 0
+    });
+
+}
+
+particles.setDrawRange(0, particleCount);
+particles.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3).setUsage(THREE.DynamicDrawUsage));
+
+pointCloud = new THREE.Points(particles, pMaterial);
+group.add(pointCloud);
+
+let geometry = new THREE.BufferGeometry();
+
+geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3).setUsage(THREE.DynamicDrawUsage));
+geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3).setUsage(THREE.DynamicDrawUsage));
+
+geometry.computeBoundingSphere();
+
+geometry.setDrawRange(0, 0);
+
+let material = new THREE.LineBasicMaterial({
+    vertexColors: true,
+    blending: THREE.AdditiveBlending,
+    transparent: true
+});
+
+linesMesh = new THREE.LineSegments(geometry, material);
+group.add(linesMesh);
+animate()
+
+function animate() {
+
+    let vertexpos = 0;
+    let colorpos = 0;
+    let numConnected = 0;
+    let O = new THREE.Vector3(0, 0, 0)
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=sphereLine) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [粒子目录](/examples/three/particle/)
+
+> 粒子 · Three.js

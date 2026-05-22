@@ -1,114 +1,48 @@
 ---
 title: "智慧城市光 - Cesium.js 案例讲解"
-description: "Cesium Shader、3D Tiles 等进阶。主流程在 `setViewerTheme`。"
+description: "Cesium Shader、3D Tiles 等进阶。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,智慧城市光,高级特效"
+      content: "cesium.js,webgl,advancedEffect,智慧城市光"
 outline: deep
 ---
-
 # 智慧城市光
 
 *City Light*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=advancedEffect&id=smartCity)
 
-
 ![智慧城市光](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/smartCity.jpg)
 
+## 你将学到什么
+
+- 案例交互与参数可在在线编辑器中查看
 
 ## 效果说明
 
-Cesium Shader、3D Tiles 等进阶。主流程在 `setViewerTheme`。
+Cesium Shader、3D Tiles 等进阶。
 
 > 高级特效 · Cesium.js
 
-## 实现思路
+## 核心概念
 
-- 3D Tiles 倾斜摄影/白膜：`Cesium3DTileset.fromUrl`，可配 `heightReference`、style。
+- **Viewer** 管理地球与渲染；业务对象可用 **Entity**（高层）或 **Primitive**（高性能）。
+- 坐标转换：经纬高 ↔ `Cartesian3` 是 Cesium 开发基础。
 
-- 底图换 `ImageryProvider`：XYZ 模板、WMTS、ArcGIS 等，挂到 `viewer.imageryLayers`。
+## 实现步骤
 
-- Model / 3D Tiles 上挂 `CustomShader`，直接写 GLSL 改 `czm_modelMaterial`。
-
-## 独立函数
-
-- `setViewerTheme()` — 材质 / GLSL
+1. 初始化 `Cesium.Viewer` 与底图图层
+2. 添加 Entity / Primitive / DataSource 等业务对象
+3. 按需 `camera.flyTo` 定位视角
 
 ## 源码
 
-```js
-import * as Cesium from 'cesium'
+完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=advancedEffect&id=smartCity)。
 
-const box = document.getElementById('box')
+## 小结
 
-const viewer = new Cesium.Viewer(box, {
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=advancedEffect&id=smartCity) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [高级特效目录](/examples/cesium/advancedEffect/)
 
-  animation: false,
-
-  baseLayerPicker: false,
-
-  fullscreenButton: false,
-
-  geocoder: false,
-
-  homeButton: false,
-
-  sceneMode: Cesium.SceneMode.SCENE3D,//初始场景模式
-
-  sceneModePicker: false,
-
-  navigationHelpButton: false,
-
-  selectionIndicator: false,
-
-  timeline: false,
-
-  infoBox: false,
-
-  scene3DOnly: true,//如果设置为true，则所有几何图形以3D模式绘制以节约GPU资源  
-
-  orderIndependentTranslucency: false,
-
-  contextOptions: { webgl: { alpha: true } },
-
-  skyBox: new Cesium.SkyBox({ show: false }),
-
-  baseLayer: false, // 不显示默认图层
-
-})
-
-viewer.imageryLayers.addImageryProvider(
-
-  new Cesium.UrlTemplateImageryProvider({
-
-    url: 'https://webrd02.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=2&style=8&x={x}&y={y}&z={z}',
-
-    maximumLevel: 18
-
-  })
-
-)
-
-setViewerTheme(viewer) // 设置主题
-
-function setViewerTheme(viewer, options = {}) {
-
-  const baseLayer = viewer.imageryLayers.get(0)
-
-  if (!baseLayer) return
-
-  baseLayer.brightness = options.brightness ?? 0.6
-
-  baseLayer.contrast = options.contrast ?? 1.8
-
-  baseLayer.gamma = options.gamma ?? 0.3
-
-  baseLayer.hue = options.hue ?? 1
-
-  baseLayer.saturation = options.saturation || 0
-
-  const baseFragShader = (viewer.scene.globe)._surfaceShaderSet.baseFragmentShaderSource.sou
-```
-
+> 高级特效 · Cesium.js

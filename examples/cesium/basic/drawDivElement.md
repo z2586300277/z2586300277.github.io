@@ -1,37 +1,46 @@
 ---
 title: "div元素绘制 - Cesium.js 案例讲解"
-description: "场景粒子（雨雪等），挂在 viewer.scene 或 Entity 上。主流程在 `updateTrackInfoPosition`。"
+description: "场景粒子（雨雪等），挂在 viewer.scene 或 Entity 上。"
 head:
   - - meta
     - name: keywords
-      content: "cesium.js,div元素绘制"
+      content: "cesium.js,webgl,basic,div元素绘制"
 outline: deep
 ---
-
 # div元素绘制
 
 *drawDivElement*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=drawDivElement)
 
-
 ![div元素绘制](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/drawDivElement.jpg)
 
+## 你将学到什么
+
+- Cesium Viewer 初始化
+- Cesium 影像图层
 
 ## 效果说明
 
-场景粒子（雨雪等），挂在 viewer.scene 或 Entity 上。主流程在 `updateTrackInfoPosition`。
+场景粒子（雨雪等），挂在 viewer.scene 或 Entity 上。
 
 > 基础功能 · Cesium.js
 
-## 代码结构
+## 核心概念
 
-- 弹窗元素创建区域
-- 弹窗更新逻辑区域
+- **Viewer** 封装地球、相机、图层；可关闭 animation/timeline 等 UI 精简界面。
 
-## 独立函数
+- **ImageryLayer** 叠加 XYZ/WMTS/ArcGIS 等底图，`imageryLayers.add/remove` 管理。
 
-- `updateTrackInfoPosition()` — 经纬高 ↔ Cartesian3
+## 实现步骤
+
+1. 初始化 `Cesium.Viewer` 与底图图层
+2. 添加 Entity / Primitive / DataSource 等业务对象
+3. 按需 `camera.flyTo` 定位视角
+
+## 代码要点
+
+- **`updateTrackInfoPosition()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -58,11 +67,7 @@ viewer.camera.flyTo({
     destination: Cesium.Cartesian3.fromDegrees(118, 37, 1000), // 目标位置
     duration: 0  // 飞行时间（秒）
 })
-```
-
-### 弹窗元素创建区域
-
-```js
+// ==================== 弹窗元素创建区域 ====================
 const trackInfoElement = document.createElement('div')
 // 设置弹窗样式：白底黑字，带阴影和圆角
 Object.assign(trackInfoElement.style, {
@@ -80,11 +85,7 @@ Object.assign(trackInfoElement.style, {
 box.appendChild(trackInfoElement)
 // 监听场景更新事件
 viewer.scene.preUpdate.addEventListener(updateTrackInfoPosition)
-```
-
-### 弹窗更新逻辑区域
-
-```js
+// ==================== 弹窗更新逻辑区域 ====================
 function updateTrackInfoPosition() {
     // 将地球上的三维位置转换为屏幕坐标
     const windowCoord = Cesium.SceneTransforms.worldToWindowCoordinates(
@@ -106,3 +107,9 @@ function updateTrackInfoPosition() {
 }
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=drawDivElement) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [基础功能目录](/examples/cesium/basic/)
+
+> 基础功能 · Cesium.js

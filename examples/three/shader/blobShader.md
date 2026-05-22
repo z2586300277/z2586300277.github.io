@@ -1,109 +1,57 @@
 ---
 title: "一团揉动 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `createWorld`、`onWindowResize`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,一团揉动,着色器"
+      content: "three.js,webgl,shader,一团揉动"
 outline: deep
 ---
-
 # 一团揉动
 
 *Blob Shader*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=blobShader)
 
-
 ![一团揉动](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/blobShader.jpg)
 
+## 你将学到什么
+
+- 自定义 ShaderMaterial / 修改内置 shader
+- 相机交互控制器
+- 实时阴影 ShadowMap
+- 天空盒与环境贴图
+- 点云 / 粒子 / 实例化渲染
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `createWorld`、`onWindowResize`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 着色器 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+- 阴影四步：`renderer.shadowMap.enabled`、光源 `castShadow`、物体 `castShadow`、地面 `receiveShadow`。
 
-- 补间动画交给 GSAP/anime/Tween，别在 rAF 里手搓 easing。
+- **CubeTexture** 六面贴图作 `scene.background`；`scene.environment` 供 PBR 材质反射。
 
-## 独立函数
+## 实现步骤
 
-- `onWindowResize()` — 材质 / GLSL
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 定义材质/shader 与 uniforms，rAF 中更新
+3. rAF 循环中 update 并 render
 
-## 着色器
+## 代码要点
 
-### 顶点
-
-```glsl
-vec3 mod289(vec3 x)
-    {
-      return x - floor(x * (1.0 / 289.0)) * 289.0;
-    }
-  
-    vec4 mod289(vec4 x)
-    {
-      return x - floor(x * (1.0 / 289.0)) * 289.0;
-    }
-  
-    vec4 permute(vec4 x)
-    {
-      return mod289(((x*34.0)+1.0)*x);
-    }
-  
-    vec4 taylorInvSqrt(vec4 r)
-    {
-      return 1.79284291400159 - 0.85373472095314 * r;
-    }
-  
-    vec3 fade(vec3 t) {
-      return t*t*t*(t*(t*6.0-15.0)+10.0);
-    }
-    
-    // Classic Perlin noise
-    float cnoise(vec3 P)
-    {
-      vec3 Pi0 = floor(P); // Integer part for indexing
-      vec3 Pi1 = Pi0 + ve
-```
-
-### 片元
-
-- 片元输出 gl_FragColor
-- `time` uniform 驱动动画
-
-```glsl
-varying float qnoise;
-    varying float noise;
-    
-    uniform float time;
-    uniform bool redhell;
-    uniform float rcolor;
-    uniform float gcolor;
-    uniform float bcolor;
-  
-    void main() {
-      float r, g, b;
-      
-      if (!redhell == true) {
-        r = sin(qnoise + rcolor);
-        g = normalize(qnoise + (gcolor / 2.0));
-        b = tan(qnoise + bcolor);
-      } else {
-        r = normalize(qnoise + rcolor);
-        g = cos(qnoise + gcolor);
-        b = sin(qnoise + bcolor);
-      }
-      gl_FragColor = vec4(r, g, b, 1.0);
-    }
-```
+- **`createWorld()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`onWindowResize()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`createPrimitive()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`createGUI()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`animation()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -157,6 +105,83 @@ function onWindowResize() {
 }
 
 var primitiveElement = function() {
-  this.mesh = new THREE.Obje
+  this.mesh = new THREE.Object3D();
+  mat = new THREE.ShaderMaterial( {
+    side:THREE.DoubleSide,
+    uniforms: {
+      time: {
+        type: "f",
+        value: 0.1
+      },
+      pointscale: {
+        type: "f",
+        value: 0.2
+      },
+      decay: {
+        type: "f",
+        value: 0.3
+      },
+      size: {
+        type: "f",
+        value: 0.3
+      },
+      displace: {
+        type: "f",
+        value: 0.3
+      },
+      complex: {
+        type: "f",
+        value: 0.0
+      },
+      waves: {
+        type: "f",
+        value: 0.10
+      },
+      eqcolor: {
+        type: "f",
+        value: 0.0
+      },
+      rcolor: {
+        type: "f",
+        value: 0.0
+      },
+      gcolor: {
+        type: "f",
+        value: 0.0
+      },
+      bcolor: {
+        type: "f",
+        value: 0.0
+      },
+      fragment: {
+        type: "i",
+        value: true
+      },
+      redhell: {
+        type: "i",
+        value: true
+      }
+    },
+    vertexShader: `
+    vec3 mod289(vec3 x)
+    {
+      return x - floor(x * (1.0 / 289.0)) * 289.0;
+    }
+  
+    vec4 mod289(vec4 x)
+    {
+      return x - floor(x * (1.0 / 289.0)) * 289.0;
+    }
+  
+    vec4 permute(vec4 x)
+    {
+      return mod289(((x*34.0)+1.0)*x);
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=blobShader) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [着色器目录](/examples/three/shader/)
+
+> 着色器 · Three.js

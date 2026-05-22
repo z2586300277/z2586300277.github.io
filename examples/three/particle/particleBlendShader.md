@@ -1,64 +1,50 @@
 ---
 title: "粒子混合着色器 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `getPosition`、`animate`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,粒子混合着色器,粒子"
+      content: "three.js,webgl,particle,粒子混合着色器"
 outline: deep
 ---
-
 # 粒子混合着色器
 
 *BlendShader*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=particleBlendShader)
 
-
 ![粒子混合着色器](https://z2586300277.github.io/three-cesium-examples/threeExamples/particle/particleBlendShader.jpg)
 
+## 你将学到什么
+
+- 自定义 ShaderMaterial / 修改内置 shader
+- 相机交互控制器
+- 点云 / 粒子 / 实例化渲染
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `getPosition`、`animate`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 粒子 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
 
-- 手写几何：`BufferGeometry` + `Float32Array` 填 position/uv/normal，`setIndex` 拼三角面。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **Points** 大量顶点用点精灵渲染；**InstancedMesh** 相同几何体批量绘制，降低 draw call。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 实现步骤
 
-## 独立函数
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 定义材质/shader 与 uniforms，rAF 中更新
+3. rAF 循环中 update 并 render
 
-- `animate()` — rAF：update controls + render
+## 代码要点
 
-## 着色器
-
-### 顶点
-
-- 顶点阶段：改 gl_Position 或传 varying
-
-```glsl
-uniform float size;
-
-        uniform bool isdecaySize;
-
-        void main() {
-
-            vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-
-            gl_PointSize = isdecaySize ? size * ( 300.0 / -mvPosition.z ) : size;
-
-            gl_Position = projectionMatrix * mvPosition;
-
-        }
-```
+- **`getPosition()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -121,6 +107,74 @@ const setVelocities = {
 
     '随机向上': (i) => {
 
+        velocities[i * 3] += (Math.random() - 0.5) * parameters.maxVelocity / 1000
 
+        velocities[i * 3 + 1] += Math.abs((Math.random() - 0.5) * parameters.maxVelocity / 100000)
+
+        velocities[i * 3 + 2] += (Math.random() - 0.5) * parameters.maxVelocity / 1000
+
+    },
+
+    '随机向下': (i) => {
+
+        velocities[i * 3] += (Math.random() - 0.5) * parameters.maxVelocity / 1000
+
+        velocities[i * 3 + 1] -= Math.abs((Math.random() - 0.5) * parameters.maxVelocity / 100000)
+
+        velocities[i * 3 + 2] += (Math.random() - 0.5) * parameters.maxVelocity / 1000
+
+    },
+
+    '直线匀速向上': (i) => {
+
+        velocities[i * 3] = 0
+
+        velocities[i * 3 + 1] += parameters.maxVelocity / 2 / 100000
+
+        velocities[i * 3 + 2] = 0
+
+    },
+
+    '直线匀速向下': (i) => {
+
+        velocities[i * 3] = 0
+
+        velocities[i * 3 + 1] -= parameters.maxVelocity / 2 / 100000
+
+        velocities[i * 3 + 2] = 0
+
+    }
+
+}[parameters.sportType]
+
+function getPosition() {
+
+    let x, y, z
+
+    do {
+
+        x = Math.random() * 2 * parameters.outer - parameters.outer;
+
+        y = Math.random() * 2 * parameters.outer - parameters.outer;
+
+        z = Math.random() * 2 * parameters.outer - parameters.outer;
+
+    } while (Math.abs(x) <= parameters.inner && Math.abs(y) <= parameters.inner && Math.abs(z) <= parameters.inner);
+
+    return [x, y, z]
+
+}
+
+for (let i = 0; i < parameters.particlesSum; i++)  positions.set(getPosition(), i * 3)
+
+const geometry = new THREE.BufferGeometry()
+
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=particleBlendShader) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [粒子目录](/examples/three/particle/)
+
+> 粒子 · Three.js

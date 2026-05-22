@@ -1,49 +1,45 @@
 ---
 title: "绘制围栏 - Three.js 案例讲解"
-description: "Three.js 业务向场景组合。主流程在 `animate`、`multShapeGroup`。"
+description: "Three.js 业务向场景组合。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,绘制围栏,应用场景"
+      content: "three.js,webgl,application,绘制围栏"
 outline: deep
 ---
-
 # 绘制围栏
 
 *Draw Fence*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=drawFence)
 
-
 ![绘制围栏](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/drawFence.jpg)
 
+## 你将学到什么
+
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-Three.js 业务向场景组合。主流程在 `animate`、`multShapeGroup`。
+Three.js 业务向场景组合。
 
 > 应用场景 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 手写几何：`BufferGeometry` + `Float32Array` 填 position/uv/normal，`setIndex` 拼三角面。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+## 实现步骤
 
-- 点击选中：`Raycaster` + 鼠标 NDC 坐标，`intersectObjects` 取交点。
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. rAF 循环中 update 并 render
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 代码要点
 
-## 代码结构
-
-- 开始绘制
-- 处理顶点算法
-- 根据顶点组生成物体
-- 更新顶点
-
-## 独立函数
-
-- `animate()` — rAF：update controls + render
+- **`multShapeGroup()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`multShapePlaneGeometry()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`updateMultShapePlaneGeometry()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -104,12 +100,17 @@ const raycaster = new THREE.Raycaster()
 
 const getPoint = event => {
 
-    const mouse = new THREE.Vector2((event.offsetX / event.target.clientWidth) * 2 - 1, -(event.offsetY / event.target.clientHeigh
-```
+    const mouse = new THREE.Vector2((event.offsetX / event.target.clientWidth) * 2 - 1, -(event.offsetY / event.target.clientHeight) * 2 + 1)
 
-### 开始绘制
+    raycaster.setFromCamera(mouse, camera)
 
-```js
+    const intersects = raycaster.intersectObjects(scene.children)
+
+    if (intersects.length > 0) return intersects[0].point
+
+}
+
+/* 开始绘制 */
 const pointList = []; let drawMesh = null; let fenceHeight = 1
 
 box.addEventListener('click', (event) => {
@@ -151,11 +152,8 @@ box.addEventListener('click', (event) => {
     else updateMultShapePlaneGeometry(drawMesh.geometry, faceGroup, indexGroup, uvGroup)
 
 })
-```
 
-### 处理顶点算法
-
-```js
+/* 处理顶点算法 */
 function multShapeGroup(formatPoints) {
 
     const { length } = formatPoints
@@ -166,20 +164,12 @@ function multShapeGroup(formatPoints) {
 
     const uvMaxMin = formatPoints.reduce((p, i) => ({ x: [...p['x'], i['x']], y: [...p['y'], i['y']], z: [...p['z'], i['z']] }), { x: [], y: [], z: [] })
 
-    const Maxp = new THREE.Vector3(Math.max(...uvMaxMin.x), Math.max(...uvMaxMin.y), Math.max(...uvMaxMin.z))  // 最大点
-
-    const Minp = new THREE.Vector3(Math.min(...uvMaxMin.x), Math.min(...uvMaxMin.y), Math.min(...uvMaxMin.z))  // 最小点
-
-    const W = Maxp.x - Minp.x
-
-    const H = Maxp.y - Minp.y
-
-    const L = W > H ? W : H
-
-    const uvGroup = formatPoints.map(i => new THREE.Vector2((i.x - Minp.x) / L, (i.y - Minp.y) / L)).reduce((i, j) => [...i, ...j], [])
-
-    return { indexGroup, faceGroup, uvGroup }
-
-}
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=drawFence) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [应用场景目录](/examples/three/application/)
+
+> 应用场景 · Three.js

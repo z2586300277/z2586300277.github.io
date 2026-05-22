@@ -1,38 +1,44 @@
 ---
 title: "3D饼图 - Three.js 案例讲解"
-description: "Three.js 业务向场景组合。主流程在 `createPieBlock`。"
+description: "Three.js 业务向场景组合。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,3D饼图"
+      content: "three.js,webgl,application,3D饼图"
 outline: deep
 ---
-
 # 3D饼图
 
 *3D Pie*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=pieCharts)
 
-
 ![3D饼图](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/pieCharts.jpg)
 
+## 你将学到什么
+
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-Three.js 业务向场景组合。主流程在 `createPieBlock`。
+Three.js 业务向场景组合。
 
 > 应用场景 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 实现步骤
 
-## 代码结构
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. rAF 循环中 update 并 render
 
-- opacity: 0.7,transparent: true,depthWrite: false,
+## 代码要点
+
+- **`createPieBlock()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`h()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -82,15 +88,50 @@ let controls = new OrbitControls(camera, renderer.domElement);
 // 字体加载器
 const fontUrl = FILE_HOST + 'files/json/font.json'
 new FontLoader().load(fontUrl, function (font) {
+  const group = new THREE.Group();
+  group.rotateX(-(Math.PI / 180) * 90);
+  scene.add(group);
 
-```
+  const outR = 100; // 外半径
+  const innerR = 60; // 内半径
+  const startAngle = 45; // 起始位置
 
-### opacity: 0.7,
+  const h1 = 100; // 高度
+  const color1 = 0xe20f9f; // 颜色
+  let angleLength1 = 160; // 长度
+
+  const h2 = 70; // 高度
+  const color2 = 0xffa500; // 颜色
+
+  // 创建图块
+  function createPieBlock(outR, innerR, h, startAngle, angleLength, color, rateText) {
+    // 形状
+    const shape = new THREE.Shape();
+    shape.absarc(0, 0, outR, (Math.PI / 180) * startAngle, (Math.PI / 180) * (startAngle + angleLength));
+    shape.lineTo(shape.currentPoint.x * (innerR / outR), shape.currentPoint.y * (innerR / outR));
+    shape.absarc(0, 0, innerR, (Math.PI / 180) * (startAngle + angleLength), (Math.PI / 180) * startAngle, true);
+
+    // 冲压几何体配置
+    const extrudeSettings = {
+      curveSegments: 100,
+      steps: 2,
+      depth: h,
+      bevelEnabled: true,
+      bevelThickness: 1,
+      bevelSize: 0,
+      bevelOffset: 0,
+      bevelSegments: 1,
+    };
+
+    // 创建几何体、材质、物体
+    const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+    const material = new THREE.MeshLambertMaterial({
+      color: color,
+      //side: THREE.DoubleSide,
+      /* opacity: 0.7,
   transparent: true,
-  depthWrite: false,
-
-```js
-});
+  depthWrite: false, */
+    });
     const mesh = new THREE.Mesh(geometry, material);
     group.add(mesh);
 
@@ -122,17 +163,12 @@ new FontLoader().load(fontUrl, function (font) {
     );
     // 移动
     text.position.add(targetPostion.sub(textCenter));
-    mesh.add(text);
-  }
-
-  !(function h() {
-    if (angleLength1 >= 230) return (controls.autoRotate = true);
-    setTimeout(() => {
-      h();
-    }, 50);
-    const arr = [...group.children];
-    arr.forEach((obj) => {
-      group.remove(obj);
-    })
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=pieCharts) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [应用场景目录](/examples/three/application/)
+
+> 应用场景 · Three.js

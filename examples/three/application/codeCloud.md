@@ -1,87 +1,53 @@
 ---
 title: "代码云 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `init`、`initMaterial`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,代码云"
+      content: "three.js,webgl,application,代码云"
 outline: deep
 ---
-
 # 代码云
 
 *Code Cloud*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=codeCloud)
 
-
 ![代码云](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/codeCloud.jpg)
 
+## 你将学到什么
+
+- 自定义 ShaderMaterial / 修改内置 shader
+- 相机交互控制器
+- 实时阴影 ShadowMap
+- requestAnimationFrame 渲染循环
+- Clock 帧间隔计时
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `init`、`initMaterial`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 应用场景 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+- 阴影四步：`renderer.shadowMap.enabled`、光源 `castShadow`、物体 `castShadow`、地面 `receiveShadow`。
 
-## 独立函数
+## 实现步骤
 
-- `init()` — Scene / Camera / Renderer 初始化
-- `initMaterial()` — 材质 / GLSL
-- `animate()` — rAF：update controls + render
-- `snowanimate()` — 材质 / GLSL
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 定义材质/shader 与 uniforms，rAF 中更新
+3. rAF 循环中 update 并 render
 
-## 着色器
+## 代码要点
 
-### 顶点
-
-- 顶点阶段：改 gl_Position 或传 varying
-
-```glsl
-varying vec2 vUv;
-void main() {
-    vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    
-}
-```
-
-### 片元
-
-- 片元输出 gl_FragColor
-
-```glsl
-varying vec2 vUv;
-uniform sampler2D texture1;
-uniform sampler2D texture2;
-uniform sampler2D texture3;
-uniform sampler2D texture4;
-uniform sampler2D texture5;
-uniform sampler2D texture6;
-uniform sampler2D texture7;
-uniform sampler2D texture8;
-uniform sampler2D texture9;
-
-uniform float random;
-void main() {
-
-  //if(vUv.y > 0.5) {
-  //  gl_FragColor = texture2D( texture0, vec2(fract(vUv.y * 2.0), vUv.x));
-  //}else {
-  //  gl_FragColor = texture2D( texture1, vec2(fract(vUv.y * 2.0), vUv.x));
-  //}
-  
-  float selfRandom = vUv.y - fract(vUv.y);
-  float k = abs(sin(selfRandom * 
-```
+- **`initMaterial()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`snowanimate()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`onResize()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -130,6 +96,87 @@ function init() {
     var ambient = new THREE.AmbientLight(0x404040, 0.6);
     scene.add(ambient);
 
-    stats = n
+    stats = new Stats()
+    document.body.appendChild(stats.dom);
+
+    // --------
+
+    cloud = new THREE.Group()
+    scene.add(cloud)
+    shader_material = initMaterial()
+
+    let width = 128, height = 128
+
+    for (var i = 0; i < 1000; i++) {
+        var pos = new THREE.Vector3(
+            Math.random() * range - range / 2,
+            Math.random() * range - range / 2,
+            Math.random() * range - range / 2)
+
+        pos.vX = ((Math.random() - 0.5) / 3) / 10
+        pos.vY = (0.05 + Math.random() * 0.1) / 5
+
+        let geometry = new THREE.PlaneGeometry(4, 4);
+        let s = Math.floor(Math.random() * 1000) + 1
+        geometry.attributes.uv.array = geometry.attributes.uv.array.map(e => e += s)
+
+        var plane = new THREE.Mesh(geometry, shader_material);
+
+        plane.position.copy(pos)
+        plane.userData.pos = pos
+        cloud.add(plane)
+    }
+    setInterval(() => {
+        if (cloud) {
+            cloud.children.map(plane => {
+                plane.material.uniforms.random.value = Math.random()
+                // let s = Math.floor(Math.random()*1000) + 1
+                // plane.geometry.attributes.uv.array = plane.geometry.attributes.uv.array.map(e => e=s)
+            })
+        }
+    }, 100)
+    // --------
+
+    controller = new OrbitControls(camera, renderer.domElement);
+    document.body.appendChild(renderer.domElement);
+    window.onresize = onResize;
+}
+
+function initMaterial() {
+    let loader = new THREE.TextureLoader()
+    return new THREE.ShaderMaterial({
+        uniforms: {
+            texture1: {
+                value: loader.load(FILE_HOST + 'threeExamples/application/codeCloud/1.png')
+            },
+            texture2: {
+                value: loader.load(FILE_HOST + 'threeExamples/application/codeCloud/2.png')
+            },
+            texture3: {
+                value: loader.load(FILE_HOST + 'threeExamples/application/codeCloud/3.png')
+            },
+            texture4: {
+                value: loader.load(FILE_HOST + 'threeExamples/application/codeCloud/4.png')
+            },
+            texture5: {
+                value: loader.load(FILE_HOST + 'threeExamples/application/codeCloud/5.png')
+            },
+            texture6: {
+                value: loader.load(FILE_HOST + 'threeExamples/application/codeCloud/6.png')
+            },
+            texture7: {
+                value: loader.load(FILE_HOST + 'threeExamples/application/codeCloud/7.png')
+            },
+            texture8: {
+                value: loader.load(FILE_HOST + 'threeExamples/application/codeCloud/8.png')
+            },
+            texture9: {
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=codeCloud) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [应用场景目录](/examples/three/application/)
+
+> 应用场景 · Three.js

@@ -1,77 +1,52 @@
 ---
 title: "图片抖动 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `init`、`createScene`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,图片抖动"
+      content: "three.js,webgl,shader,图片抖动"
 outline: deep
 ---
-
 # 图片抖动
 
 *Image Shake*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=imageShake)
 
-
 ![图片抖动](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/imageShake.jpg)
 
+## 你将学到什么
+
+- 自定义 ShaderMaterial / 修改内置 shader
+- 点云 / 粒子 / 实例化渲染
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `init`、`createScene`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 着色器 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
 
-- 手写几何：`BufferGeometry` + `Float32Array` 填 position/uv/normal，`setIndex` 拼三角面。
+- **Points** 大量顶点用点精灵渲染；**InstancedMesh** 相同几何体批量绘制，降低 draw call。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 实现步骤
 
-- 点精灵/粒子：`Points` + `PointsMaterial`，或自定义 shader 控 size/颜色。
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 定义材质/shader 与 uniforms，rAF 中更新
+3. rAF 循环中 update 并 render
 
-## 独立函数
+## 代码要点
 
-- `init()` — Scene / Camera / Renderer 初始化
-- `createPaticles()` — 材质 / GLSL
-- `tick()` — 材质 / GLSL
-- `update()` — 材质 / GLSL
-- `render()` — renderer.render(scene, camera)
-
-## 着色器
-
-### 顶点
-
-- 顶点阶段：改 gl_Position 或传 varying
-
-```glsl
-uniform float amplitude;
-          attribute vec3 customColor;
-          varying vec3 vColor;
-          void main() {
-            vColor = customColor;
-            vec4 pos = vec4(position, 1.0);
-            pos.z *= amplitude;
-            vec4 mvPosition = modelViewMatrix * pos;
-            gl_PointSize = 2.0 * ( 300.0 / -mvPosition.z );
-            gl_Position = projectionMatrix * mvPosition;
-          }
-```
-
-### 片元
-
-- 片元输出 gl_FragColor
-
-```glsl
-varying vec3 vColor;
-          void main() {
-            gl_FragColor = vec4( vColor, 1.0 );
-          }
-```
+- **`createScene()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`createControls()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`createPixelData()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`createPaticles()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`tick()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`update()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -138,6 +113,70 @@ function createControls() {
   controls.noZoom = false;
   controls.noPan = true;
 
+  controls.staticMoving = true;
+  controls.dynamicDampingFactor = 0.3;
+}
 
+function createPixelData() {
+    var image = document.createElement("img");
+    var canvas = document.createElement("canvas");
+    var context = canvas.getContext("2d");
+    
+    image.crossOrigin = "Anonymous";
+    image.onload = function() {
+        canvas.width = image.width;
+        canvas.height = image.height;
+        imageWidth = image.width;
+        imageHeight = image.height;
+      
+      context.fillStyle = context.createPattern(image, 'no-repeat');
+      context.fillRect(0, 0, imageWidth, imageHeight);
+      
+      imageData = context.getImageData(0, 0, imageWidth, imageHeight).data;
+
+      createPaticles();
+      tick();
+    };
+    
+    image.src = HOST + 'files/author/z2586300277.png'
+  }
+
+  function createPaticles() {
+    var colors = [];
+    var weights = [0.2126, 0.7152, 0.0722];
+    var c = 0;
+
+    var geometry, material;
+    var x, y;
+    var zRange = 400;
+
+    geometry = new THREE.BufferGeometry();
+    var positions = [];
+    var colors = [];
+
+    x = imageWidth * -0.5;
+    y = imageHeight * 0.5;
+
+    shaderUniforms = {
+      amplitude: {
+        type: "f",
+        value: 0.5
+      },
+      vertexColor: {
+        type: "c",
+        value: []
+      }
+    };
+
+    var shaderMaterial = new THREE.ShaderMaterial({
+        uniforms: shaderUniforms,
+        vertexShader: `
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=imageShake) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [着色器目录](/examples/three/shader/)
+
+> 着色器 · Three.js

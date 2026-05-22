@@ -1,11 +1,14 @@
 ---
 title: "离线地图 - Cesium.js"
-outline: false
+description: "内网 / 离线环境下的蓝色、夜间、影像等底图方案。"
+outline: deep
 ---
 
 # 离线地图
 
-离线/内网影像
+内网 / 离线环境下的蓝色、夜间、影像等底图方案。
+
+每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。
 
 - [蓝色](/examples/cesium/offline/offlineBlue)
 - [夜间](/examples/cesium/offline/day)

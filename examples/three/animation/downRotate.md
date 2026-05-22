@@ -1,42 +1,43 @@
 ---
 title: "下钻动画 - Three.js 案例讲解"
-description: "Three.js 关键帧或补间动画。主流程在 `animate`。"
+description: "Three.js 关键帧或补间动画。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,下钻动画,动画效果"
+      content: "three.js,webgl,animation,下钻动画"
 outline: deep
 ---
-
 # 下钻动画
 
 *Down Rotate*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=animation&id=downRotate)
 
-
 ![下钻动画](https://z2586300277.github.io/three-cesium-examples/threeExamples/animation/downRotate.jpg)
 
+## 你将学到什么
+
+- glTF/FBX/OBJ 外部模型加载
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-Three.js 关键帧或补间动画。主流程在 `animate`。
+Three.js 关键帧或补间动画。
 
 > 动画效果 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 手写几何：`BufferGeometry` + `Float32Array` 填 position/uv/normal，`setIndex` 拼三角面。
+- **Loader** 异步加载模型；glTF 返回 `gltf.scene`，加载后注意 `scale` 与坐标系。Draco 需配置 `DRACOLoader`。
 
-- 外部模型 glTF/FBX 用对应 Loader，`scene.add(gltf.scene)` 后注意 scale/坐标。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+## 实现步骤
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
-
-## 独立函数
-
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. Loader 异步加载模型/纹理资源
+3. rAF 循环中 update 并 render
 
 ## 源码
 
@@ -100,6 +101,58 @@ let obj = null
 
 const loader = new GLTFLoader()
 
-loader.load(
+loader.load('https://z2586300277.github.io/3d-file-server/models/glb/daodan.glb', g => {
+
+    scene.add(g.scene)
+
+    g.scene.scale.multiplyScalar(0.1)
+
+    obj = g.scene
+
+})
+
+animate()
+
+const speed = 0.001 // 控制物体沿曲线移动的速度
+
+const spin = 0.15 // 控制物体自旋的速度
+
+let t = 0 // 当前物体在曲线上的位置（0~1之间）
+
+let r = 0 // 当前自旋的角度
+
+const baseDir = new THREE.Vector3(0, 0, 1) // 物体默认朝向（z轴正方向）
+
+function animate() {
+
+    requestAnimationFrame(animate)
+
+    if (obj) {
+
+        t = (t + speed) % 1 // 更新位置参数
+
+        r += spin // 更新自旋角度
+
+        obj.position.copy(curve.getPointAt(t)) // 设置物体位置
+
+        const tangent = curve.getTangentAt(t).normalize() // 计算切线方向
+
+        const lookQuat = new THREE.Quaternion().setFromUnitVectors(baseDir, tangent) // 计算朝向四元数
+
+        const spinQuat = new THREE.Quaternion().setFromAxisAngle(tangent, r) // 计算自旋四元数
+
+        obj.quaternion.copy(lookQuat).premultiply(spinQuat) // 应用旋转
+
+    }
+
+    renderer.render(scene, camera)
+    
+}
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=animation&id=downRotate) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [动画效果目录](/examples/three/animation/)
+
+> 动画效果 · Three.js

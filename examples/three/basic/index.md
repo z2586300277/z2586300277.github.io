@@ -1,11 +1,16 @@
 ---
 title: "基础案例 - Three.js"
-outline: false
+description: "模型加载、阴影、天空盒、控制器、RenderTarget 等常用基础能力。"
+outline: deep
 ---
 
 # 基础案例
 
-Scene/Camera/Renderer 基础搭建
+模型加载、阴影、天空盒、控制器、RenderTarget 等常用基础能力。
+
+> 建议按目录顺序阅读；前 3 篇为模型加载 / 动画 / 阴影核心。
+
+每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。
 
 - [人物模型动画案例](/examples/three/basic/modelAnimation)
 - [gltf/fbx/obj模型加载](/examples/three/basic/modelLoad)

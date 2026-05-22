@@ -1,40 +1,49 @@
 ---
 title: "css2D元素 - Cesium.js 案例讲解"
-description: "Cesium Scene/Camera/Renderer 基础搭建。主流程在 `setCss2dDom`。"
+description: "本案例展示 **css2D元素 ** 的实现。涉及：Cesium Viewer 初始化、Cesium Entity 高层 API、Cesium 影像图层。"
 head:
   - - meta
     - name: keywords
-      content: "cesium.js,css2D元素"
+      content: "cesium.js,webgl,basic,css2D元素"
 outline: deep
 ---
-
 # css2D元素
 
 *CSS2D Element*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=cssElement)
 
-
 ![css2D元素](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/cssElement.jpg)
 
+## 你将学到什么
+
+- Cesium Viewer 初始化
+- Cesium Entity 高层 API
+- Cesium 影像图层
 
 ## 效果说明
 
-Cesium Scene/Camera/Renderer 基础搭建。主流程在 `setCss2dDom`。
+本案例展示 **css2D元素 ** 的实现。涉及：Cesium Viewer 初始化、Cesium Entity 高层 API、Cesium 影像图层。
 
 > 基础功能 · Cesium.js
 
-## 实现思路
+## 核心概念
 
-- 底图换 `ImageryProvider`：XYZ 模板、WMTS、ArcGIS 等，挂到 `viewer.imageryLayers`。
+- **Viewer** 封装地球、相机、图层；可关闭 animation/timeline 等 UI 精简界面。
 
-## 代码结构
+- **Entity** 加点线面、模型、标签；适合业务对象与交互。
 
-- 设置2dDOM 移动
+- **ImageryLayer** 叠加 XYZ/WMTS/ArcGIS 等底图，`imageryLayers.add/remove` 管理。
 
-## 独立函数
+## 实现步骤
 
-- `setCss2dDom()` — 经纬高 ↔ Cartesian3
+1. 初始化 `Cesium.Viewer` 与底图图层
+2. 添加 Entity / Primitive / DataSource 等业务对象
+3. 按需 `camera.flyTo` 定位视角
+
+## 代码要点
+
+- **`setCss2dDom()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -64,17 +73,17 @@ box.appendChild(css2dContainer)
 
 const viewer = new Cesium.Viewer(box, {
 
-    animation: false,
+    animation: false,//是否创建动画小器件，左下角仪表    
 
-    baseLayerPicker: false,
+    baseLayerPicker: false,//是否显示图层选择器，右上角图层选择按钮
 
     baseLayer: false, // 不显示默认图层
 
-    fullscreenButton: false,
+    fullscreenButton: false,//是否显示全屏按钮，右下角全屏选择按钮
 
-    timeline: false,
+    timeline: false,//是否显示时间轴    
 
-    infoBox: false,
+    infoBox: false,//是否显示信息框   
 
 })
 
@@ -115,11 +124,8 @@ setCss2dDom(viewer, DOM, [116.46, 39.92, 0]) // 设置2dDOM 移动
 viewer.entities.add({ position: Cesium.Cartesian3.fromDegrees(116.46, 39.92), point: { pixelSize: 10 } }) // 创建测试点
 
 viewer.camera.flyTo({ destination: Cesium.Cartesian3.fromDegrees(116.46, 39.92, 10000000) }) // 定位
-```
 
-### 设置2dDOM 移动
-
-```js
+/* 设置2dDOM 移动 */
 function setCss2dDom(viewer, DOM, position) {
 
     if (!position) return
@@ -162,8 +168,12 @@ function setCss2dDom(viewer, DOM, position) {
 
         destroy()
 
-    }
-
-}
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=cssElement) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [基础功能目录](/examples/cesium/basic/)
+
+> 基础功能 · Cesium.js

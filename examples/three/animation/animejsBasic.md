@@ -1,45 +1,43 @@
 ---
 title: "animejs使用 - Three.js 案例讲解"
-description: "Three.js 关键帧或补间动画。主流程在 `loop`。"
+description: "Three.js 关键帧或补间动画。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,animejs使用,动画效果"
+      content: "three.js,webgl,animation,animejs使用"
 outline: deep
 ---
-
 # animejs使用
 
 *Animejs Basic*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=animation&id=animejsBasic)
 
-
 ![animejs使用](https://z2586300277.github.io/three-cesium-examples/threeExamples/animation/animejsBasic.jpg)
 
+## 你将学到什么
+
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-Three.js 关键帧或补间动画。主流程在 `loop`。
+Three.js 关键帧或补间动画。
 
 > 动画效果 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 实现步骤
 
-## 代码结构
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. rAF 循环中 update 并 render
 
-- 制作animate
-- 添加球体
-- 添加环形
-- 添加平面
+## 代码要点
 
-## 独立函数
-
-- `loop()` — 材质 / GLSL
+- **`loop()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -85,11 +83,8 @@ window.onresize = () => {
     camera.updateProjectionMatrix()
 
 }
-```
 
-### 制作animate
-
-```js
+/* 制作animate */
 const geometry = new THREE.BoxGeometry(10, 10, 10)
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true })
 const cube = new THREE.Mesh(geometry, material)
@@ -101,11 +96,8 @@ animate(cube.rotation, {
     duration: 2000,
     loop: true
 })
-```
 
-### 添加球体
-
-```js
+/* 添加球体 */
 const sphereGeometry = new THREE.SphereGeometry(5, 32, 32)
 const sphereMaterial = new THREE.MeshPhongMaterial({ 
     color: 0x1E90FF, 
@@ -129,5 +121,53 @@ animate(sphere.position, {
     duration: 3000,
     loop: true
 })
+
+/* 添加环形 */
+const torusGeometry = new THREE.TorusGeometry(7, 2, 16, 100)
+const torusMaterial = new THREE.MeshNormalMaterial()
+const torus = new THREE.Mesh(torusGeometry, torusMaterial)
+torus.position.set(20, 5, -10)
+scene.add(torus)
+
+// 环形缩放和旋转动画
+animate(torus.scale, {
+    x: [1, 1.5, 1],
+    y: [1, 1.5, 1],
+    z: [1, 1.5, 1],
+    duration: 2500,
+    loop: true
+})
+animate(torus.rotation, {
+    x: Math.PI * 2,
+    z: Math.PI * 2,
+    duration: 5000,
+    loop: true
+})
+
+/* 添加平面 */
+const planeGeometry = new THREE.PlaneGeometry(50, 50)
+const planeMaterial = new THREE.MeshBasicMaterial({ 
+    color: 0xFF6347, 
+    side: THREE.DoubleSide,
+    transparent: true,
+    opacity: 0.7
+})
+const plane = new THREE.Mesh(planeGeometry, planeMaterial)
+plane.rotation.x = Math.PI / 2
+scene.add(plane)
+
+animate(plane.material.color, {
+    r: [1, 0, 1],
+    g: [0.5, 0, 0.5],
+    b: [0.5, 1, 0.5],
+    duration: 4000,
+    loop: true
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=animation&id=animejsBasic) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [动画效果目录](/examples/three/animation/)
+
+> 动画效果 · Three.js

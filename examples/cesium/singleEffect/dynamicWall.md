@@ -4,19 +4,20 @@ description: "地图上的弧形飞线，线条材质贴图沿切线方向滚动
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,动态围墙,单一效果"
+      content: "cesium.js,webgl,singleEffect,动态围墙"
 outline: deep
 ---
-
 # 动态围墙
 
 *Dynamic Wall*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=singleEffect&id=dynamicWall)
 
-
 ![动态围墙](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/effect/dynamicWall.jpg)
 
+## 你将学到什么
+
+- 案例交互与参数可在在线编辑器中查看
 
 ## 效果说明
 
@@ -24,73 +25,24 @@ outline: deep
 
 > 单一效果 · Cesium.js
 
-## 实现思路
+## 核心概念
 
-- 自定义 Fabric 材质：向 `Material._materialCache` 注册 type，在 `czm_getMaterial` 里改 diffuse/alpha。`Property.getValue` 每帧回传 uniform（常见是 `time`），驱动纹理滚动或颜色变化。
+- **Viewer** 管理地球与渲染；业务对象可用 **Entity**（高层）或 **Primitive**（高性能）。
+- 坐标转换：经纬高 ↔ `Cartesian3` 是 Cesium 开发基础。
 
-- Entity.wall 用 `fromDegreesArrayHeights` 的经纬高数组拼墙面，适合雷达扇形、电子围栏。
+## 实现步骤
 
-## 类与方法
-
-### DynamicWallMaterialProperty
-
-- `constructor()` — 参数：options
-- `getType()` — 返回已注册的 Material fabric type 字符串
-- `getValue()` — Property 接口：按 simulation time 返回 uniform 对象，供 Fabric 材质读取
-- `equals()` — Property 相等性比较，避免重复注册
-
-## 独立函数
-
-- `_getDirectionWallShader()` — 材质 / GLSL
+1. 初始化 `Cesium.Viewer` 与底图图层
+2. 添加 Entity / Primitive / DataSource 等业务对象
+3. 按需 `camera.flyTo` 定位视角
 
 ## 源码
 
-```js
-import * as Cesium from 'cesium'
+完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=singleEffect&id=dynamicWall)。
 
-const box = document.getElementById('box')
+## 小结
 
-const viewer = new Cesium.Viewer(box, {
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=singleEffect&id=dynamicWall) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [单一效果目录](/examples/cesium/singleEffect/)
 
-    animation: false,
-
-    baseLayerPicker: false,
-
-    baseLayer: Cesium.ImageryLayer.fromProviderAsync(Cesium.ArcGisMapServerImageryProvider.fromUrl('https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer')),
-
-    fullscreenButton: false,
-
-    timeline: false,
-
-    infoBox: false,
-
-})
-
-// 🐘优雅永不过时 改编自 https://juejin.cn/post/7431590701496533030
-class DynamicWallMaterialProperty {
-    constructor(options) {
-        // 默认参数设置
-        this._definitionChanged = new Cesium.Event() // 材质定义变更事件
-        this._color = undefined // 颜色属性
-        this._colorSubscription = undefined // 颜色变化订阅
-        this.color = options.color // 从选项中获取颜色
-        this.duration = options.duration // 持续时间
-        this.trailImage = options.trailImage // 路径图像
-        this._time = new Date().getTime() // 当前时间戳
-        this._viewer = options.viewer // Cesium 视图对象
-    }
-    // 返回材质类型
-    getType(time) {
-        return MaterialType // 返回材质类型名称
-    }
-    getValue(time, result) {
-        if (!Cesium.defined(result)) {
-            result = {} // 如果结果未定义，则初始化为空对象
-        }
-        result.color = Cesium.Property.getValueOrClonedDefault(
-            this._color, // 获取颜色值
-            time, // 当前时间
-            Cesium.Color.WHITE, // 默认颜色为白色
-   
-```
-
+> 单一效果 · Cesium.js

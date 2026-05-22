@@ -1,11 +1,14 @@
 ---
 title: "相关工具 - Cesium.js"
-outline: false
+description: "坐标计算、GeoJSON 绘制导出、地图下载等辅助工具。"
+outline: deep
 ---
 
 # 相关工具
 
+坐标计算、GeoJSON 绘制导出、地图下载等辅助工具。
 
+每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。
 
 - [地图转换工具](/examples/cesium/tools/mapDataConvert)
 - [地图下载器](/examples/cesium/tools/layerDownload)

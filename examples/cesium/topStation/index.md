@@ -1,11 +1,14 @@
 ---
 title: "首页导航 - Cesium.js"
-outline: false
+description: "Cesium 官网、社区与案例导航。"
+outline: deep
 ---
 
 # 首页导航
 
+Cesium 官网、社区与案例导航。
 
+每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。
 
 - [CesiumJS官网](/examples/cesium/topStation/cesiumjsHome)
 - [Cesium案例 - 点⭐](/examples/cesium/topStation/jiawanlong)

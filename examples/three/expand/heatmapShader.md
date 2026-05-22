@@ -1,152 +1,47 @@
 ---
 title: "热力图 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `animate`、`getFragmentShader`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,热力图,扩展功能"
+      content: "three.js,webgl,expand,热力图"
 outline: deep
 ---
-
 # 热力图
 
 *Heatmap Shader*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=heatmapShader)
 
-
 ![热力图](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/heatmapShader.jpg)
 
+## 你将学到什么
+
+- 案例交互与参数可在在线编辑器中查看
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `animate`、`getFragmentShader`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 扩展功能 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **Scene / Camera / Renderer** 是 Three.js 渲染三件套；Mesh = Geometry + Material。
+- 开发时先确认坐标系、材质是否受光、以及是否需要 rAF 循环。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+## 实现步骤
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
-
-## 代码结构
-
-- 热力图实现
-
-## 独立函数
-
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 渲染场景并处理 resize
 
 ## 源码
 
-```js
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=heatmapShader)。
 
-const box = document.getElementById('box')
+## 小结
 
-const scene = new THREE.Scene()
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=heatmapShader) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [扩展功能目录](/examples/three/expand/)
 
-const camera = new THREE.PerspectiveCamera(75, box.clientWidth / box.clientHeight, 0.1, 1000)
-
-camera.position.set(0, 0, 20)
-
-const renderer = new THREE.WebGLRenderer()
-
-renderer.setSize(box.clientWidth, box.clientHeight)
-
-box.appendChild(renderer.domElement)
-
-new OrbitControls(camera, renderer.domElement)
-
-animate()
-
-function animate() {
-
-    requestAnimationFrame(animate)
-
-    renderer.render(scene, camera)
-
-}
-
-window.onresize = () => {
-
-    renderer.setSize(box.clientWidth, box.clientHeight)
-
-    camera.aspect = box.clientWidth / box.clientHeight
-
-    camera.updateProjectionMatrix()
-
-}
-
-scene.add(new THREE.AmbientLight(0xffffff, 2), new THREE.AxesHelper(1000))
-```
-
-### 热力图实现
-
-```js
-const arr = [[0., 0., 10.], [.2, .6, 5.], [.25, .7, 8.], [.33, .9, 5.], [.35, .8, 6.], [0.017, 5.311, 6.000], [-.45, .8, 4.], [-.2, -.6, 5.], [-.25, -.7, 8.], [-.33, -.9, 8.], [.35, -.45, 10.], [-.1, -.8, 10.], [.33, -.3, 5.], [-.35, .75, 6.], [.6, .4, 10.], [-.4, -.8, 4.], [.7, -.3, 6.], [.3, -.8, 8.]].map(i => new THREE.Vector3(...i))
-
-const uniforms1 = {
-
-    HEAT_MAX: { value: 10, type: 'number', unit: 'float' },
-
-    PointRadius: { value: 0.42, type: 'number', unit: 'float' },
-
-    PointsCount: { value: arr.length, type: 'number-array', unit: 'int' }, // 数量
-
-    c1: { value: new THREE.Color(0x000000), type: 'color', unit: 'vec3' },
-
-    c2: { value: new THREE.Color(0x000000), type: 'color', unit: 'vec3' },
-
-    uvY: { value: 1, type: 'number', unit: 'float' },
-
-    uvX: { value: 1, type: 'number', unit: 'float' },
-
-    opacity: { value: 1, type: 'number', unit: 'float' }
-
-}
-
-const gui = new GUI()
-
-gui.add(uniforms1.HEAT_MAX, 'value', 0, 10).name('HEAT_MAX')
-
-gui.add(uniforms1.PointRadius, 'value', 0, 1).name('PointRadius')
-
-gui.add(uniforms1.uvY, 'value', 0, 1).name('uvY')
-
-gui.add(uniforms1.uvX, 'value', 0, 1).name('uvX')
-
-gui.add(uniforms1.opacity, 'value', 0, 1).name('opacity')
-
-gui.addColor(uniforms1.c1, 'value').name('c1')
-
-gui.addColor(uniforms1.c2, 'value').name('c2')
-
-const uniforms2 = {
-
-    Points: { value: arr, type: 'vec3
-```
-
-### 循环
-
-```js
-setInterval(() => {
-
-    arr.pop()
-
-    arr.unshift(new THREE.Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 10))
-
-    uniforms.PointsCount.value = arr.length
-
-    shaderMaterial.fragmentShader = getFragmentShader()
-
-    shaderMaterial.needsUpdate = true
-
-}, 200)
-```
-
+> 扩展功能 · Three.js

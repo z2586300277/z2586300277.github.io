@@ -1,38 +1,40 @@
 ---
 title: "轨道控制器 - Three.js 案例讲解"
-description: "Three.js Scene/Camera/Renderer 基础搭建。主流程在 `animate`。"
+description: "本案例展示 **轨道控制器** 的实现。涉及：相机交互控制器、requestAnimationFrame 渲染循环、GUI 面板调试参数。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,轨道控制器,基础案例"
+      content: "three.js,webgl,basic,轨道控制器"
 outline: deep
 ---
-
 # 轨道控制器
 
 *Orbit Controls*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=orbControls)
 
-
 ![轨道控制器](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/orbControls.jpg)
 
+## 你将学到什么
+
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
+- GUI 面板调试参数
 
 ## 效果说明
 
-Three.js Scene/Camera/Renderer 基础搭建。主流程在 `animate`。
+本案例展示 **轨道控制器** 的实现。涉及：相机交互控制器、requestAnimationFrame 渲染循环、GUI 面板调试参数。
 
 > 基础案例 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 实现步骤
 
-## 独立函数
-
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. rAF 循环中 update 并 render
 
 ## 源码
 
@@ -89,6 +91,50 @@ folder.add(controls, 'autoRotateSpeed').name('自动旋转速度')
 
 folder.add(controls, 'enableDamping').name('阻尼')
 
-folder.add(controls, 'dampingFactor').name('阻尼系数'
+folder.add(controls, 'dampingFactor').name('阻尼系数').min(0).max(1)
+
+folder.add(controls, 'minDistance').name('最小距离')
+
+folder.add(controls, 'maxDistance').name('最大距离')
+
+folder.add(controls, 'maxAzimuthAngle', -2 * Math.PI, Math.PI * 2).name('水平旋转上限')
+
+folder.add(controls, 'minAzimuthAngle', -2 * Math.PI, Math.PI * 2).name('水平旋转下限')
+
+folder.add(controls, 'maxPolarAngle', 0, Math.PI).name('垂直旋转上限')
+
+folder.add(controls, 'minPolarAngle', 0, Math.PI).name('垂直旋转下限')
+
+folder.add(controls, 'maxTargetRadius').name('目标移动上限')
+
+folder.add(controls, 'minTargetRadius').name('目标移动下限')
+
+folder.add(controls, 'enablePan').name('平移')
+
+folder.add(controls, 'panSpeed').name('平移速度')
+
+folder.add(controls, 'enableRotate').name('旋转')
+
+folder.add(controls, 'rotateSpeed').name('旋转速度')
+
+folder.add(controls, 'enableZoom').name('缩放')
+
+folder.add(controls, 'zoomSpeed').name('缩放速度')
+
+folder.add(controls, 'zoomToCursor').name('光标为缩放中心')
+
+folder.add(controls.target, 'x').name('目标位置x').listen()
+
+folder.add(controls.target, 'y').name('目标位置y').listen()
+
+folder.add(controls.target, 'z').name('目标位置z').listen()
+
+folder.add({ '重置': () => folder.reset()}, '重置')
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=orbControls) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [基础案例目录](/examples/three/basic/)
+
+> 基础案例 · Three.js

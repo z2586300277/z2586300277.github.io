@@ -1,100 +1,47 @@
 ---
 title: "矩阵操作 - Three.js 案例讲解"
-description: "Three.js 业务向场景组合。主流程在 `init`、`generateMatrix`。"
+description: "Three.js 业务向场景组合。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,矩阵操作"
+      content: "three.js,webgl,application,矩阵操作"
 outline: deep
 ---
-
 # 矩阵操作
 
 *Matrix Oper*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=matrixOperation)
 
-
 ![矩阵操作](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/matrixOperation.jpg)
 
+## 你将学到什么
+
+- 案例交互与参数可在在线编辑器中查看
 
 ## 效果说明
 
-Three.js 业务向场景组合。主流程在 `init`、`generateMatrix`。
+Three.js 业务向场景组合。
 
 > 应用场景 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+- **Scene / Camera / Renderer** 是 Three.js 渲染三件套；Mesh = Geometry + Material。
+- 开发时先确认坐标系、材质是否受光、以及是否需要 rAF 循环。
 
-- 补间动画交给 GSAP/anime/Tween，别在 rAF 里手搓 easing。
+## 实现步骤
 
-## 独立函数
-
-- `init()` — Scene / Camera / Renderer 初始化
-- `normalizationTo3()` — 移除 Entity / 解绑监听
-- `transform()` — 移除 Entity / 解绑监听
-- `animate()` — rAF：update controls + render
-- `render()` — renderer.render(scene, camera)
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 渲染场景并处理 resize
 
 ## 源码
 
-```js
-<html>
+完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=matrixOperation)。
 
-<head>
-    <meta charset="UTF-8">
-    <title>threejs-example 1-model</title>
-    <script type="importmap">
-        {
-          "imports": {
-            "three": "https://threejs.org/build/three.module.js",
-            "three/addons/": "https://threejs.org/examples/jsm/"
-          }
-        }
-      </script>
-      <script>
-        
-      </script>
-    <style>
-        body {
-            margin: 0;
-            background-color: black;
-        }
+## 小结
 
-        a {
-            color: #8ff;
-        }
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=matrixOperation) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [应用场景目录](/examples/three/application/)
 
-        .element {
-            width: 120px;
-            height: 120px;
-            box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.5);
-            border: 1px solid rgba(127, 255, 255, 0.25);
-            font-family: Helvetica, sans-serif;
-            text-align: center;
-            line-height: normal;
-            cursor: default;
-        }
-
-        .element-active {
-            background-color: rgba(255, 145, 0, 0.582) !important;
-        }
-
-        .element:hover {
-            box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.75);
-            border: 1px solid rgba(127, 255, 255, 0.75);
-        }
-
-        .element .symbol {
-            position: absolute;
-            top: 30px;
-            left: 0px;
-            right: 0px;
-            font-size: 40px;
-            font-weight: bold;
-            color: rgba(255, 255, 255, 0.75);
-      
-```
-
+> 应用场景 · Three.js

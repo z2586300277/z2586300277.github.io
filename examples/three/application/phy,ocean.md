@@ -1,81 +1,47 @@
 ---
 title: "具有物理效果的卡通海面 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `initScene`、`setSky`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,具有物理效果的卡通海面,应用场景"
+      content: "three.js,webgl,application,具有物理效果的卡通海面"
 outline: deep
 ---
-
 # 具有物理效果的卡通海面
 
 *Cartoon Ocean*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=phy,ocean)
 
-
 ![具有物理效果的卡通海面](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/cartoon_ocean.jpg)
 
+## 你将学到什么
+
+- 案例交互与参数可在在线编辑器中查看
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `initScene`、`setSky`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 应用场景 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **Scene / Camera / Renderer** 是 Three.js 渲染三件套；Mesh = Geometry + Material。
+- 开发时先确认坐标系、材质是否受光、以及是否需要 rAF 循环。
 
-- 手写几何：`BufferGeometry` + `Float32Array` 填 position/uv/normal，`setIndex` 拼三角面。
+## 实现步骤
 
-- 外部模型 glTF/FBX 用对应 Loader，`scene.add(gltf.scene)` 后注意 scale/坐标。
-
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
-
-## 独立函数
-
-- `setSky()` — 材质 / GLSL
-- `updateSun()` — 材质 / GLSL
-- `initOceanAndSphere()` — 材质 / GLSL
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 渲染场景并处理 resize
 
 ## 源码
 
-```js
-/**
- * 卡通海面
- */
+完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=phy,ocean)。
 
-import { Scene, PerspectiveCamera, WebGLRenderer, DirectionalLight, MathUtils, PMREMGenerator, AmbientLight, PlaneGeometry, Clock, Mesh, MeshBasicMaterial, Vector3, BoxGeometry, Box3, BufferGeometry, Float32BufferAttribute, BufferAttribute, Matrix4, ShaderMaterial, } from "three";
-import { OrbitControls, Sky } from "three/examples/jsm/Addons.js";
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+## 小结
 
-const three = document.getElementById("box");
-let scene, camera, renderer, controls;
-// onMounted(() => {
-//     initScene();
-//     initOceanAndSphere();
-// });
-// onBeforeUnmount(() => {
-//     cancelAnimationFrame(rf);
-//     window.removeEventListener("resize", onWindowResize);
-// });
-const clock = new Clock();
-function initScene() {
-    scene = new Scene();
-    camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
-    camera.position.set(30, 5, 20);
-    renderer = new WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    three.appendChild(renderer.domElement);
-    //utils.setSkyFromTexture(scene, renderer)
-    // .setSky(scene, renderer);
-    setSky(scene, renderer)
-    controls = new OrbitControls(camera, renderer.domElement);
-    controls.target.set(0, 0, 0);
-    c
-```
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=phy,ocean) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [应用场景目录](/examples/three/application/)
 
+> 应用场景 · Three.js

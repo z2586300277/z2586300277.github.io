@@ -1,71 +1,52 @@
 ---
 title: "透明渐变 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `createStarShape`、`createPolygonShape`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,透明渐变,着色器"
+      content: "three.js,webgl,shader,透明渐变"
 outline: deep
 ---
-
 # 透明渐变
 
 *Trans Grad*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=transparentGradient)
 
-
 ![透明渐变](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/transparentGradient.jpg)
 
+## 你将学到什么
+
+- 自定义 ShaderMaterial / 修改内置 shader
+- 相机交互控制器
+- 天空盒与环境贴图
+- requestAnimationFrame 渲染循环
+- GUI 面板调试参数
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `createStarShape`、`createPolygonShape`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 着色器 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+- **CubeTexture** 六面贴图作 `scene.background`；`scene.environment` 供 PBR 材质反射。
 
-## 独立函数
+## 实现步骤
 
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 定义材质/shader 与 uniforms，rAF 中更新
+3. rAF 循环中 update 并 render
 
-## 着色器
+## 代码要点
 
-### 顶点
-
-- 顶点阶段：改 gl_Position 或传 varying
-
-```glsl
-varying vec2 vUv;
-    void main() {
-      vUv = uv; 
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
-```
-
-### 片元
-
-- 片元输出 gl_FragColor
-
-```glsl
-varying vec2 vUv;
-    uniform vec3 color;
-    uniform float uvScale;
-    uniform float intensity;
-    void main() {
-      vec2 uv = vUv * uvScale;
-      float distance = length(uv);
-      float alpha = smoothstep(0.0, 1., distance);
-      gl_FragColor = vec4(color * intensity, alpha);
-    }
-```
+- **`createStarShape()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`createPolygonShape()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -118,6 +99,84 @@ const material = new THREE.ShaderMaterial({
       gl_FragColor = vec4(color * intensity, alpha);
     }
   `,
- 
+    transparent: true,
+    side: THREE.DoubleSide,
+    uniforms: uniforms
+
+});
+
+const gui = new GUI()
+gui.addColor(material.uniforms.color, 'value').name('color')
+gui.add(material.uniforms.intensity, 'value').min(0).max(10).name('intensity')
+gui.add(material.uniforms.uvScale, 'value').min(0).max(1).name('uvScale')
+
+// 通过点绘制成一个五角星
+function createStarShape(radiusOuter, radiusInner, points) {
+    const shape = new THREE.Shape();
+    const angleStep = (Math.PI * 2) / points;
+
+    for (let i = 0; i < points; i++) {
+        const angleOuter = i * angleStep; // 外点的角度
+        const angleInner = angleOuter + angleStep / 2; // 内点的角度
+
+        const xOuter = Math.cos(angleOuter) * radiusOuter;
+        const yOuter = Math.sin(angleOuter) * radiusOuter;
+        const xInner = Math.cos(angleInner) * radiusInner;
+        const yInner = Math.sin(angleInner) * radiusInner;
+
+        if (i === 0) {
+            shape.moveTo(xOuter, yOuter); // 第一个点
+        } else {
+            shape.lineTo(xOuter, yOuter); // 连接到外点
+        }
+        shape.lineTo(xInner, yInner); // 连接到内点
+    }
+
+    shape.closePath(); // 闭合形状
+
+    return shape;
+}
+
+const starShape = createStarShape(5, 2, 5);
+
+const starGeometry = new THREE.ShapeGeometry(starShape);
+
+const star = new THREE.Mesh(starGeometry, material);
+
+star.position.y += 10;
+
+scene.add(star)
+
+// 随机绘制成 4，5，6，7，8 边形
+function createPolygonShape(radius, points) {
+
+    const shape = new THREE.Shape();
+
+    const angleStep = (Math.PI * 2) / points;
+
+    for (let i = 0; i < points; i++) {
+
+        const angle = i * angleStep;
+
+        const x = Math.cos(angle) * radius;
+
+        const y = Math.sin(angle) * radius;
+
+        if (i === 0) {
+
+            shape.moveTo(x, y);
+
+        } else {
+
+            shape.lineTo(x, y);
+
+        }
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=transparentGradient) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [着色器目录](/examples/three/shader/)
+
+> 着色器 · Three.js

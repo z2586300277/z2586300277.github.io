@@ -1,47 +1,43 @@
 ---
 title: "围栏着色器 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `animate`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,围栏着色器"
+      content: "three.js,webgl,shader,围栏着色器"
 outline: deep
 ---
-
 # 围栏着色器
 
 *Fence Shader*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=fenceShader)
 
-
 ![围栏着色器](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/fenceShader.jpg)
 
+## 你将学到什么
+
+- 自定义 ShaderMaterial / 修改内置 shader
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `animate`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 着色器 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
 
-- 手写几何：`BufferGeometry` + `Float32Array` 填 position/uv/normal，`setIndex` 拼三角面。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+## 实现步骤
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
-
-## 代码结构
-
-- 顶点着色器
-- 片元着色器
-
-## 独立函数
-
-- `animate()` — rAF：update controls + render
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 定义材质/shader 与 uniforms，rAF 中更新
+3. rAF 循环中 update 并 render
 
 ## 源码
 
@@ -74,22 +70,16 @@ window.onresize = () => {
 }
 
 box.appendChild(renderer.domElement)
-```
 
-### 顶点着色器
-
-```js
+/* 顶点着色器 */
 const vertexs = `varying vec2 vUv;
 void main() {
   vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
   vUv = uv;
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }`
-```
 
-### 片元着色器
-
-```js
+/* 片元着色器 */
 const fragments = `
 uniform float time;
 uniform float opacity;
@@ -147,6 +137,37 @@ const material = new THREE.ShaderMaterial({
     side: THREE.DoubleSide,
 });
 
-let c = [0,0, 10,
+let c = [0,0, 10, 0, 10, 10, 0, 10, 0, 0]
+
+let posArr = [];
+
+let uvrr = [];
+
+let h = 10; //围墙拉伸高度
+
+for (let i = 0; i < c.length - 2; i += 2) {
+
+  // 矩形的三角形1
+  posArr.push(c[i], c[i + 1], 0, c[i + 2], c[i + 3], 0, c[i + 2], c[i + 3], h);
+
+  // 矩形的三角形2
+  posArr.push(c[i], c[i + 1], 0, c[i + 2], c[i + 3], h, c[i], c[i + 1], h);
+
+  // 注意顺序问题，和顶点位置坐标对应
+  uvrr.push(0, 0, 1, 0, 1, 1);
+
+  uvrr.push(0, 0, 1, 1, 0, 1);
+
+}
+
+const geometry = new THREE.BufferGeometry(); //声明一个空几何体对象
+
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=fenceShader) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [着色器目录](/examples/three/shader/)
+
+> 着色器 · Three.js

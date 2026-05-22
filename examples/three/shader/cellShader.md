@@ -1,87 +1,47 @@
 ---
 title: "细胞 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `animate`、`getShaderMesh`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,细胞,着色器"
+      content: "three.js,webgl,shader,细胞"
 outline: deep
 ---
-
 # 细胞
 
 *Cell Shader*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=cellShader)
 
-
 ![细胞](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/cellShader.jpg)
 
+## 你将学到什么
+
+- 自定义 ShaderMaterial / 修改内置 shader
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `animate`、`getShaderMesh`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 着色器 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 实现步骤
 
-## 独立函数
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 定义材质/shader 与 uniforms，rAF 中更新
+3. rAF 循环中 update 并 render
 
-- `animate()` — rAF：update controls + render
-- `getShaderMesh()` — 材质 / GLSL
+## 代码要点
 
-## 着色器
-
-### 顶点
-
-- 顶点阶段：改 gl_Position 或传 varying
-
-```glsl
-varying vec3 vPosition;
-            varying vec2 vUv;
-            void main() { 
-                vUv = uv; 
-                vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                gl_Position = projectionMatrix * mvPosition;
-            }
-```
-
-### 片元
-
-```glsl
-uniform float iTime;
-		uniform sampler2D iChannel0;
-		uniform vec2 iResolution; 
-		varying vec2 iMouse;
-		varying vec2 vUv;  
-        
-        #define NUM_RAYS 13.
-
-    #define VOLUMETRIC_STEPS 19
-
-    #define MAX_ITER 35
-    #define FAR 6.
-
-    #define time iTime*1.1
-
-
-    mat2 mm2(in float a){float c = cos(a), s = sin(a);return mat2(c,-s,s,c);}
-    float noise( in float x ){return texture2D(iChannel0, vec2(x*.01,1.),0.0).x;}
-
-    float hash( float n ){return fract(sin(n)*43758.5453);}
-
-    float noise(in vec3 p)
-    {
-        vec3 ip = floor(p);
-        vec3 fp = frac
-```
+- **`getShaderMesh()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -134,6 +94,82 @@ function getShaderMesh() {
         depthWrite: false,
         transparent: true,
         vertexShader: `
-            varying
+            varying vec3 vPosition;
+            varying vec2 vUv;
+            void main() { 
+                vUv = uv; 
+                vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                gl_Position = projectionMatrix * mvPosition;
+            }
+        `,
+        fragmentShader: `
+        uniform float iTime;
+		uniform sampler2D iChannel0;
+		uniform vec2 iResolution; 
+		varying vec2 iMouse;
+		varying vec2 vUv;  
+        
+        #define NUM_RAYS 13.
+
+    #define VOLUMETRIC_STEPS 19
+
+    #define MAX_ITER 35
+    #define FAR 6.
+
+    #define time iTime*1.1
+
+    mat2 mm2(in float a){float c = cos(a), s = sin(a);return mat2(c,-s,s,c);}
+    float noise( in float x ){return texture2D(iChannel0, vec2(x*.01,1.),0.0).x;}
+
+    float hash( float n ){return fract(sin(n)*43758.5453);}
+
+    float noise(in vec3 p)
+    {
+        vec3 ip = floor(p);
+        vec3 fp = fract(p);
+        fp = fp*fp*(3.0-2.0*fp);
+        
+        vec2 tap = (ip.xy+vec2(37.0,17.0)*ip.z) + fp.xy;
+        vec2 rg = texture2D( iChannel0, (tap + 0.5)/256.0, 0.0 ).yx;
+        return mix(rg.x, rg.y, fp.z);
+    }
+
+    mat3 m3 = mat3( 0.00,  0.80,  0.60,
+                -0.80,  0.36, -0.48,
+                -0.60, -0.48,  0.64 );
+
+    //See: https://www.shadertoy.com/view/XdfXRj
+    float flow(in vec3 p, in float t)
+    {
+        float z=2.;
+        float rz = 0.;
+        vec3 bp = p;
+        for (float i= 1.;i < 5.;i++ )
+        {
+            p += time*.1;
+            rz+= (sin(noise(p+t*0.8)*6.)*0.5+0.5) /z;
+            p = mix(bp,p,0.6);
+            z *= 2.;
+            p *= 2.01;
+            p*= m3;
+        }
+        return rz;	
+    }
+
+    //could be improved
+    float sins(in float x)
+    {
+        float rz = 0.;
+        float z = 2.;
+        for (float i= 0.;i < 3.;i++ )
+        {
+            rz += abs(fract(x*1.4)-0.5)/z;
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=cellShader) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [着色器目录](/examples/three/shader/)
+
+> 着色器 · Three.js

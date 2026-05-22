@@ -1,43 +1,51 @@
 ---
 title: "测量 - Three.js 案例讲解"
-description: "Three.js 业务向场景组合。主流程在 `init`、`onDragChanged`。"
+description: "Three.js 业务向场景组合。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,测量,应用场景"
+      content: "three.js,webgl,application,测量"
 outline: deep
 ---
-
 # 测量
 
 *Line Measure*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=lineMeasure)
 
-
 ![测量](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/lineMeasure.jpg)
 
+## 你将学到什么
+
+- 相机交互控制器
+- 天空盒与环境贴图
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-Three.js 业务向场景组合。主流程在 `init`、`onDragChanged`。
+Three.js 业务向场景组合。
 
 > 应用场景 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 手写几何：`BufferGeometry` + `Float32Array` 填 position/uv/normal，`setIndex` 拼三角面。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **CubeTexture** 六面贴图作 `scene.background`；`scene.environment` 供 PBR 材质反射。
 
-- 点击选中：`Raycaster` + 鼠标 NDC 坐标，`intersectObjects` 取交点。
+## 实现步骤
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. rAF 循环中 update 并 render
 
-## 独立函数
+## 代码要点
 
-- `init()` — Scene / Camera / Renderer 初始化
-- `animate()` — rAF：update controls + render
+- **`onDragChanged()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`onDragChanging()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`onDragend()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`onMousedown()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`updateLinePoints()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`onMousemove()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -88,6 +96,86 @@ function init() {
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.outputEncoding = THREE.sRGBEnco
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    document.body.appendChild(renderer.domElement);
+
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xbfe3dd);
+    scene.add(markersGroup);
+
+    camera = new THREE.PerspectiveCamera(
+        40,
+        window.innerWidth / window.innerHeight,
+        1,
+        100
+    );
+    camera.position.set(10, 10, 10);
+
+    //plane
+    let planeGeo = new THREE.PlaneGeometry(40, 40, 40);
+    let planeMat = new THREE.MeshBasicMaterial({ color: 0x6666666 });
+    plane = new THREE.Mesh(planeGeo, planeMat);
+    plane.rotation.x = -Math.PI / 2;
+    scene.add(plane);
+
+    // orbit
+    orbitControls = new OrbitControls(camera, renderer.domElement);
+    orbitControls.target.set(0, 0.5, 0);
+    orbitControls.update();
+    orbitControls.enableDamping = true;
+
+    // transform
+    transformControls = new TransformControls(camera, renderer.domElement);
+    transformControls.addEventListener("dragging-changed", onDragChanged);
+    transformControls.addEventListener("mouseUp", onDragend);
+    transformControls.addEventListener("change", onDragChanging);
+    scene.add(transformControls);
+    function onDragChanged(event) {
+        orbitControls.enabled = !event.value;
+    }
+
+    document.body.addEventListener("mousedown", onMousedown, false);
+    document.body.addEventListener("mousemove", onMousemove, false);
+    window.onresize = function () {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+}
+function animate() {
+    requestAnimationFrame(animate);
+    orbitControls.update();
+    renderer.render(scene, camera);
+}
+function onDragChanging(event) {
+    if (points.length < 2) return;
+
+    let point = mesh.position;
+    let _idx = mesh._idx;
+    updatePoints(points, _idx, point);
+
+    totalDistance = updateDistanceArray(points, distanceArray);
+    distanceDom.innerHTML = totalDistance.toFixed(2) + "m";
+    const positions =
+        "array" in line.geometry.attributes.position &&
+        line.geometry.attributes.position.array;
+
+    if (_idx === 0) {
+        positions[0] = point.x;
+        positions[1] = point.y;
+        positions[2] = point.z;
+    } else {
+        let i = (2 * _idx - 1) * 3;
+        positions[i] = point.x;
+        positions[i + 1] = point.y;
+        positions[i + 2] = point.z;
+        positions[i + 3] = point.x;
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=lineMeasure) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [应用场景目录](/examples/three/application/)
+
+> 应用场景 · Three.js

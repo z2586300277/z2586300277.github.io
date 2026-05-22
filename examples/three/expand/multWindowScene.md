@@ -4,19 +4,22 @@ description: "Three.js 接第三方库或扩展能力。入口在 `WindowManager
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,多浏览器窗口连接,扩展功能"
+      content: "three.js,webgl,expand,多浏览器窗口连接"
 outline: deep
 ---
-
 # 多浏览器窗口连接
 
 *Mult Window*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=multWindowScene)
 
-
 ![多浏览器窗口连接](https://z2586300277.github.io/three-cesium-examples/threeExamples/expand/multWindowScene.jpg)
 
+## 你将学到什么
+
+- 天空盒与环境贴图
+- 水面 / 反射面效果
+- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
@@ -24,36 +27,24 @@ Three.js 接第三方库或扩展能力。入口在 `WindowManager`。
 
 > 扩展功能 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 手写几何：`BufferGeometry` + `Float32Array` 填 position/uv/normal，`setIndex` 拼三角面。
+- **CubeTexture** 六面贴图作 `scene.background`；`scene.environment` 供 PBR 材质反射。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+- **Reflector/Water** 基于 renderTarget 的平面反射或动态水面法线。
 
-- 反射/水面常用 Reflector 或自定义 renderTarget 贴图。
+## 实现步骤
 
-## 类与方法
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. rAF 循环中 update 并 render
 
-### WindowManager
+## 代码要点
 
-- `constructor()` — 初始化成员
-- `init()`
-- `getWinShape()`
-- `getWindowIndexFromId()`
-- `updateWindowsLocalStorage()`
-- `update()` — 每帧更新 geometry uniform 或实例矩阵
-- `setWinShapeChangeCallback()`
-- `setWinChangeCallback()`
-- `getWindows()`
-- `getThisWindowData()`
-- `getThisWindowID()`
-
-## 独立函数
-
-- `init()` — Scene / Camera / Renderer 初始化
-- `setupWindowManager()` — 移除 Entity / 解绑监听
-- `updateNumberOfCubes()` — 移除 Entity / 解绑监听
-- `render()` — renderer.render(scene, camera)
+- **`setupScene()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`setupWindowManager()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`updateNumberOfCubes()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`updateWindowShape()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+- **`resize()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
 
 ## 源码
 
@@ -108,6 +99,82 @@ class WindowManager {
 		let shape = this.getWinShape();
 		this.#winData = { id: this.#id, shape: shape, metaData: metaData };
 		this.#windows.push(this.#winData);
-		localStorage.setIte
+		localStorage.setItem("count", this.#count);
+		this.updateWindowsLocalStorage();
+	}
+
+	getWinShape() {
+		return { x: window.screenLeft, y: window.screenTop, w: window.innerWidth, h: window.innerHeight };
+	}
+
+	getWindowIndexFromId(id) {
+		return this.#windows.findIndex(win => win.id == id);
+	}
+
+	updateWindowsLocalStorage() {
+		localStorage.setItem("windows", JSON.stringify(this.#windows));
+	}
+
+	update() {
+		let winShape = this.getWinShape();
+		if (Object.values(winShape).some((value, i) => value != Object.values(this.#winData.shape)[i])) {
+			this.#winData.shape = winShape;
+			let index = this.getWindowIndexFromId(this.#id);
+			this.#windows[index].shape = winShape;
+			if (this.#winShapeChangeCallback) this.#winShapeChangeCallback();
+			this.updateWindowsLocalStorage();
+		}
+	}
+
+	setWinShapeChangeCallback(callback) {
+		this.#winShapeChangeCallback = callback;
+	}
+
+	setWinChangeCallback(callback) {
+		this.#winChangeCallback = callback;
+	}
+
+	getWindows() {
+		return this.#windows;
+	}
+
+	getThisWindowData() {
+		return this.#winData;
+	}
+
+	getThisWindowID() {
+		return this.#id;
+	}
+}
+
+let camera, scene, renderer, world, near, far, pixR = window.devicePixelRatio || 1, cubes = [], sceneOffsetTarget = { x: 0, y: 0 }, sceneOffset = { x: 0, y: 0 };
+let today = new Date().setHours(0, 0, 0, 0), internalTime = (new Date().getTime() - today) / 1000.0, windowManager, initialized = false;
+
+if (new URLSearchParams(window.location.search).get("clear")) localStorage.clear();
+else {
+	document.addEventListener("visibilitychange", () => { if (document.visibilityState != 'hidden' && !initialized) init(); });
+	window.onload = () => { if (document.visibilityState != 'hidden') init(); };
+
+	function init() {
+		initialized = true;
+		setTimeout(() => { setupScene(); setupWindowManager(); resize(); updateWindowShape(false); render(); window.addEventListener('resize', resize); }, 500)
+	}
+
+	function setupScene() {
+		camera = new THREE.OrthographicCamera(0, 0, window.innerWidth, window.innerHeight, -10000, 10000);
+		camera.position.z = 2.5; near = camera.position.z - .5; far = camera.position.z + 0.5;
+		scene = new THREE.Scene(); scene.background = new THREE.Color(0.0); scene.add(camera);
+		renderer = new THREE.WebGLRenderer({ antialias: true, depthBuffer: true }); renderer.setPixelRatio(pixR);
+		world = new THREE.Object3D(); scene.add(world);
+		renderer.domElement.setAttribute("id", "scene"); document.body.appendChild(renderer.domElement);
+	}
+
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=multWindowScene) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [扩展功能目录](/examples/three/expand/)
+
+> 扩展功能 · Three.js

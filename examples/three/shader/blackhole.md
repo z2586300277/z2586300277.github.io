@@ -1,44 +1,45 @@
 ---
 title: "黑洞 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `tick`、`render`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,cesium,webgl,黑洞,着色器"
+      content: "three.js,webgl,shader,黑洞"
 outline: deep
 ---
-
 # 黑洞
 
 *Black Hole*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=blackhole)
 
-
 ![黑洞](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/blackhole.jpg)
 
+## 你将学到什么
+
+- 自定义 ShaderMaterial / 修改内置 shader
+- 相机交互控制器
+- requestAnimationFrame 渲染循环
+- Clock 帧间隔计时
+- GUI 面板调试参数
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `tick`、`render`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 着色器 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
+- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
 
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
+## 实现步骤
 
-## 代码结构
-
-- glsl
-
-## 独立函数
-
-- `render()` — renderer.render(scene, camera)
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 定义材质/shader 与 uniforms，rAF 中更新
+3. rAF 循环中 update 并 render
 
 ## 源码
 
@@ -93,13 +94,7 @@ const material = new THREE.RawShaderMaterial({
     color: { value: new THREE.Color(0xe0eaff) },
   },
 
-  vertexShader:
-```
-
-### glsl
-
-```js
-`
+  vertexShader: /* glsl */ `
     precision highp float;
     precision highp int;
     precision highp sampler2D;
@@ -140,13 +135,7 @@ const material = new THREE.RawShaderMaterial({
     }
   `,
 
-  fragmentShader:
-```
-
-### glsl
-
-```js
-`
+  fragmentShader: /* glsl */ `
     precision highp float;
     precision highp int;
     precision highp sampler2D;
@@ -175,32 +164,12 @@ const material = new THREE.RawShaderMaterial({
     uniform  uint       max_steps   ;
     uniform  float      step_size   ;
     uniform  float      time        ;
-    uniform  vec2       resolution  ;
-    uniform  vec3       color       ;
-
-    smooth  in  vec3  V_pos  ;
-
-    layout(location = 0) out vec4 c_out;
-
-    // 引力加速度
-    vec3 a(in Ray ray) {
-      vec3 dir = normalize(hole.pos - ray.pos);
-      float strength = hole.rs / (ray.d * ray.d) * 0.4 + abs(dot(ray.dir, dir)) * 0.001;
-      return dir * strength;
-    }
-
-    float CubicInterpolate(float x) {
-      return 3.0 * pow(x, 2.0) - 2.0 * pow(x, 3.0);
-    }
-    
-    float PerlinNoise(vec3 Position) {
-      vec3 PosInt = floor(Position);
-      vec3 PosFloat = fract(Position);
-    
-      float Sx = CubicInterpolate(PosFloat.x);
-      float Sy = CubicInterpolate(PosFloat.y);
-      float Sz = CubicInterpolate(PosFloat.z);
-    
-      float v000 = 2.0 * fract(sin(dot(vec3(PosInt.x, PosInt.y, PosInt.z), vec3(12.9898, 78.2
+// ... 完整源码见在线案例编辑器
 ```
 
+## 小结
+
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=blackhole) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [着色器目录](/examples/three/shader/)
+
+> 着色器 · Three.js

@@ -1,86 +1,47 @@
 ---
 title: "火球效果 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `init`、`createScene`。"
+description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
 head:
   - - meta
     - name: keywords
-      content: "three.js,火球效果"
+      content: "three.js,webgl,shader,火球效果"
 outline: deep
 ---
-
 # 火球效果
 
 *Fireball*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=fireball)
 
-
 ![火球效果](https://z2586300277.github.io/3d-file-server/images/four/fireball.png)
 
+## 你将学到什么
+
+- 案例交互与参数可在在线编辑器中查看
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。主流程在 `init`、`createScene`。
+主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
 
 > 着色器 · Three.js
 
-## 实现思路
+## 核心概念
 
-- 自定义着色器：`ShaderMaterial` 自带 projectionMatrix/modelViewMatrix；`RawShaderMaterial` 全部 uniform 自己传。片元里改 gl_FragColor 或对接 PBR。
+- **Scene / Camera / Renderer** 是 Three.js 渲染三件套；Mesh = Geometry + Material。
+- 开发时先确认坐标系、材质是否受光、以及是否需要 rAF 循环。
 
-- 后期：`EffectComposer` 串 Pass，先 `RenderPass` 出场景，再 bloom/SSAO 等屏幕 Pass。
+## 实现步骤
 
-- 轨道控制：`OrbitControls(camera, domElement)`，阻尼 `enableDamping` 要每帧 `update()`。
-
-- 渲染循环在 rAF 里更新 uniform/动画，最后 `renderer.render(scene, camera)`。
-
-## 独立函数
-
-- `init()` — Scene / Camera / Renderer 初始化
-- `mesh()` — 材质 / GLSL
-- `updateDraw()` — 材质 / GLSL
+1. 搭建 Scene / Camera / Renderer 与 OrbitControls
+2. 渲染场景并处理 resize
 
 ## 源码
 
-```js
-<!DOCTYPE html><html lang="en"><head>
-    <title>three.js</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-  </head>
-  <body>
-    <script type="importmap">
-        {
-          "imports": {
-            "three": "https://threejs.org/build/three.module.js",
-            "three/addons/": "https://threejs.org/examples/jsm/"
-          }
-        }
-      </script>
+完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=fireball)。
 
-    <script type="module">
-      import * as THREE from "three";
-      import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
-      import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
-      import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
-      import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
-      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-      import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+## 小结
 
-      const ENTIRE_SCENE = 0,
-        BLOOM_SCENE = 1;
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=fireball) 运行，再对照源码逐步修改参数加深理解
+- 更多同类案例见 [着色器目录](/examples/three/shader/)
 
-      const bloomLayer = new THREE.Layers();
-      bloomLayer.set(BLOOM_SCENE);
-      const materials = {};
-      const darkMaterial = new THREE.MeshBasicMaterial({ color: "black" });
-
-      const vert = `
-    varying vec3 vNormal;
-    varying vec3 camPos;
-    varying vec2 vUv;
-
-    void main() {
-    vNor
-```
-
+> 着色器 · Three.js
