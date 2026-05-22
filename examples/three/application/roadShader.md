@@ -1,12 +1,13 @@
 ---
 title: "道路流光 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。入口在 `Base`。"
+description: "道路流光：Scene / Camera / Renderer 渲染管线、相机交互控制器、ShaderMaterial / RawShaderMaterial 自定义 GLSL（应用场景）"
 head:
   - - meta
     - name: keywords
-      content: "three.js,webgl,application,道路流光"
+      content: "three.js,application,roadShader,顶点着色器,片元着色器,uniform 驱动"
 outline: deep
 ---
+
 # 道路流光
 
 *Road Shader*
@@ -17,49 +18,42 @@ outline: deep
 
 ## 你将学到什么
 
-- 自定义 ShaderMaterial / 修改内置 shader
-- EffectComposer 后期处理管线
+- Scene / Camera / Renderer 渲染管线
 - 相机交互控制器
-- 轮廓高亮 OutlinePass
-- requestAnimationFrame 渲染循环
+- ShaderMaterial / RawShaderMaterial 自定义 GLSL
+- EffectComposer 后处理管线
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。入口在 `Base`。
-
-> 应用场景 · Three.js
+Three.js WebGL 场景，以自定义 shader 呈现核心视觉效果，技术点：顶点着色器、片元着色器、uniform 驱动。打开在线案例可查看最终画面。
 
 ## 核心概念
 
-- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
-
-- **EffectComposer** 多 Pass 链式渲染：RenderPass → 特效 Pass → 输出屏幕。`composer.render()` 替代 `renderer.render()`。
-
-- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
-
-- 选中物体外轮廓发光，常用于编辑器选中态。
+- **Scene** 容纳对象，**Camera** 定义视点，**WebGLRenderer** 输出 canvas。
+- **OrbitControls** 轨道旋转缩放；开启阻尼时每帧 `controls.update()`。
+- **ShaderMaterial** 自定义 uniforms + vertex/fragment；**RawShaderMaterial** 需手写全部 shader 声明。
+- **EffectComposer** 多 Pass 链式渲染：RenderPass → 特效 Pass → 输出屏幕。
 
 ## 实现步骤
 
-1. 搭建 Scene / Camera / Renderer 与 OrbitControls
-2. 定义材质/shader 与 uniforms，rAF 中更新
-3. EffectComposer 组装 Pass 链并 render
+1. 初始化 Viewer 或 Scene / Camera / Renderer
+2. 创建 OrbitControls 并处理 resize
+3. 定义 uniforms，在 rAF 中更新并 render
+4. composer.addPass 串联后处理
 
-## 源码
+## 代码要点
 
 ```js
-import * as THREE from 'three';
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { BloomPass } from 'three/addons/postprocessing/BloomPass.js';
-import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-
-class Base {
-    initThree(el) {
-        this.container = el;
+this.container = el;
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         this.renderer.setSize(this.container.offsetWidth, this.container.offsetHeight);
+        this.container.appendChild(this.renderer.domElement);
+        this.scene = new THREE.Scene();
+        this.camera = new THREE.PerspectiveCamera(
+            45,
+            this.container.offsetWidth / this.container.offsetHeight,
+            1,
+
         this.container.appendChild(this.renderer.domElement);
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(
@@ -69,111 +63,17 @@ class Base {
             2000
         );
         this.camera.position.set(0, 10, 50);
-        new OrbitControls(this.camera, this.renderer.domElement);
-        this.animate();
-        window.addEventListener('resize', this.onResize.bind(this));
-    }
-    animate() {
-        this.renderer.render(this.scene, this.camera);
-        requestAnimationFrame(this.animate.bind(this));
-    }
-    onResize() {
-        if (this.container) {
-            this.camera.aspect = this.container.offsetWidth / this.container.offsetHeight;
-            this.camera.updateProjectionMatrix();
-            this.renderer.setSize(this.container.offsetWidth, this.container.offsetHeight);
-        }
-    }
-}
-
-class Road extends Base {
-    constructor() {
-        super();
-        this.speed = 0.005;
-    }
-    animate() {
-        if (this.materials) {
-            this.materials.forEach((m) => {
-                m.uniforms.uTime.value += this.speed;
-                if (m.uniforms.uTime.value > 1) {
-                    m.uniforms.uTime.value = 0;
-                }
-            })
-        }
-        if (this.composer) {
-            this.renderer.autoClear = false;
-            this.renderer.clear();
-            this.normalObj.visible = false;
-            this.composer.render();
-            this.renderer.clearDepth();
-            this.normalObj.visible = true;
-        }
-        this.renderer.render(this.scene, this.camera);
-        this.threeAnim = requestAnimationFrame(this.animate.bind(this));
-    }
-    initBloom() {
-        const params = {
-            threshold: 0,
-            strength: 0.5,
-            radius: 0.5,
-            exposure: 0.5
-        };
-        const renderScene = new RenderPass(this.scene, this.camera);
-        const bloomPass = new BloomPass(5, 20, 100);
-        bloomPass.threshold = params.threshold;
-        bloomPass.strength = params.strength;
-        bloomPass.radius = params.radius;
-        const composer = new EffectComposer(this.renderer);
-        composer.addPass(renderScene);
-        composer.addPass(bloomPass);
-        composer.addPass(new OutputPass());
-        this.composer = composer;
-    }
-    createChart(that) {
-        this.initBloom();
-        const commonUniforms = {
-            uFade: { value: new THREE.Vector2(0, 0.6) },
-            uOffset: { value: new THREE.Vector2(40, 20) }
-        };
-        const vertexMoveHeight = `
-          float getMove(float u, float offset) {
-            float a = u * PI * 2.0;
-            return sin(a + PI * 0.25) * u * offset;
-          }
-          float getHeight(float u, float offset) {
-            float a = u * PI * 3.0;
-            return cos(a) * u * offset;
-          }
-        `;
-        const spline = new THREE.LineCurve3(
-            new THREE.Vector3(0, 0, that.height * 0.25),
-            new THREE.Vector3(0, 0, -that.height * 0.75)
-        );
-        const geometry = new THREE.TubeGeometry(spline, that.height, that.lineWidth, 8, false);
-
-        const vertexShader = `
-      float PI = acos(-1.0);
-      uniform vec2 uOffset;
-      varying vec2 vUv;
-      ${vertexMoveHeight}
-      void main(void) {
-        vUv = uv;
-        float m = getMove(uv.x, uOffset.x);
-        float h = getHeight(uv.x, uOffset.y);
-        vec3 newPosition = position;
-        newPosition.x += m;
-        newPosition.y += h;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
-      }
-    `;
-
-        const fragmentShader = `
-// ... 完整源码见在线案例编辑器
 ```
+
+
+完整源码：[GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/threeExamples/application/roadShader.js)
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=roadShader) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [应用场景目录](/examples/three/application/)
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=roadShader) 运行，再对照源码修改 uniform / 参数加深理解
 
-> 应用场景 · Three.js
+
+- 上一篇：[绘制面_内置点](/examples/three/application/drawFace_improve)
+- 下一篇：[模型导航](/examples/three/application/model_navigation)
+
+> 应用场景 · Three.js · 21/68

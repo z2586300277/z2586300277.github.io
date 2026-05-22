@@ -1,169 +1,114 @@
 ---
 title: "绘制文字 - Cesium.js 案例讲解"
-description: "场景粒子（雨雪等），挂在 viewer.scene 或 Entity 上。"
+description: "Entity Label 贴地文字、HeightReference 与 globe.getHeight 手动贴地"
 head:
   - - meta
     - name: keywords
-      content: "cesium.js,webgl,basic,绘制文字"
+      content: "cesium.js,Label,贴地,HeightReference,getHeight"
 outline: deep
 ---
+
 # 绘制文字
 
 *Draw Text*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=cesiumText)
 
-![绘制文字](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/layer/defaultLayer.jpg)
+![绘制文字](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/cesiumText.jpg)
 
 ## 你将学到什么
 
-- Cesium Viewer 初始化
-- Cesium Entity 高层 API
-- Cesium 影像图层
+- **Entity.label** 绘制场景内文字
+- **HeightReference.CLAMP_TO_GROUND** 自动贴地
+- **globe.getHeight** 查询地形高度后手动设高
+- **disableDepthTestDistance** 避免被地形遮挡
 
 ## 效果说明
 
-场景粒子（雨雪等），挂在 viewer.scene 或 Entity 上。
-
-> 基础功能 · Cesium.js
+地球上有三组标注：**贴地**（随地形起伏）、**不贴地**（固定 2000m 高度）、**自动计算贴地**（等地形加载后用 `getHeight` 取高程再放置）。
 
 ## 核心概念
 
-- **Viewer** 封装地球、相机、图层；可关闭 animation/timeline 等 UI 精简界面。
+### Entity Label
 
-- **Entity** 加点线面、模型、标签；适合业务对象与交互。
+```js
+label: {
+    text: '贴地',
+    font: '14pt monospace',
+    outlineWidth: 2,
+    showBackground: true,
+    backgroundColor: Cesium.Color.WHITE,
+    verticalOrigin: Cesium.VerticalOrigin.TOP,
+    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+    disableDepthTestDistance: Number.POSITIVE_INFINITY,
+}
+```
 
-- **ImageryLayer** 叠加 XYZ/WMTS/ArcGIS 等底图，`imageryLayers.add/remove` 管理。
+| 属性 | 作用 |
+|------|------|
+| `heightReference` | `CLAMP_TO_GROUND` 贴椭球/地形；默认 `NONE` 用 position 高度 |
+| `disableDepthTestDistance` | 设为 ∞ 时 label 始终可见，不被地形 depth test 裁掉 |
+| `verticalOrigin` | 文字相对锚点的垂直对齐 |
+
+### 手动查询地形高度
+
+```js
+viewer.scene.globe.depthTestAgainstTerrain = true;
+
+const carto = Cesium.Cartographic.fromDegrees(lon, lat, 10);
+const height = viewer.scene.globe.getHeight(
+    new Cesium.Cartographic(carto.longitude, carto.latitude)
+);
+// 需在 terrain 加载完成后调用，否则 height 可能为 undefined
+```
+
+### 动态修改
+
+Entity 属性可运行时赋值：
+
+```js
+text.label.text = '贴地文字';
+text.label.fillColor = Cesium.Color.RED;
+```
 
 ## 实现步骤
 
-1. 初始化 `Cesium.Viewer` 与底图图层
-2. 添加 Entity / Primitive / DataSource 等业务对象
-3. 按需 `camera.flyTo` 定位视角
+1. 开启 `depthTestAgainstTerrain` 使贴地 label 与地形正确遮挡
+2. 添加贴地 Entity（point + label，`CLAMP_TO_GROUND`）
+3. 添加高空 Entity 作对比（无 heightReference）
+4. `flyTo` 到第三点后，在 `complete` 回调里延迟 `getHeight` 再 add Entity
 
 ## 代码要点
 
-- **`add()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
-
-## 源码
-
 ```js
-import * as Cesium from 'cesium'
-
-const DOM = document.getElementById('box')
-
-const viewer = new Cesium.Viewer(DOM, {
-
-    animation: false,//是否创建动画小器件，左下角仪表    
-
-    baseLayerPicker: false,//是否显示图层选择器，右上角图层选择按钮
-
-    baseLayer: Cesium.ImageryLayer.fromProviderAsync(Cesium.ArcGisMapServerImageryProvider.fromUrl(GLOBAL_CONFIG.getLayerUrl())),
-
-    fullscreenButton: false,//是否显示全屏按钮，右下角全屏选择按钮
-
-    timeline: false,//是否显示时间轴    
-
-    infoBox: false,//是否显示信息框   
-
-})
-
-viewer._cesiumWidget._creditContainer.style.display = "none"
-
-// 深度监测
-viewer.scene.globe.depthTestAgainstTerrain = true;
-
 var text = viewer.entities.add({
-    name: '贴地',
     position: Cesium.Cartesian3.fromDegrees(-75.166493, 39.9060534),
-    point: {
-        pixelSize: 5,
-        color: Cesium.Color.RED,
-        outlineColor: Cesium.Color.WHITE,
-        outlineWidth: 2,
-        verticalOrigin: Cesium.VerticalOrigin.TOP,
-        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
-        disableDepthTestDistance: Number.POSITIVE_INFINITY,
-
-    },
+    point: { pixelSize: 5, color: Cesium.Color.RED,
+        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND },
     label: {
         text: '贴地',
-        font: '14pt monospace',
-        outlineWidth: 2,
-        verticalOrigin: Cesium.VerticalOrigin.TOP,
         heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
         disableDepthTestDistance: Number.POSITIVE_INFINITY,
-        showBackground: true,
-        backgroundColor: Cesium.Color.WHITE
     }
 });
 
 var world = viewer.entities.add({
-    name: '不贴地',
     position: Cesium.Cartesian3.fromDegrees(-95.166493, 39.9060534, 2000),
-    point: {
-        pixelSize: 5,
-        color: Cesium.Color.RED,
-        outlineColor: Cesium.Color.WHITE,
-        outlineWidth: 2,
-    },
-    label: {
-        text: '不贴地',
-        font: '14pt monospace',
-        outlineWidth: 2,
-    }
+    label: { text: '不贴地' }  // 无 heightReference，悬浮 2000m
 });
-
-// 自动计算贴地，需要等地形加载完方可
-function add() {
-    viewer.camera.flyTo({
-        destination: Cesium.Cartesian3.fromDegrees(-115.166493, 39.9060534, 15000.0),
-        duration: 3,
-        orientation: {
-            heading: Cesium.Math.toRadians(90.0), // 水平旋转，围绕Y轴，0为正北方向
-            pitch: Cesium.Math.toRadians(-90),     // 上下旋转，围绕X轴，-90为俯视地面
-            roll: 0.0                             // 视口的翻滚角度，围绕Z轴，0为不翻转
-        },
-        complete: () => {
-            setTimeout(() => {
-                var cartographic = Cesium.Cartographic.fromDegrees(-115.166493, 39.9060534, 10);
-                var posi = new Cesium.Cartographic(cartographic.longitude, cartographic.latitude)
-                var height = viewer.scene.globe.getHeight(posi)
-                console.log(height)
-
-                var haha = viewer.entities.add({
-                    name: '自动计算贴地',
-                    position: Cesium.Cartesian3.fromDegrees(-115.166493, 39.9060534, height + 0.1),
-                    point: {
-                        pixelSize: 5,
-                        color: Cesium.Color.RED,
-                        outlineColor: Cesium.Color.WHITE,
-                        outlineWidth: 2,
-                        verticalOrigin: Cesium.VerticalOrigin.TOP,
-                        disableDepthTestDistance: Number.POSITIVE_INFINITY,
-                    },
-                    label: {
-                        text: '自动计算贴地',
-                        font: '14pt monospace',
-                        outlineWidth: 2,
-                        verticalOrigin: Cesium.VerticalOrigin.TOP,
-                        disableDepthTestDistance: Number.POSITIVE_INFINITY,
-                    }
-                });
-            }, 1000)
-        }
-    });
-}
-
-// 修改值和属性
-text.label.text = '贴地文字'
-text.label.fillColor = Cesium.Color.RED
- // text.position =  Cesium.Cartesian3.fromDegrees(-100, 39.9060534)
 ```
+
+::: tip Label vs DOM
+简单标注用 **Entity.label**（GPU 渲染）；复杂 HTML 面板见 [CSS 元素](/examples/cesium/basic/cssElement)。
+:::
+
+## 源码
+
+完整源码见 [GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/cesiumExamples/basic/cesiumText.js)。
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=cesiumText) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [基础功能目录](/examples/cesium/basic/)
+- 有地形时优先 `CLAMP_TO_GROUND`；精确高度用 `sampleTerrain` / `getHeight`
+- 上一篇：[自动旋转](/examples/cesium/basic/autoRotate) · 下一篇：[CSS 元素](/examples/cesium/basic/cssElement)
 
-> 基础功能 · Cesium.js
+> 基础功能 · Cesium.js · 4/19

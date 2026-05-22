@@ -1,12 +1,13 @@
 ---
 title: "下钻动画 - Three.js 案例讲解"
-description: "Three.js 关键帧或补间动画。"
+description: "下钻动画：Scene / Camera / Renderer 渲染管线、相机交互控制器、外部模型 / 3D Tiles 加载（动画效果）"
 head:
   - - meta
     - name: keywords
-      content: "three.js,webgl,animation,下钻动画"
+      content: "three.js,animation,downRotate,BufferGeometry"
 outline: deep
 ---
+
 # 下钻动画
 
 *Down Rotate*
@@ -17,38 +18,41 @@ outline: deep
 
 ## 你将学到什么
 
-- glTF/FBX/OBJ 外部模型加载
+- Scene / Camera / Renderer 渲染管线
 - 相机交互控制器
-- requestAnimationFrame 渲染循环
+- 外部模型 / 3D Tiles 加载
+- 粒子 / 点云 / 实例化渲染
 
 ## 效果说明
 
-Three.js 关键帧或补间动画。
-
-> 动画效果 · Three.js
+Three.js WebGL 场景，加载外部模型，粒子或点云特效，技术点：BufferGeometry。打开在线案例可查看最终画面。
 
 ## 核心概念
 
-- **Loader** 异步加载模型；glTF 返回 `gltf.scene`，加载后注意 `scale` 与坐标系。Draco 需配置 `DRACOLoader`。
-
-- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
+- **Scene** 容纳对象，**Camera** 定义视点，**WebGLRenderer** 输出 canvas。
+- **OrbitControls** 轨道旋转缩放；开启阻尼时每帧 `controls.update()`。
+- 异步 Loader 返回 scene 或 tileset；注意 scale、坐标系与 `modelMatrix` 贴地。
+- 大量点用 **BufferGeometry + Points** 或 **InstancedMesh** 合批，避免逐 Entity 创建。
 
 ## 实现步骤
 
-1. 搭建 Scene / Camera / Renderer 与 OrbitControls
-2. Loader 异步加载模型/纹理资源
-3. rAF 循环中 update 并 render
+1. 初始化 Viewer 或 Scene / Camera / Renderer
+2. 创建 OrbitControls 并处理 resize
+3. Loader 加载资源并加入 scene / entities / primitives
+4. 构建几何 attribute 或 instanceMatrix 并 add 到 scene
 
-## 源码
+## 代码要点
 
 ```js
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-
-const box = document.getElementById('box')
-
 const scene = new THREE.Scene()
+
+const camera = new THREE.PerspectiveCamera(75, box.clientWidth / box.clientHeight, 0.1, 1000)
+
+camera.position.set(30, 30, 30)
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
+
+
 
 const camera = new THREE.PerspectiveCamera(75, box.clientWidth / box.clientHeight, 0.1, 1000)
 
@@ -58,101 +62,26 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarit
 
 renderer.setSize(box.clientWidth, box.clientHeight)
 
+
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
+
+renderer.setSize(box.clientWidth, box.clientHeight)
+
 box.appendChild(renderer.domElement)
 
 new OrbitControls(camera, renderer.domElement)
-
-window.onresize = () => {
-
-    renderer.setSize(box.clientWidth, box.clientHeight)
-
-    camera.aspect = box.clientWidth / box.clientHeight
-
-    camera.updateProjectionMatrix()
-
-}
-
-scene.add(new THREE.AmbientLight(0xffffff, 2))
-
-// 创建一个曲线
-const curve = new THREE.CatmullRomCurve3([
-
-    new THREE.Vector3(0, 20, 2),
-
-    new THREE.Vector3(0, 0, 0),
-
-    new THREE.Vector3(10, 8, 20),
-
-])
-
-// 创建曲线几何
-const geometry = new THREE.BufferGeometry().setFromPoints(curve.getPoints(500))
-
-// 创建曲线材质
-const material = new THREE.LineBasicMaterial({ color: 0xffffff })
-
-// 创建曲线
-const curveMesh = new THREE.Line(geometry, material)
-
-// 添加曲线到场景
-scene.add(curveMesh)
-
-let obj = null
-
-const loader = new GLTFLoader()
-
-loader.load('https://z2586300277.github.io/3d-file-server/models/glb/daodan.glb', g => {
-
-    scene.add(g.scene)
-
-    g.scene.scale.multiplyScalar(0.1)
-
-    obj = g.scene
-
-})
-
-animate()
-
-const speed = 0.001 // 控制物体沿曲线移动的速度
-
-const spin = 0.15 // 控制物体自旋的速度
-
-let t = 0 // 当前物体在曲线上的位置（0~1之间）
-
-let r = 0 // 当前自旋的角度
-
-const baseDir = new THREE.Vector3(0, 0, 1) // 物体默认朝向（z轴正方向）
-
-function animate() {
-
-    requestAnimationFrame(animate)
-
-    if (obj) {
-
-        t = (t + speed) % 1 // 更新位置参数
-
-        r += spin // 更新自旋角度
-
-        obj.position.copy(curve.getPointAt(t)) // 设置物体位置
-
-        const tangent = curve.getTangentAt(t).normalize() // 计算切线方向
-
-        const lookQuat = new THREE.Quaternion().setFromUnitVectors(baseDir, tangent) // 计算朝向四元数
-
-        const spinQuat = new THREE.Quaternion().setFromAxisAngle(tangent, r) // 计算自旋四元数
-
-        obj.quaternion.copy(lookQuat).premultiply(spinQuat) // 应用旋转
-
-    }
-
-    renderer.render(scene, camera)
-    
-}
 ```
+
+
+完整源码：[GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/threeExamples/animation/downRotate.js)
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=animation&id=downRotate) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [动画效果目录](/examples/three/animation/)
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=animation&id=downRotate) 运行，再对照源码修改 uniform / 参数加深理解
 
-> 动画效果 · Three.js
+
+- 上一篇：[曲线动画](/examples/three/animation/curveAnimate)
+- 下一篇：[卷曲动画](/examples/three/animation/curlAnimate)
+
+> 动画效果 · Three.js · 13/15

@@ -1,46 +1,44 @@
 ---
 title: "高斯溅射 - Three.js 案例讲解"
-description: "Three.js 接第三方库或扩展能力。"
+description: "高斯溅射：高斯溅射（扩展功能）"
 head:
   - - meta
     - name: keywords
-      content: "three.js,webgl,expand,高斯溅射"
+      content: "three.js,expand,gaussianSplats3D"
 outline: deep
 ---
+
 # 高斯溅射
 
 *gaussianSplats3D*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=gaussianSplats3D)
 
-![高斯溅射](https://z2586300277.github.io/three-cesium-examples/threeExamples/expand/gaussianSplats3D.webp)
+![高斯溅射](https://z2586300277.github.io/three-cesium-examples/threeExamples/expand/gaussianSplats3D.jpg)
 
 ## 你将学到什么
 
-- Three.js/Cesium 场景搭建
-- 案例核心 API 用法
-- 在线编辑器调试技巧
+- 本案例核心 API 与实现思路
+- 对照源码与在线效果学习
 
 ## 效果说明
 
-Three.js 接第三方库或扩展能力。
-
-> 扩展功能 · Three.js
+Three.js WebGL 场景。打开在线案例可查看最终画面。
 
 ## 核心概念
 
-- **Scene / Camera / Renderer** 是 Three.js 渲染三件套；Mesh = Geometry + Material。
-- 开发时先确认坐标系、材质是否受光、以及是否需要 rAF 循环。
+- 结合在线案例与下方源码阅读 GLSL / API 调用
 
 ## 实现步骤
 
-1. 搭建 Scene / Camera / Renderer 与 OrbitControls
-2. 渲染场景并处理 resize
+1. 搭建灯光与环境（如有）
+2. requestAnimationFrame 循环 update + render
 
-## 源码
+## 代码要点
 
 ```js
 import * as GaussianSplats3D from '@mkkellogg/gaussian-splats-3d'
+
 
 /**
  * 参考引用自  https://github.com/mkkellogg/GaussianSplats3D
@@ -64,14 +62,17 @@ viewer.addSplatScene(FILE_HOST + 'other/deskFlower.ksplat', {
     'position': [0, 1, 0],
     'rotation': [0, 0, 0, 1],
     'scale': [1.5, 1.5, 1.5]
-}).then(() => {
-    viewer.start()
-});
 ```
+
+
+完整源码：[GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/threeExamples/expand/gaussianSplats3D.js)
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=gaussianSplats3D) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [扩展功能目录](/examples/three/expand/)
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=gaussianSplats3D) 运行，再对照源码修改 uniform / 参数加深理解
 
-> 扩展功能 · Three.js
+
+- 上一篇：[柱状图](/examples/three/expand/barCharts)
+- 下一篇：[高斯sparkjs](/examples/three/expand/sparkjs)
+
+> 扩展功能 · Three.js · 15/19

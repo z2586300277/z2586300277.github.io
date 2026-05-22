@@ -1,12 +1,13 @@
 ---
 title: "发散着色器 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
+description: "发散着色器：Scene / Camera / Renderer 渲染管线、相机交互控制器、ShaderMaterial / RawShaderMaterial 自定义 GLSL（着色器）"
 head:
   - - meta
     - name: keywords
-      content: "three.js,webgl,shader,发散着色器"
+      content: "three.js,shader,emitShader,顶点着色器,片元着色器,uniform 驱动"
 outline: deep
 ---
+
 # 发散着色器
 
 *Emit Shader*
@@ -17,37 +18,38 @@ outline: deep
 
 ## 你将学到什么
 
-- 自定义 ShaderMaterial / 修改内置 shader
+- Scene / Camera / Renderer 渲染管线
 - 相机交互控制器
-- requestAnimationFrame 渲染循环
+- ShaderMaterial / RawShaderMaterial 自定义 GLSL
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
-
-> 着色器 · Three.js
+Three.js WebGL 场景，以自定义 shader 呈现核心视觉效果，技术点：顶点着色器、片元着色器、uniform 驱动。打开在线案例可查看最终画面。
 
 ## 核心概念
 
-- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
-
-- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
+- **Scene** 容纳对象，**Camera** 定义视点，**WebGLRenderer** 输出 canvas。
+- **OrbitControls** 轨道旋转缩放；开启阻尼时每帧 `controls.update()`。
+- **ShaderMaterial** 自定义 uniforms + vertex/fragment；**RawShaderMaterial** 需手写全部 shader 声明。
 
 ## 实现步骤
 
-1. 搭建 Scene / Camera / Renderer 与 OrbitControls
-2. 定义材质/shader 与 uniforms，rAF 中更新
-3. rAF 循环中 update 并 render
+1. 初始化 Viewer 或 Scene / Camera / Renderer
+2. 创建 OrbitControls 并处理 resize
+3. 定义 uniforms，在 rAF 中更新并 render
 
-## 源码
+## 代码要点
 
 ```js
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-
-const box = document.getElementById('box')
-
 const scene = new THREE.Scene()
+
+const camera = new THREE.PerspectiveCamera(50, box.clientWidth / box.clientHeight, 0.1, 1000)
+
+camera.position.set(0, 10, 10)
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
+
+
 
 const camera = new THREE.PerspectiveCamera(50, box.clientWidth / box.clientHeight, 0.1, 1000)
 
@@ -57,91 +59,26 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarit
 
 renderer.setSize(box.clientWidth, box.clientHeight)
 
+
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
+
+renderer.setSize(box.clientWidth, box.clientHeight)
+
 box.appendChild(renderer.domElement)
 
 const controls = new OrbitControls(camera, renderer.domElement)
-
-controls.enableDamping = true
-
-const boxGeometry = new THREE.BoxGeometry(6, 6, 6);
-
-const vertexShader = `
-void main() {
-    
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-
-}
-`
-const fragmentShader = `
-uniform vec2 u_resolution;
-uniform float iTime;
-vec3 palette( in float t, in vec3 a, in vec3 b, in vec3 c, in vec3 d )
-{
-    return a + b*cos( 6.283185*(c*t+d) );
-}
-void main() {
-      vec3 finalcol = vec3(0.0);
-    vec2 uv = (gl_FragCoord.xy * 2. - u_resolution.xy) / u_resolution.y;
-    vec2 uv0 = uv;
-    for (float i = 0.0; i < 3.0; i++) {
-       
-        uv = fract(uv*5.5)-0.5;
-        vec3 col = palette(length(uv0)+iTime,vec3(0.768, 0.648, 1.0), vec3(-0.252, -0.082, 0.0), vec3(0.5, 0.5, 0.0), vec3(0.5, 0.0, 0.0));
-        
-        float d = length(uv) * exp(-length(uv0));
-
-        d = sin(d*8. + iTime)/8.;
-        d = abs(d);
-
-        d = pow(0.01 / d, 1.2);
-        
-        finalcol += col * d;
-    }
-    gl_FragColor = vec4(finalcol, 1.0);
-}
-`
-
-const boxMaterial = new THREE.ShaderMaterial({
-    uniforms: {
-        u_resolution: { value: new THREE.Vector2(box.clientWidth, box.clientHeight) },
-        iTime: { value: 0 }
-    },
-    vertexShader,
-    fragmentShader
-});
-
-const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
-
-scene.add(boxMesh);
-
-animate()
-
-function animate() {
-
-    boxMaterial.uniforms.iTime.value += 0.01
-
-    requestAnimationFrame(animate)
-
-    controls.update()
-
-    renderer.render(scene, camera)
-
-}
-
-window.onresize = () => {
-
-    renderer.setSize(box.clientWidth, box.clientHeight)
-
-    camera.aspect = box.clientWidth / box.clientHeight
-
-    camera.updateProjectionMatrix()
-
-}
 ```
+
+
+完整源码：[GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/threeExamples/shader/emitShader.js)
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=emitShader) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [着色器目录](/examples/three/shader/)
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=emitShader) 运行，再对照源码修改 uniform / 参数加深理解
 
-> 着色器 · Three.js
+
+- 上一篇：[火焰](/examples/three/shader/fireShader)
+- 下一篇：[幻影花烟](/examples/three/shader/ephemeralFlower)
+
+> 着色器 · Three.js · 77/89

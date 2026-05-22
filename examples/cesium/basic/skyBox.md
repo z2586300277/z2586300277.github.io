@@ -1,12 +1,13 @@
 ---
 title: "天空盒 - Cesium.js 案例讲解"
-description: "本案例展示 **天空盒 ** 的实现。涉及：Cesium Viewer 初始化、Cesium 影像图层。"
+description: "SkyBox 六面体贴图替换默认天空，UrlTemplateImageryProvider 高德影像"
 head:
   - - meta
     - name: keywords
-      content: "cesium.js,webgl,basic,天空盒"
+      content: "cesium.js,SkyBox,天空盒,cubemap"
 outline: deep
 ---
+
 # 天空盒
 
 *Sky Box*
@@ -17,79 +18,78 @@ outline: deep
 
 ## 你将学到什么
 
-- Cesium Viewer 初始化
-- Cesium 影像图层
+- **scene.skyBox** 替换默认渐变天空
+- 立方体贴图 **六面命名**（positiveX / negativeX …）
+- **UrlTemplateImageryProvider** 加载 XYZ 瓦片底图
 
 ## 效果说明
 
-本案例展示 **天空盒 ** 的实现。涉及：Cesium Viewer 初始化、Cesium 影像图层。
-
-> 基础功能 · Cesium.js
+使用高德卫星影像作底图，天空换成自定义六面 PNG，形成「地面实景 + 定制天空」的视觉效果。
 
 ## 核心概念
 
-- **Viewer** 封装地球、相机、图层；可关闭 animation/timeline 等 UI 精简界面。
-
-- **ImageryLayer** 叠加 XYZ/WMTS/ArcGIS 等底图，`imageryLayers.add/remove` 管理。
-
-## 实现步骤
-
-1. 初始化 `Cesium.Viewer` 与底图图层
-2. 添加 Entity / Primitive / DataSource 等业务对象
-3. 按需 `camera.flyTo` 定位视角
-
-## 源码
+### SkyBox
 
 ```js
-import * as Cesium from 'cesium'
-
-const box = document.getElementById('box')
-
-const viewer = new Cesium.Viewer(box, {
-
-    animation: false,//是否创建动画小器件，左下角仪表    
-
-    baseLayerPicker: false,//是否显示图层选择器，右上角图层选择按钮
-
-    baseLayer: false, // 不显示默认图层
-
-    fullscreenButton: false,//是否显示全屏按钮，右下角全屏选择按钮
-
-    timeline: false,//是否显示时间轴    
-
-    infoBox: false,//是否显示信息框   
-
-})
- 
-viewer.imageryLayers.addImageryProvider(
-
-    new Cesium.UrlTemplateImageryProvider({
-
-        //高德卫星影像
-        url: 'https://webst03.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}',
-
-        maximumLevel: 18
-
-    })
-
-)
-
-// px => -90, nx => 90, py => 0, ny => 180, pz => 0, nz => 180
 viewer.scene.skyBox = new Cesium.SkyBox({
     sources: {
-        positiveX: FILE_HOST + 'files/cesiumSky/px.png', // 右面
-        negativeX: FILE_HOST + 'files/cesiumSky/nx.png', // 左面
-        positiveY: FILE_HOST + 'files/cesiumSky/pz.png', // 将前面用作上面
-        negativeY: FILE_HOST + 'files/cesiumSky/nz.png', // 将后面用作下面
-        positiveZ: FILE_HOST + 'files/cesiumSky/py.png', // 将上面用作前面
-        negativeZ: FILE_HOST + 'files/cesiumSky/ny.png'  // 将下面用作后面
+        positiveX: 'px.png',  // 右 (+X)
+        negativeX: 'nx.png',  // 左 (-X)
+        positiveY: 'py.png',  // 前 (+Y) — 注意与 Three.js 轴向可能不同
+        negativeY: 'ny.png',  // 后 (-Y)
+        positiveZ: 'pz.png',  // 上 (+Z)
+        negativeZ: 'nz.png',  // 下 (-Z)
     }
 });
 ```
 
+本案例注释说明了 **贴图轴与 Cesium 期望面的映射关系**（px/nx/py 等需按实际摄影机朝向调整）。
+
+### 关闭默认底图
+
+```js
+const viewer = new Cesium.Viewer(box, { baseLayer: false });
+viewer.imageryLayers.addImageryProvider(
+    new Cesium.UrlTemplateImageryProvider({
+        url: 'https://.../{z}/{x}/{y}',
+        maximumLevel: 18,
+    })
+);
+```
+
+## 实现步骤
+
+1. Viewer 设 `baseLayer: false`，手动 add 影像
+2. 准备 6 张无缝立方体贴图
+3. `new Cesium.SkyBox({ sources })` 赋给 `scene.skyBox`
+4. 若天空方向不对，交换 positiveY/negativeY 等面
+
+## 代码要点
+
+```js
+viewer.scene.skyBox = new Cesium.SkyBox({
+    sources: {
+        positiveX: FILE_HOST + 'files/cesiumSky/px.png',
+        negativeX: FILE_HOST + 'files/cesiumSky/nx.png',
+        positiveY: FILE_HOST + 'files/cesiumSky/pz.png',
+        negativeY: FILE_HOST + 'files/cesiumSky/nz.png',
+        positiveZ: FILE_HOST + 'files/cesiumSky/py.png',
+        negativeZ: FILE_HOST + 'files/cesiumSky/ny.png',
+    }
+});
+```
+
+::: tip 性能
+SkyBox 在远处渲染，开销很小。HDR 环境光见 **ImageBasedLighting** 相关高级案例。
+:::
+
+## 源码
+
+完整源码见 [GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/cesiumExamples/basic/skyBox.js)。
+
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=skyBox) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [基础功能目录](/examples/cesium/basic/)
+- 六面图命名搞错是最常见问题，逐个面调试
+- 上一篇：[点击事件](/examples/cesium/basic/clickEvent) · 下一篇：[GeoJSON 面](/examples/cesium/basic/geojsonFace)
 
-> 基础功能 · Cesium.js
+> 基础功能 · Cesium.js · 7/19

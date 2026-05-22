@@ -8,6 +8,9 @@ outline: deep
 
 3D Tiles、ECharts、热力图、多视口等扩展集成。
 
+> 本分类案例均已对照 [three-cesium-examples](https://github.com/z2586300277/three-cesium-examples/tree/dev) 源码生成精讲文档。
+
+
 每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。
 
 - [本地模型加载](/examples/three/expand/localModel)

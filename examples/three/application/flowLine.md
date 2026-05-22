@@ -1,12 +1,13 @@
 ---
 title: "贴图飞线 - Three.js 案例讲解"
-description: "Three.js 业务向场景组合。"
+description: "贴图飞线：Scene / Camera / Renderer 渲染管线、相机交互控制器（应用场景）"
 head:
   - - meta
     - name: keywords
-      content: "three.js,webgl,application,贴图飞线"
+      content: "three.js,application,flowLine"
 outline: deep
 ---
+
 # 贴图飞线
 
 *Flow Line*
@@ -17,33 +18,37 @@ outline: deep
 
 ## 你将学到什么
 
+- Scene / Camera / Renderer 渲染管线
 - 相机交互控制器
-- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-Three.js 业务向场景组合。
-
-> 应用场景 · Three.js
+Three.js WebGL 场景。打开在线案例可查看最终画面。
 
 ## 核心概念
 
-- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
+- **Scene** 容纳对象，**Camera** 定义视点，**WebGLRenderer** 输出 canvas。
+- **OrbitControls** 轨道旋转缩放；开启阻尼时每帧 `controls.update()`。
 
 ## 实现步骤
 
-1. 搭建 Scene / Camera / Renderer 与 OrbitControls
-2. rAF 循环中 update 并 render
+1. 初始化 Viewer 或 Scene / Camera / Renderer
+2. 创建 OrbitControls 并处理 resize
+3. 搭建灯光与环境（如有）
+4. requestAnimationFrame 循环 update + render
 
-## 源码
+## 代码要点
 
 ```js
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-
-const box = document.getElementById('box')
-
 const scene = new THREE.Scene()
+
+const camera = new THREE.PerspectiveCamera(50, box.clientWidth / box.clientHeight, 0.1, 1000)
+
+camera.position.set(7, 7, 7)
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
+
+
 
 const camera = new THREE.PerspectiveCamera(50, box.clientWidth / box.clientHeight, 0.1, 1000)
 
@@ -53,97 +58,26 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarit
 
 renderer.setSize(box.clientWidth, box.clientHeight)
 
+
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
+
+renderer.setSize(box.clientWidth, box.clientHeight)
+
 box.appendChild(renderer.domElement)
 
 const controls = new OrbitControls(camera, renderer.domElement)
-
-controls.enableDamping = true
-
-const gridHelper = new THREE.GridHelper(10, 10)
-
-scene.add(gridHelper)
-
-// 生成一个管道
-const curve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-5, 0, 0),
-    new THREE.Vector3(0, 2.5, 0),
-    new THREE.Vector3(5, 0, 0)
-])
-
-const map = new THREE.TextureLoader().load(FILE_HOST + '/images/texture/flyLine1.png')
-
-map.wrapS = THREE.RepeatWrapping
-
-map.repeat.set(5, 2)
-
-const tube = new THREE.TubeGeometry(curve, 200, 0.2, 2, false);
-
-const material = new THREE.MeshBasicMaterial({ map, transparent: true })
-
-const mesh = new THREE.Mesh(tube, material)
-
-scene.add(mesh)
-
-// 生成一个飞线
-const curve1 = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-3, 0, 3),
-    new THREE.Vector3(0, 2, 0),
-    new THREE.Vector3(3, 0, -4),
-    
-])
-
-const map1 = new THREE.TextureLoader().load(FILE_HOST + '/images/texture/flyLine4.png')
-
-map1.wrapS = THREE.RepeatWrapping
-
-map1.wrapT = THREE.RepeatWrapping
-
-map1.repeat.set(3, 1)
-
-const tube1 = new THREE.TubeGeometry(curve1, 200, 0.03, 20, false);
-
-const material1 = new THREE.MeshBasicMaterial({map:map1, transparent: true , side: THREE.DoubleSide})
-
-const mesh1 = new THREE.Mesh(tube1, material1)
-
-scene.add(mesh1)
-
-const mesh2 = mesh.clone()
-
-mesh2.rotation.y = Math.PI / 2
-
-scene.add(mesh2)
-
-animate()
-
-function animate() {
-
-    map.offset.x -= 0.01
-
-    map1.offset.x -= 0.01
-
-    controls.update()
-
-    renderer.render(scene, camera)
-
-    requestAnimationFrame(animate)
-
-}
-
-window.onresize = () => {
-
-    renderer.setSize(box.clientWidth, box.clientHeight)
-
-    camera.aspect = box.clientWidth / box.clientHeight
-
-    camera.updateProjectionMatrix()
-
-}
 ```
+
+
+完整源码：[GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/threeExamples/application/flowLine.js)
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=flowLine) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [应用场景目录](/examples/three/application/)
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=flowLine) 运行，再对照源码修改 uniform / 参数加深理解
 
-> 应用场景 · Three.js
+
+- 上一篇：[Canvas贴图](/examples/three/application/canvasTexture)
+- 下一篇：[飞线效果](/examples/three/application/flyLine)
+
+> 应用场景 · Three.js · 6/68

@@ -1,47 +1,83 @@
 ---
 title: "本地模型加载 - Three.js 案例讲解"
-description: "Three.js 接第三方库或扩展能力。"
+description: "本地模型加载：Scene / Camera / Renderer 渲染管线、相机交互控制器、外部模型 / 3D Tiles 加载（扩展功能）"
 head:
   - - meta
     - name: keywords
-      content: "three.js,webgl,expand,本地模型加载"
+      content: "three.js,expand,localModel"
 outline: deep
 ---
+
 # 本地模型加载
 
 *Local Model*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=localModel)
 
-![本地模型加载](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/localModel.jpg)
+![本地模型加载](https://z2586300277.github.io/three-cesium-examples/threeExamples/expand/localModel.jpg)
 
 ## 你将学到什么
 
-- 案例交互与参数可在在线编辑器中查看
+- Scene / Camera / Renderer 渲染管线
+- 相机交互控制器
+- 外部模型 / 3D Tiles 加载
 
 ## 效果说明
 
-Three.js 接第三方库或扩展能力。
-
-> 扩展功能 · Three.js
+Three.js WebGL 场景，加载外部模型。打开在线案例可查看最终画面。
 
 ## 核心概念
 
-- **Scene / Camera / Renderer** 是 Three.js 渲染三件套；Mesh = Geometry + Material。
-- 开发时先确认坐标系、材质是否受光、以及是否需要 rAF 循环。
+- **Scene** 容纳对象，**Camera** 定义视点，**WebGLRenderer** 输出 canvas。
+- **OrbitControls** 轨道旋转缩放；开启阻尼时每帧 `controls.update()`。
+- 异步 Loader 返回 scene 或 tileset；注意 scale、坐标系与 `modelMatrix` 贴地。
 
 ## 实现步骤
 
-1. 搭建 Scene / Camera / Renderer 与 OrbitControls
-2. 渲染场景并处理 resize
+1. 初始化 Viewer 或 Scene / Camera / Renderer
+2. 创建 OrbitControls 并处理 resize
+3. Loader 加载资源并加入 scene / entities / primitives
 
-## 源码
+## 代码要点
 
-完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=localModel)。
+```js
+const scene = new THREE.Scene()
+
+const camera = new THREE.PerspectiveCamera(50, box.clientWidth / box.clientHeight, 0.1, 10000000)
+
+camera.position.set(10, 10, 10)
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
+
+
+
+const camera = new THREE.PerspectiveCamera(50, box.clientWidth / box.clientHeight, 0.1, 10000000)
+
+camera.position.set(10, 10, 10)
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
+
+renderer.setSize(box.clientWidth, box.clientHeight)
+
+
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
+
+renderer.setSize(box.clientWidth, box.clientHeight)
+
+box.appendChild(renderer.domElement)
+
+const controls = new OrbitControls(camera, renderer.domElement)
+```
+
+
+完整源码：[GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/threeExamples/basic/localModel.js)
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=localModel) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [扩展功能目录](/examples/three/expand/)
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=localModel) 运行，再对照源码修改 uniform / 参数加深理解
 
-> 扩展功能 · Three.js
+
+- 下一篇：[IndexedDB使用](/examples/three/expand/useIndexDB)
+
+> 扩展功能 · Three.js · 1/19

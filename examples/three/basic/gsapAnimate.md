@@ -1,15 +1,16 @@
 ---
 title: "GSAP动画 - Three.js 案例讲解"
-description: "本案例展示 **GSAP动画** 的实现。涉及：相机交互控制器、GSAP / anime.js 属性动画、requestAnimationFrame 渲染循环。"
+description: "gsap.to 驱动 camera.position 与 controls.target 相机动画"
 head:
   - - meta
     - name: keywords
-      content: "three.js,webgl,basic,GSAP动画"
+      content: "three.js,gsap,相机动画,controls.target"
 outline: deep
 ---
-# GSAP动画
 
-*GSAP Animate*
+# GSAP 动画
+
+*GSAP Camera*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=gsapAnimate)
 
@@ -17,139 +18,36 @@ outline: deep
 
 ## 你将学到什么
 
-- 相机交互控制器
-- GSAP / anime.js 属性动画
-- requestAnimationFrame 渲染循环
-- GUI 面板调试参数
+- **gsap.to** 对 Vector3 的 x/y/z 插值
+- 同时动画 **camera.position** 与 **controls.target**
+- 与 OrbitControls 配合的 **运镜** 思路
 
 ## 效果说明
 
-本案例展示 **GSAP动画** 的实现。涉及：相机交互控制器、GSAP / anime.js 属性动画、requestAnimationFrame 渲染循环。
-
-> 基础案例 · Three.js
+点击 GUI「播放」，相机从 (0,30,30) **2 秒内** 飞到 (20,20,20)，观察中心 target 移到 (-5,2,1)，形成平滑运镜。
 
 ## 核心概念
 
-- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
-
-- 时间线库驱动 position/rotation/uniform，与 rAF 渲染循环配合。
-
-## 实现步骤
-
-1. 搭建 Scene / Camera / Renderer 与 OrbitControls
-2. rAF 循环中 update 并 render
-
-## 代码要点
-
-- **`createGsapAnimation()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
-
-## 源码
-
 ```js
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import dat from 'dat.gui'
-import gsap from 'gsap'
-
-const box = document.getElementById('box')
-
-const scene = new THREE.Scene()
-
-const camera = new THREE.PerspectiveCamera(75, box.clientWidth / box.clientHeight, 0.1, 1000)
-
-camera.position.set(0, 30, 30)
-
-const renderer = new THREE.WebGLRenderer({ antialias: true , alpha: true, logarithmicDepthBuffer: true })
-
-renderer.setSize(box.clientWidth, box.clientHeight)
-
-box.appendChild(renderer.domElement)
-
-const controls = new OrbitControls(camera, renderer.domElement)
-
-scene.add(new THREE.AxesHelper(1000))
-
-scene.add(new THREE.GridHelper(100, 20))
-
-animate()
-
-function animate() {
-
-    requestAnimationFrame(animate)
-
-    controls.update()
-
-    renderer.render(scene, camera)
-
+function createGsapAnimation(position, targetPos) {
+    return gsap.to(position, {
+        ...targetPos,
+        duration: 2,
+        ease: 'none',
+    });
 }
 
-window.onresize = () => {
-
-  renderer.setSize(box.clientWidth, box.clientHeight)
-
-  camera.aspect = box.clientWidth / box.clientHeight
-
-  camera.updateProjectionMatrix()
-  
-}
-
-// 环境贴图
-const boxGeometry = new THREE.BoxGeometry(10, 10, 10);
-
-const boxMaterial = new THREE.MeshBasicMaterial({ color: 'blue' });
-
-const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
-
-scene.add(boxMesh);
-
-new dat.GUI().add({fn: () => {
-
-    // 创建一个相机动画
-    createGsapAnimation(camera.position, { x: 20, y: 20, z: 20 })
-
-    // 创建一个目标运动动画
-    createGsapAnimation(controls.target, { x: -5, y: 2, z: 1 })
-
-}}, 'fn').name('播放');
-
-/* 视角动画 */
-function createGsapAnimation(position, position_, gsapQuery = null) {
-
-    //设置动画 x轴运动 持续时间
-    return gsap.to(
-
-        position,
-
-        {
-
-            ...position_,
-
-            //间隔时间
-            duration: 2,
-
-            //动画参数名
-            ease: 'none',
-
-            //重复次数
-            repeat: 0,
-
-            //往返移动
-            yoyo: false,
-
-            yoyoEase: true,
-
-            ...gsapQuery,
-
-        }
-
-    )
-
-}
+// 同时动相机与轨道中心
+createGsapAnimation(camera.position, { x: 20, y: 20, z: 20 });
+createGsapAnimation(controls.target, { x: -5, y: 2, z: 1 });
 ```
+
+rAF 里仍需 `controls.update()`（尤其 enableDamping 时）。
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=gsapAnimate) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [基础案例目录](/examples/three/basic/)
+- 运镜 = gsap(camera.position) + gsap(controls.target)
+- 更多见 [动画目录](/examples/three/animation/gsapBasic)
+- 上一篇：[多模型动画](/examples/three/basic/modelAnimates) · 下一篇：[精灵标签](/examples/three/basic/spriteTexture)
 
-> 基础案例 · Three.js
+> 基础案例 · Three.js · 19/35

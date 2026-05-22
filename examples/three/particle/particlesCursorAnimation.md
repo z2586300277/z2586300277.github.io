@@ -1,12 +1,13 @@
 ---
 title: "鼠标轨迹粒子 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
+description: "鼠标轨迹粒子：Scene / Camera / Renderer 渲染管线、相机交互控制器、外部模型 / 3D Tiles 加载（粒子）"
 head:
   - - meta
     - name: keywords
-      content: "three.js,webgl,particle,鼠标轨迹粒子"
+      content: "three.js,particle,particlesCursorAnimation,顶点着色器,片元着色器,uniform 驱动"
 outline: deep
 ---
+
 # 鼠标轨迹粒子
 
 *ParticlesCursorAnimation*
@@ -17,40 +18,35 @@ outline: deep
 
 ## 你将学到什么
 
-- glTF/FBX/OBJ 外部模型加载
-- 自定义 ShaderMaterial / 修改内置 shader
+- Scene / Camera / Renderer 渲染管线
 - 相机交互控制器
-- 点云 / 粒子 / 实例化渲染
-- requestAnimationFrame 渲染循环
+- 外部模型 / 3D Tiles 加载
+- ShaderMaterial / RawShaderMaterial 自定义 GLSL
+- 粒子 / 点云 / 实例化渲染
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
-
-> 粒子 · Three.js
+Three.js WebGL 场景，加载外部模型，以自定义 shader 呈现核心视觉效果，粒子或点云特效，技术点：顶点着色器、片元着色器、uniform 驱动。打开在线案例可查看最终画面。
 
 ## 核心概念
 
-- **Loader** 异步加载模型；glTF 返回 `gltf.scene`，加载后注意 `scale` 与坐标系。Draco 需配置 `DRACOLoader`。
-
-- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
-
-- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
-
-- **Points** 大量顶点用点精灵渲染；**InstancedMesh** 相同几何体批量绘制，降低 draw call。
+- **Scene** 容纳对象，**Camera** 定义视点，**WebGLRenderer** 输出 canvas。
+- **OrbitControls** 轨道旋转缩放；开启阻尼时每帧 `controls.update()`。
+- 异步 Loader 返回 scene 或 tileset；注意 scale、坐标系与 `modelMatrix` 贴地。
+- **ShaderMaterial** 自定义 uniforms + vertex/fragment；**RawShaderMaterial** 需手写全部 shader 声明。
+- 大量点用 **BufferGeometry + Points** 或 **InstancedMesh** 合批，避免逐 Entity 创建。
 
 ## 实现步骤
 
-1. 搭建 Scene / Camera / Renderer 与 OrbitControls
-2. Loader 异步加载模型/纹理资源
-3. 定义材质/shader 与 uniforms，rAF 中更新
-4. rAF 循环中 update 并 render
+1. 初始化 Viewer 或 Scene / Camera / Renderer
+2. 创建 OrbitControls 并处理 resize
+3. Loader 加载资源并加入 scene / entities / primitives
+4. 定义 uniforms，在 rAF 中更新并 render
+5. 构建几何 attribute 或 instanceMatrix 并 add 到 scene
 
-## 源码
+## 代码要点
 
 ```js
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 const vertexShader=`
 precision mediump float;
@@ -60,59 +56,7 @@ varying vec3 vPosition;
 varying vec2 vUv;
 varying vec3 vColor;
 
-uniform vec2 uResolution;
-uniform sampler2D uTexture;
-uniform sampler2D uDispanecmentTexture;
 
-attribute float aParticlesIntensity;
-attribute float aAngle ;
-
-void main(){
-    vec3 newPosition=position;
-    /*
-    Dispanecment
-    */
-    // 读取canvas纹理中的红色通道作为R，影响粒子偏移
-    float dispanecmentIntensity=texture2D(uDispanecmentTexture,uv).r;
-    // 关键点：smoothstep
-    // 这里0.1是为了过滤掉一些极小值，让图像再鼠标悬浮后能够复原。
-    //同时设置一个0.7，让鼠标离开后能够保留粒子偏移后的轨迹一段时间
-    dispanecmentIntensity =smoothstep( 0.1,0.7,dispanecmentIntensity);
-    // 粒子的偏移向量，这里在xy平面进行随机旋转，在z轴上进行随机偏移
-    vec3 displacement=vec3(
-        cos(aAngle)*0.2,
-        sin(aAngle)*0.2,
-        1.0
-    );
-     displacement=normalize(displacement);
-    displacement*=dispanecmentIntensity;
-    displacement*=3.0;
-    displacement*=aParticlesIntensity;
-
-    newPosition+=displacement;
-
-    float picIntensity=texture2D(uTexture,uv).r;
-    
-    vec4 modelPosition=modelMatrix*vec4(newPosition,1.);
-    vec4 viewPosition=viewMatrix*modelPosition;
-    vec4 projectedPosition=projectionMatrix*viewPosition;
-    gl_Position=projectedPosition;
-    
-    // 计算法线变换矩阵：逆矩阵并转置
-    mat3 normalMatrix=transpose(inverse(mat3(modelMatrix)));
-    // 使用法线变换矩阵变换法线
-    vec3 transformedNormal=normalize(normalMatrix*normal);
-    vNormal=transformedNormal;
-    
-    vPosition=modelPosition.xyz;
-    
-    // 粒子动画的初始模版
-    gl_PointSize=0.08*picIntensity*uResolution.y;
-    gl_PointSize*=(1./-viewPosition.z);
-    
-
-    vColor=vec3(pow(picIntensity,2.0 ));
-}
 `
 const fragmentShader=`
 precision mediump float;
@@ -122,35 +66,6 @@ uniform vec2 uResolution;
 uniform vec3 uSunDirection;
 uniform vec3 uAtmosphereDayColor;
 uniform vec3 uAtmosphereNightColor;
-uniform sampler2D uTexture;
-
-varying vec3 vNormal;
-varying vec3 vPosition;
-varying vec3 vColor;
-
-void main(){
-  vec3 viewDirection=normalize(vPosition-cameraPosition);
-  vec3 color=vec3(0.6392, 0.0392, 0.0392);
-  vec2 uv=gl_PointCoord;
-  float distanceToCenter=distance(uv,vec2(0.5,0.5) );
-  if(distanceToCenter>0.5)
-    discard;
-
-  // color=vec3(alpha);
-
-  gl_FragColor=vec4(vColor,1.0);
-  
-  #include <tonemapping_fragment>
-  #include <colorspace_fragment>
-}
-`
-/**
- * Base
- */
-// Debug
-
-// Canvas
-const box = document.getElementById('box')
 
 // Scene
 const scene = new THREE.Scene();
@@ -161,17 +76,17 @@ const scene = new THREE.Scene();
 const sizes = {
   width: window.innerWidth,
   height: window.innerHeight,
-  resolution: null,
-  pixelRatio: Math.min(window.devicePixelRatio, 2),
-};
-sizes.resolution = new THREE.Vector2(
-  window.innerWidth * sizes.pixelRatio,
-// ... 完整源码见在线案例编辑器
 ```
+
+
+完整源码：[GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/threeExamples/particle/particlesCursorAnimation.js)
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=particlesCursorAnimation) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [粒子目录](/examples/three/particle/)
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=particlesCursorAnimation) 运行，再对照源码修改 uniform / 参数加深理解
 
-> 粒子 · Three.js
+
+- 上一篇：[科技粒子](/examples/three/particle/technologyParticle)
+- 下一篇：[文字采集成粒子](/examples/three/particle/textParticle)
+
+> 粒子 · Three.js · 17/27

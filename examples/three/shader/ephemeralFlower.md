@@ -1,12 +1,13 @@
 ---
 title: "幻影花烟 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
+description: "幻影花烟：Scene / Camera / Renderer 渲染管线、相机交互控制器、onBeforeCompile 修改内置材质 shader（着色器）"
 head:
   - - meta
     - name: keywords
-      content: "three.js,webgl,shader,幻影花烟"
+      content: "three.js,shader,ephemeralFlower,顶点着色器,片元着色器,uniform 驱动"
 outline: deep
 ---
+
 # 幻影花烟
 
 *Flower Smoke*
@@ -17,134 +18,32 @@ outline: deep
 
 ## 你将学到什么
 
-- 自定义 ShaderMaterial / 修改内置 shader
+- Scene / Camera / Renderer 渲染管线
 - 相机交互控制器
-- requestAnimationFrame 渲染循环
-- Clock 帧间隔计时
-- GUI 面板调试参数
+- onBeforeCompile 修改内置材质 shader
+- GUI 参数调试面板
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
-
-> 着色器 · Three.js
+Three.js WebGL 场景，以自定义 shader 呈现核心视觉效果，技术点：顶点着色器、片元着色器、uniform 驱动。打开在线案例可查看最终画面。
 
 ## 核心概念
 
-- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
-
-- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
+- **Scene** 容纳对象，**Camera** 定义视点，**WebGLRenderer** 输出 canvas。
+- **OrbitControls** 轨道旋转缩放；开启阻尼时每帧 `controls.update()`。
+- 替换 `#include <begin_vertex>` 等 chunk 注入特效，适合 PBR 材质叠加大屏效果。
+- dat.GUI / lil-gui 绑定 uniform 或配置对象实时调参。
 
 ## 实现步骤
 
-1. 搭建 Scene / Camera / Renderer 与 OrbitControls
-2. 定义材质/shader 与 uniforms，rAF 中更新
-3. rAF 循环中 update 并 render
+1. 初始化 Viewer 或 Scene / Camera / Renderer
+2. 创建 OrbitControls 并处理 resize
+3. material.onBeforeCompile 注入 GLSL 与 uniform
+4. gui.add 绑定可调参数
 
-## 源码
+## 代码要点
 
 ```js
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js"
-
-// reference https://codepen.io/prisoner849/pen/LYmXKrr
-let noise = `
-//	Simplex 4D Noise 
-//	by Ian McEwan, Ashima Arts
-//
-vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
-float permute(float x){return floor(mod(((x*34.0)+1.0)*x, 289.0));}
-vec4 taylorInvSqrt(vec4 r){return 1.79284291400159 - 0.85373472095314 * r;}
-float taylorInvSqrt(float r){return 1.79284291400159 - 0.85373472095314 * r;}
-
-vec4 grad4(float j, vec4 ip){
-  const vec4 ones = vec4(1.0, 1.0, 1.0, -1.0);
-  vec4 p,s;
-
-  p.xyz = floor( fract (vec3(j) * ip.xyz) * 7.0) * ip.z - 1.0;
-  p.w = 1.5 - dot(abs(p.xyz), ones.xyz);
-  s = vec4(lessThan(p, vec4(0.0)));
-  p.xyz = p.xyz + (s.xyz*2.0 - 1.0) * s.www; 
-
-  return p;
-}
-
-float snoise(vec4 v){
-  const vec2  C = vec2( 0.138196601125010504,  // (5 - sqrt(5))/20  G4
-                        0.309016994374947451); // (sqrt(5) - 1)/4   F4
-// First corner
-  vec4 i  = floor(v + dot(v, C.yyyy) );
-  vec4 x0 = v -   i + dot(i, C.xxxx);
-
-// Other corners
-
-// Rank sorting originally contributed by Bill Licea-Kane, AMD (formerly ATI)
-  vec4 i0;
-
-  vec3 isX = step( x0.yzw, x0.xxx );
-  vec3 isYZ = step( x0.zww, x0.yyz );
-//  i0.x = dot( isX, vec3( 1.0 ) );
-  i0.x = isX.x + isX.y + isX.z;
-  i0.yzw = 1.0 - isX;
-
-//  i0.y += dot( isYZ.xy, vec2( 1.0 ) );
-  i0.y += isYZ.x + isYZ.y;
-  i0.zw += 1.0 - isYZ.xy;
-
-  i0.z += isYZ.z;
-  i0.w += 1.0 - isYZ.z;
-
-  // i0 now contains the unique values 0,1,2,3 in each channel
-  vec4 i3 = clamp( i0, 0.0, 1.0 );
-  vec4 i2 = clamp( i0-1.0, 0.0, 1.0 );
-  vec4 i1 = clamp( i0-2.0, 0.0, 1.0 );
-
-  //  x0 = x0 - 0.0 + 0.0 * C 
-  vec4 x1 = x0 - i1 + 1.0 * C.xxxx;
-  vec4 x2 = x0 - i2 + 2.0 * C.xxxx;
-  vec4 x3 = x0 - i3 + 3.0 * C.xxxx;
-  vec4 x4 = x0 - 1.0 + 4.0 * C.xxxx;
-
-// Permutations
-  i = mod(i, 289.0); 
-  float j0 = permute( permute( permute( permute(i.w) + i.z) + i.y) + i.x);
-  vec4 j1 = permute( permute( permute( permute (
-             i.w + vec4(i1.w, i2.w, i3.w, 1.0 ))
-           + i.z + vec4(i1.z, i2.z, i3.z, 1.0 ))
-           + i.y + vec4(i1.y, i2.y, i3.y, 1.0 ))
-           + i.x + vec4(i1.x, i2.x, i3.x, 1.0 ));
-// Gradients
-// ( 7*7*6 points uniformly over a cube, mapped onto a 4-octahedron.)
-// 7*7*6 = 294, which is close to the ring size 17*17 = 289.
-
-  vec4 ip = vec4(1.0/294.0, 1.0/49.0, 1.0/7.0, 0.0) ;
-
-  vec4 p0 = grad4(j0,   ip);
-  vec4 p1 = grad4(j1.x, ip);
-  vec4 p2 = grad4(j1.y, ip);
-  vec4 p3 = grad4(j1.z, ip);
-  vec4 p4 = grad4(j1.w, ip);
-
-// Normalise gradients
-  vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
-  p0 *= norm.x;
-  p1 *= norm.y;
-  p2 *= norm.z;
-  p3 *= norm.w;
-  p4 *= taylorInvSqrt(dot(p4,p4));
-
-// Mix contributions from the five corners
-  vec3 m0 = max(0.6 - vec3(dot(x0,x0), dot(x1,x1), dot(x2,x2)), 0.0);
-  vec2 m1 = max(0.6 - vec2(dot(x3,x3), dot(x4,x4)            ), 0.0);
-  m0 = m0 * m0;
-  m1 = m1 * m1;
-  return 49.0 * ( dot(m0*m0, vec3( dot( p0, x0 ), dot( p1, x1 ), dot( p2, x2 )))
-               + dot(m1*m1, vec2( dot( p3, x3 ), dot( p4, x4 ) ) ) ) ;
-
-}  
-  `
-let innerWidth = window.innerWidth; 
 let innerHeight = window.innerHeight;
 let scene = new THREE.Scene();
 let camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 1, 1000);
@@ -154,22 +53,27 @@ renderer.setSize(innerWidth, innerHeight);
 document.body.appendChild(renderer.domElement);
 window.addEventListener("resize", () => {
     camera.aspect = innerWidth / innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(innerWidth, innerHeight);
-});
-new OrbitControls(camera, renderer.domElement);
 
-let g = new THREE.CylinderGeometry(1, 1, 10, 200, 200, true);
-let gu = { 
-    time: { value: 0 },
-    color1: { value: new THREE.Color(0x00ff00) },
-    color2: { value: new THREE.Color(0xff0000) }
-// ... 完整源码见在线案例编辑器
+let scene = new THREE.Scene();
+let camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 1, 1000);
+camera.position.set(10, 10, 7).setLength(13);
+let renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(innerWidth, innerHeight);
+document.body.appendChild(renderer.domElement);
+window.addEventListener("resize", () => {
+    camera.aspect = innerWidth / innerHeight;
+    camera.updateProjectionMatrix();
 ```
+
+
+完整源码：[GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/threeExamples/shader/ephemeralFlower.js)
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=ephemeralFlower) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [着色器目录](/examples/three/shader/)
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=ephemeralFlower) 运行，再对照源码修改 uniform / 参数加深理解
 
-> 着色器 · Three.js
+
+- 上一篇：[发散着色器](/examples/three/shader/emitShader)
+- 下一篇：[鱼](/examples/three/shader/fishShader)
+
+> 着色器 · Three.js · 78/89

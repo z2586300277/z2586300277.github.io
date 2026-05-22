@@ -8,6 +8,9 @@ outline: deep
 
 XYZ、WMTS、WMS、ArcGIS、高德/百度等影像图层加载。
 
+> 本分类案例均已对照 [three-cesium-examples](https://github.com/z2586300277/three-cesium-examples/tree/dev) 源码生成精讲文档。
+
+
 > 图层案例核心在 ImageryProvider 与 imageryLayers。
 
 每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。

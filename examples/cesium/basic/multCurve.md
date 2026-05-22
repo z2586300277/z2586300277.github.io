@@ -1,176 +1,87 @@
 ---
-title: "cesium大量曲线 - Cesium.js 案例讲解"
-description: "本案例展示 **cesium大量曲线 ** 的实现。涉及：Cesium Viewer 初始化、Cesium 影像图层。"
+title: "海量曲线 - Cesium.js 案例讲解"
+description: "CatmullRomSpline 样条插值 + PolylineGeometry 批量飞线"
 head:
   - - meta
     - name: keywords
-      content: "cesium.js,webgl,basic,cesium大量曲线"
+      content: "cesium.js,CatmullRomSpline,曲线,PolylineGeometry"
 outline: deep
 ---
-# cesium大量曲线
 
-*Multiple Curves*
+# 海量曲线
+
+*Mass Curves*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=multCurve)
 
-![cesium大量曲线](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/multCurve.jpg)
+![海量曲线](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/multCurve.jpg)
 
 ## 你将学到什么
 
-- Cesium Viewer 初始化
-- Cesium 影像图层
+- **CatmullRomSpline** 过控制点生成平滑曲线
+- `multiplier` 控制插值细分密度
+- 300+ 条随机曲线合批为单个 Primitive
 
 ## 效果说明
 
-本案例展示 **cesium大量曲线 ** 的实现。涉及：Cesium Viewer 初始化、Cesium 影像图层。
-
-> 基础功能 · Cesium.js
+先用 5 个中国城市坐标画一条示范曲线，再随机 300 条跨洋曲线，颜色随机、半透明。
 
 ## 核心概念
 
-- **Viewer** 封装地球、相机、图层；可关闭 animation/timeline 等 UI 精简界面。
+### 样条插值
 
-- **ImageryLayer** 叠加 XYZ/WMTS/ArcGIS 等底图，`imageryLayers.add/remove` 管理。
+```js
+const spline = new Cesium.CatmullRomSpline({
+    times: [0, 0.25, 0.5, 0.75, 1],  // 归一化参数
+    points: cartesianPoints,          // Cartesian3 控制点
+});
+
+for (let i = 0; i < numOfPoints; i++) {
+    const time = i / (numOfPoints - 1);
+    curvePoints.push(spline.evaluate(time));
+}
+```
+
+`numOfPoints = 控制点数 × multiplier`，multiplier 越大曲线越 smooth、顶点越多。
+
+### 与直线飞线区别
+
+| 方式 | 路径 |
+|------|------|
+| 直线 | 控制点依次相连 |
+| **Catmull-Rom** | 过所有控制点的平滑弧线，适合迁徙/物流可视化 |
 
 ## 实现步骤
 
-1. 初始化 `Cesium.Viewer` 与底图图层
-2. 添加 Entity / Primitive / DataSource 等业务对象
-3. 按需 `camera.flyTo` 定位视角
+1. `setCurveCollection` 封装 `generateCurvePoints` + instance 收集
+2. 添加京沪广深杭 5 点示范曲线
+3. 循环 300 次随机 5 控制点（10 个度数）生成曲线
+4. 一个 `Primitive` + `PolylineColorAppearance` 提交
 
 ## 代码要点
 
-- **`setCurveCollection()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
-- **`generateCurvePoints()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+```js
+function generateCurvePoints(flattenedPoints, multiplier = 30) {
+    const points = [];
+    for (let i = 0; i < flattenedPoints.length; i += 2) {
+        points.push([flattenedPoints[i], flattenedPoints[i + 1]]);
+    }
+    const cartesianPoints = points.map(p => Cesium.Cartesian3.fromDegrees(p[0], p[1]));
+    const spline = new Cesium.CatmullRomSpline({
+        times: points.map((_, i) => i / (points.length - 1)),
+        points: cartesianPoints,
+    });
+    // ... evaluate 采样
+}
+```
 
 ## 源码
 
-```js
-import * as Cesium from 'cesium'
-
-const box = document.getElementById('box')
-
-const viewer = new Cesium.Viewer(box, {
-
-    animation: false,//是否创建动画小器件，左下角仪表    
-
-    baseLayerPicker: false,//是否显示图层选择器，右上角图层选择按钮
-
-    baseLayer: Cesium.ImageryLayer.fromProviderAsync(Cesium.ArcGisMapServerImageryProvider.fromUrl('https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer')),
-
-    fullscreenButton: false,//是否显示全屏按钮，右下角全屏选择按钮
-
-    timeline: false,//是否显示时间轴    
-
-    infoBox: false,//是否显示信息框   
-
-})
-
-// 经纬度坐标5个点
-const points = [116.405285, 39.904989, 121.472644, 31.231706, 113.280637, 23.125178, 114.057868, 22.543099, 120.153576, 30.287459]
-
-const getColor = () => '#' + Math.floor(Math.random() * 0xffffff).toString(16).padEnd(6, '0') // 随机16进制颜色
-
-setCurveCollection(viewer, curveCollection => {
-
-    curveCollection.add({ positions: points, color: getColor(), width: 2, opacity: 0.5, id: 'curve1', multiplier: 1 }) // 添加一条曲线
-
-    // 随机生成 300 个曲线
-    for (let i = 0; i < 300; i++) {
-
-        const positions = Array.from({ length: 10 }, () => Math.random() * 360 - 180).reduce((acc, cur) => acc.concat(cur), [])
-
-        curveCollection.add({ positions, color: getColor(), width: 2, opacity: 0.5, id: i, multiplier: 20 })
-
-    }
-
-})
-
-/* 创建曲线合集 */
-function setCurveCollection(viewer, callback) {
-
-    /* 曲线算法 */
-    function generateCurvePoints(flattenedPoints, multiplier = 30) {
-
-        const numOfPoints = flattenedPoints.length / 2 * multiplier
-
-        // 将一维数组转换为二维数组
-        const points = [];
-
-        for (let i = 0; i < flattenedPoints.length; i += 2) {
-
-            points.push([flattenedPoints[i], flattenedPoints[i + 1]])
-
-        }
-
-        const times = points.map((_, index) => index / (points.length - 1))
-
-        const cartesianPoints = points.map(point => Cesium.Cartesian3.fromDegrees(point[0], point[1]))
-
-        const spline = new Cesium.CatmullRomSpline({
-
-            times: times,
-
-            points: cartesianPoints
-
-        });
-
-        const curvePoints = [];
-
-        for (let i = 0; i < numOfPoints; i++) {
-
-            const time = i / (numOfPoints - 1)
-
-            curvePoints.push(spline.evaluate(time))
-
-        }
-
-        return curvePoints;
-
-    }
-
-    const curveCollection = {
-
-        instances: [],
-
-        add({ positions, color = '#fff', id = '', width = 1.0, opacity = 1, multiplier = 10 }) {
-
-            if (!positions) return
-
-            this.instances.push(new Cesium.GeometryInstance({
-
-                geometry: new Cesium.PolylineGeometry({
-
-                    positions: generateCurvePoints(positions, multiplier),
-
-                    width,
-
-                    vertexFormat: Cesium.PolylineColorAppearance.VERTEX_FORMAT
-
-                }),
-
-                attributes: {
-
-                    color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.fromCssColorString(color).withAlpha(opacity))
-
-                },
-
-                id
-
-            }))
-
-        }
-
-    }
-
-    if (callback) callback(curveCollection)
-
-// ... 完整源码见在线案例编辑器
-```
+完整源码见 [GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/cesiumExamples/basic/multCurve.js)。
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=multCurve) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [基础功能目录](/examples/cesium/basic/)
+- 飞线/弧线大屏常用 CatmullRom + Primitive 合批
+- 上一篇：[海量面线](/examples/cesium/basic/multFaceLine) · 下一篇：[Canvas 文字点](/examples/cesium/basic/multText)
 
-> 基础功能 · Cesium.js
+> 基础功能 · Cesium.js · 12/19

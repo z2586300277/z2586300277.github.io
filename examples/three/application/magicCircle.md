@@ -1,12 +1,13 @@
 ---
 title: "魔法阵 - Three.js 案例讲解"
-description: "大量重复物体或粒子，注意 draw call 与 update 频率。入口在 `ThreeCore`。"
+description: "魔法阵：Scene / Camera / Renderer 渲染管线、相机交互控制器、粒子 / 点云 / 实例化渲染（应用场景）"
 head:
   - - meta
     - name: keywords
-      content: "three.js,webgl,application,魔法阵"
+      content: "three.js,application,magicCircle,BufferGeometry"
 outline: deep
 ---
+
 # 魔法阵
 
 *Magic Circle*
@@ -17,54 +18,39 @@ outline: deep
 
 ## 你将学到什么
 
+- Scene / Camera / Renderer 渲染管线
 - 相机交互控制器
-- 实时阴影 ShadowMap
-- 天空盒与环境贴图
-- 点云 / 粒子 / 实例化渲染
-- requestAnimationFrame 渲染循环
+- 粒子 / 点云 / 实例化渲染
 
 ## 效果说明
 
-大量重复物体或粒子，注意 draw call 与 update 频率。入口在 `ThreeCore`。
-
-> 应用场景 · Three.js
+Three.js WebGL 场景，粒子或点云特效，技术点：BufferGeometry。打开在线案例可查看最终画面。
 
 ## 核心概念
 
-- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
-
-- 阴影四步：`renderer.shadowMap.enabled`、光源 `castShadow`、物体 `castShadow`、地面 `receiveShadow`。
-
-- **CubeTexture** 六面贴图作 `scene.background`；`scene.environment` 供 PBR 材质反射。
-
-- **Points** 大量顶点用点精灵渲染；**InstancedMesh** 相同几何体批量绘制，降低 draw call。
+- **Scene** 容纳对象，**Camera** 定义视点，**WebGLRenderer** 输出 canvas。
+- **OrbitControls** 轨道旋转缩放；开启阻尼时每帧 `controls.update()`。
+- 大量点用 **BufferGeometry + Points** 或 **InstancedMesh** 合批，避免逐 Entity 创建。
 
 ## 实现步骤
 
-1. 搭建 Scene / Camera / Renderer 与 OrbitControls
-2. rAF 循环中 update 并 render
+1. 初始化 Viewer 或 Scene / Camera / Renderer
+2. 创建 OrbitControls 并处理 resize
+3. 构建几何 attribute 或 instanceMatrix 并 add 到 scene
 
-## 源码
+## 代码要点
 
 ```js
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import Stats from 'three/examples/jsm/libs/stats.module.js';
+this.options = options;
+        this.scene = new THREE.Scene();
+        this.clock = new THREE.Clock();
+        this.animates = {};
+        const k = dom.clientWidth / dom.clientHeight;
+        if ("fov" in options.cameraOptions) {
+            this.defaultCamera = new THREE.PerspectiveCamera(options.cameraOptions.fov, k, options.cameraOptions.near, options.cameraOptions.far);
+        }
+        else {
 
-class ThreeCore {
-    dom;
-    scene;
-    camera;
-    defaultCamera;
-    renderer;
-    clock;
-    options;
-    stats;
-    // 要执行动画的对象集合, 子类可以把自己的动画写进 onRender 也可以 this.addAnimate() 添加到父类动画集合里
-    animates;
-    constructor(dom, options) {
-        this.dom = dom;
-        this.options = options;
         this.scene = new THREE.Scene();
         this.clock = new THREE.Clock();
         this.animates = {};
@@ -74,105 +60,17 @@ class ThreeCore {
         }
         else {
             const s = options.cameraOptions.s;
-            this.defaultCamera = new THREE.OrthographicCamera(-s * k, s * k, s, -s, options.cameraOptions.near, options.cameraOptions.far);
-        }
-        this.camera = this.defaultCamera;
-        this.scene.add(this.camera);
-        const rendererOptions = {
-            // 抗锯齿
-            antialias: true,
-            alpha: true,
-            // 深度缓冲, 解决模型重叠部分不停闪烁问题
-            // 这个属性会导致精灵材质会被后面的物体遮挡
-            // 只能出现问题的时候, 在那个场景 new ThreeCore继承类的时候, 传入rendererOptions参数, 将此参数改为 false
-            logarithmicDepthBuffer: true
-        };
-        const renderer = new THREE.WebGLRenderer(Object.assign({}, rendererOptions, options.rendererOptions));
-        renderer.setSize(dom.clientWidth, dom.clientHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        dom.appendChild(renderer.domElement);
-        this.renderer = renderer;
-        this.stats = new Stats();
-        dom.appendChild(this.stats.dom);
-        window.addEventListener("resize", this.onResize, false);
-        //利用 setTimeout 宏任务最后执行特性, 使js执行过程要等所有微任务和同步代码执行完再执行, 否则 this.init() 可能会在场景未搭建完毕就执行报错或没有生产对象
-
-        this.init();
-        this.animate();
-
-    }
-    // 提供给子类覆写
-    onRenderer() { }
-    // 提供给子类覆写
-    onDestroy() { }
-    animate() {
-        this.renderer.setAnimationLoop(() => {
-            this.onRenderer();
-            this.stats.update();
-            // 执行动画
-            for (const key in this.animates) {
-                this.animates[key](this.clock.getDelta());
-            }
-            this.renderer.render(this.scene, this.camera);
-        });
-    }
-    addAnimate(name, func) {
-        this.animates[name] = func;
-    }
-    removeAnimate(name) {
-        delete this.animates[name];
-    }
-    onResize = () => {
-        const width = this.dom.clientWidth;
-        const height = this.dom.clientHeight;
-        const k = width / height;
-        // 更新相机
-        if (this.camera instanceof THREE.PerspectiveCamera) {
-            this.camera.aspect = k;
-        }
-        else {
-            const s = this.options.cameraOptions.s;
-            this.camera.left = -s * k;
-            this.camera.right = s * k;
-            this.camera.top = s;
-            this.camera.bottom = -s;
-        }
-        this.camera.updateProjectionMatrix();
-        // 更新renderer
-        this.renderer.setSize(width, height);
-        this.renderer.setPixelRatio(window.devicePixelRatio);
-    };
-    destroyed() {
-        // 需要手动移除掉 gui, 否则刷新页面时会出现多个gui
-        document.querySelector(".dg.main.a")?.remove();
-        window.removeEventListener("resize", this.onResize.bind(this));
-        this.onDestroy();
-        this.renderer.setAnimationLoop(null);
-        this.renderer.renderLists.dispose();
-        this.renderer.dispose();
-        this.renderer.forceContextLoss();
-        this.renderer.domElement.innerHTML = "";
-        this.scene.clear();
-        THREE.Cache.clear();
-    }
-}
-
-class ThreeProject extends ThreeCore {
-    orbit;
-    // 法阵高度
-    height = 2;
-    // 圆形底
-    circle = [];
-    circleRadius = 1;
-    circleRotateSpeed = 0.02;
-    // 两个旋转光环
-    ring1 = [];
-// ... 完整源码见在线案例编辑器
 ```
+
+
+完整源码：[GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/threeExamples/application/magicCircle.js)
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=magicCircle) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [应用场景目录](/examples/three/application/)
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=magicCircle) 运行，再对照源码修改 uniform / 参数加深理解
 
-> 应用场景 · Three.js
+
+- 上一篇：[优雅永不过时](/examples/three/application/z2586300277)
+- 下一篇：[代码云](/examples/three/application/codeCloud)
+
+> 应用场景 · Three.js · 2/68

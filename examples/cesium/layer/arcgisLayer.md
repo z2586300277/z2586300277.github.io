@@ -1,15 +1,16 @@
 ---
 title: "arcgis图层 - Cesium.js 案例讲解"
-description: "本案例展示 **arcgis图层 ** 的实现。涉及：Cesium Viewer 初始化、Cesium 影像图层。"
+description: "arcgis图层：Cesium Viewer 初始化与场景配置（在线地图）"
 head:
   - - meta
     - name: keywords
-      content: "cesium.js,webgl,layer,arcgis图层"
+      content: "cesium.js,layer,arcgisLayer"
 outline: deep
 ---
+
 # arcgis图层
 
-*ArcGIS Layer*
+*arcgis图层 *
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=layer&id=arcgisLayer)
 
@@ -17,34 +18,25 @@ outline: deep
 
 ## 你将学到什么
 
-- Cesium Viewer 初始化
-- Cesium 影像图层
+- Cesium Viewer 初始化与场景配置
 
 ## 效果说明
 
-本案例展示 **arcgis图层 ** 的实现。涉及：Cesium Viewer 初始化、Cesium 影像图层。
-
-> 在线地图 · Cesium.js
+Cesium 地球场景。打开在线案例可查看最终画面。
 
 ## 核心概念
 
-- **Viewer** 封装地球、相机、图层；可关闭 animation/timeline 等 UI 精简界面。
-
-- **ImageryLayer** 叠加 XYZ/WMTS/ArcGIS 等底图，`imageryLayers.add/remove` 管理。
+- **Viewer** 封装地球、相机、图层与 clock；可关闭 animation/timeline 精简 UI。
 
 ## 实现步骤
 
-1. 初始化 `Cesium.Viewer` 与底图图层
-2. 添加 Entity / Primitive / DataSource 等业务对象
-3. 按需 `camera.flyTo` 定位视角
+1. 初始化 Viewer 或 Scene / Camera / Renderer
+2. 按需 flyTo 定位视角
+3. 注册拾取 / 绘制 / 漫游等交互
 
-## 源码
+## 代码要点
 
 ```js
-import * as Cesium from 'cesium'
-
-const box = document.getElementById('box')
-
 const viewer = new Cesium.Viewer(box, {
 
     animation: false,//是否创建动画小器件，左下角仪表    
@@ -53,17 +45,7 @@ const viewer = new Cesium.Viewer(box, {
 
     baseLayer: false, // 不显示默认图层
 
-    fullscreenButton: false,//是否显示全屏按钮，右下角全屏选择按钮
 
-    timeline: false,//是否显示时间轴    
-
-    infoBox: false,//是否显示信息框   
-
-})
-
-const url = 'https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer'
- 
-const layer = Cesium.ImageryLayer.fromProviderAsync(
 
     Cesium.ArcGisMapServerImageryProvider.fromUrl(url)
 
@@ -72,9 +54,15 @@ const layer = Cesium.ImageryLayer.fromProviderAsync(
 viewer.imageryLayers.add(layer)
 ```
 
+
+完整源码：[GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/cesiumExamples/layer/arcgisLayer.js)
+
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=layer&id=arcgisLayer) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [在线地图目录](/examples/cesium/layer/)
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=layer&id=arcgisLayer) 运行，再对照源码修改 uniform / 参数加深理解
 
-> 在线地图 · Cesium.js
+
+- 上一篇：[百度图层](/examples/cesium/layer/baiduLayer)
+- 下一篇：[高德图层](/examples/cesium/layer/gaodeLayer)
+
+> 在线地图 · Cesium.js · 4/12

@@ -8,6 +8,9 @@ outline: deep
 
 Three.js 入门系列共 **15 篇**，建议按顺序阅读。每篇包含：效果说明、核心概念、实现步骤、代码要点与完整源码。
 
+> 本分类案例均已对照 [three-cesium-examples](https://github.com/z2586300277/three-cesium-examples/tree/dev) 源码生成精讲文档。
+
+
 [▶ 案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/example) · [← 返回总目录](/examples/)
 
 ## 学习路线

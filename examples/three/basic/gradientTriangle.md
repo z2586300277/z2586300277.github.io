@@ -1,15 +1,16 @@
 ---
 title: "渐变三角形 - Three.js 案例讲解"
-description: "本案例展示 **渐变三角形** 的实现。涉及：相机交互控制器、requestAnimationFrame 渲染循环。"
+description: "BufferGeometry 顶点色 + index 索引，GPU 重心插值渐变"
 head:
   - - meta
     - name: keywords
-      content: "three.js,webgl,basic,渐变三角形"
+      content: "three.js,渐变,顶点颜色,BufferGeometry,index"
 outline: deep
 ---
+
 # 渐变三角形
 
-*Triangle*
+*Gradient Triangle*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=gradientTriangle)
 
@@ -17,27 +18,31 @@ outline: deep
 
 ## 你将学到什么
 
-- 相机交互控制器
-- requestAnimationFrame 渲染循环
+- 单三角形 **三色顶点** 在面内自动插值
+- `setAttribute('color')` + `vertexColors: true`
+- `setIndex` 用 3 顶点 + 索引绘制
 
 ## 效果说明
 
-本案例展示 **渐变三角形** 的实现。涉及：相机交互控制器、requestAnimationFrame 渲染循环。
-
-> 基础案例 · Three.js
+一个三角形，三个顶点分别为 **红、绿、蓝**，面内呈现平滑 **RGB 渐变**（GPU 重心插值）。
 
 ## 核心概念
 
-- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
+与 [顶点颜色入门](/examples/three/introduction/顶点颜色) 相同原理，本案例简化为 **1 三角面 + index**：
 
-## 实现步骤
+```js
+geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+geometry.setAttribute('color', colorAttribute);
+geometry.setIndex([0, 1, 2]);
 
-1. 搭建 Scene / Camera / Renderer 与 OrbitControls
-2. rAF 循环中 update 并 render
+new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide });
+```
 
-## 代码要点
-
-- **`initObject()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+| 顶点 | 位置 | 颜色 |
+|------|------|------|
+| 0 | (0,0,0) | 红 |
+| 1 | (0,200,0) | 绿 |
+| 2 | (200,0,0) | 蓝 |
 
 ## 源码
 
@@ -46,82 +51,40 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 const box = document.getElementById('box')
-
 const scene = new THREE.Scene()
-
 const camera = new THREE.PerspectiveCamera(75, box.clientWidth / box.clientHeight, 0.1, 1000)
-
 camera.position.set(0, 0, 500)
 
 const renderer = new THREE.WebGLRenderer()
-
 renderer.setSize(box.clientWidth, box.clientHeight)
-
+box.appendChild(renderer.domElement)
 new OrbitControls(camera, renderer.domElement)
 
-window.onresize = () => {
+const geometry = new THREE.BufferGeometry()
+geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+    0, 0, 0,  0, 200, 0,  200, 0, 0
+]), 3))
+geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array([
+    1,0,0,  0,1,0,  0,0,1
+]), 3))
+geometry.setIndex([0, 1, 2])
 
-  renderer.setSize(box.clientWidth, box.clientHeight)
+const mesh = new THREE.Mesh(
+    geometry,
+    new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide })
+)
+scene.add(mesh)
 
-  camera.aspect = box.clientWidth / box.clientHeight
-
-  camera.updateProjectionMatrix()
-
-}
-
-box.appendChild(renderer.domElement)
-
-initObject();
-function initObject() {
-  let geometry = new THREE.BufferGeometry(); // 使用BufferGeometry
-
-  let vertices = new Float32Array([
-    0, 0, 0, // 顶点p1
-    0, 200, 0, // 顶点p2
-    200, 0, 0 // 顶点p3
-  ]);
-
-  geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-
-  let colors = [
-    1.0, 0.0, 0.0, // 颜色1 (红色)
-    0.0, 1.0, 0.0, // 颜色2 (绿色)
-    0.0, 0.0, 1.0  // 颜色3 (蓝色)
-  ];
-
-  // 创建顶点颜色属性
-  let colorAttribute = new THREE.BufferAttribute(new Float32Array(colors), 3);
-  geometry.setAttribute('color', colorAttribute);
-
-  // 定义索引，创建三角形面
-  let indices = [
-    0, 1, 2 // 索引0, 1, 2 表示顶点数组中的p1, p2, p3
-  ];
-  let indexAttribute = new THREE.BufferAttribute(new Uint16Array(indices), 1);
-  geometry.setIndex(indexAttribute);
-
-  let material = new THREE.MeshBasicMaterial({
-    vertexColors: true,
-    side: THREE.DoubleSide,
-    wireframe: false
-  });
-
-  let obj = new THREE.Mesh(geometry, material);
-  scene.add(obj);
-}
 function animate() {
-
-  requestAnimationFrame(animate)
-  renderer.render(scene, camera)
-
+    requestAnimationFrame(animate)
+    renderer.render(scene, camera)
 }
-
 animate()
 ```
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=gradientTriangle) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [基础案例目录](/examples/three/basic/)
+- 顶点色渐变 = **每顶点一条 color**，而非常量 material.color
+- 上一篇：[屏幕坐标](/examples/three/basic/screenCoord) · 下一篇：[扩散圈](/examples/three/basic/扩散圈)
 
-> 基础案例 · Three.js
+> 基础案例 · Three.js · 13/35

@@ -9,6 +9,9 @@ outline: [2, 3]
 
 380 个 WebGL / Three.js / Cesium.js 案例，每篇按 **效果说明 → 核心概念 → 实现步骤 → 代码要点 → 源码** 的结构讲解。在线运行与完整源码见 [three-cesium-examples](https://z2586300277.github.io/three-cesium-examples/)。
 
+> 本分类案例均已对照 [three-cesium-examples](https://github.com/z2586300277/three-cesium-examples/tree/dev) 源码生成精讲文档。
+
+
 [▶ 案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/example)
 
 ## 推荐学习路径

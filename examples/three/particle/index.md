@@ -8,6 +8,9 @@ outline: deep
 
 Points、粒子着色器、火焰雨雪等大量点精灵效果。
 
+> 本分类案例均已对照 [three-cesium-examples](https://github.com/z2586300277/three-cesium-examples/tree/dev) 源码生成精讲文档。
+
+
 > 粒子案例关注 BufferGeometry 与 GPU 点数性能。
 
 每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。

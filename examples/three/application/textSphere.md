@@ -1,12 +1,13 @@
 ---
 title: "球体文字 - Three.js 案例讲解"
-description: "Three.js 业务向场景组合。"
+description: "球体文字：Scene / Camera / Renderer 渲染管线、相机交互控制器（应用场景）"
 head:
   - - meta
     - name: keywords
-      content: "three.js,webgl,application,球体文字"
+      content: "three.js,application,textSphere"
 outline: deep
 ---
+
 # 球体文字
 
 *Text Sphere*
@@ -17,35 +18,28 @@ outline: deep
 
 ## 你将学到什么
 
+- Scene / Camera / Renderer 渲染管线
 - 相机交互控制器
-- 实时阴影 ShadowMap
-- requestAnimationFrame 渲染循环
 
 ## 效果说明
 
-Three.js 业务向场景组合。
-
-> 应用场景 · Three.js
+Three.js WebGL 场景。打开在线案例可查看最终画面。
 
 ## 核心概念
 
-- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
-
-- 阴影四步：`renderer.shadowMap.enabled`、光源 `castShadow`、物体 `castShadow`、地面 `receiveShadow`。
+- **Scene** 容纳对象，**Camera** 定义视点，**WebGLRenderer** 输出 canvas。
+- **OrbitControls** 轨道旋转缩放；开启阻尼时每帧 `controls.update()`。
 
 ## 实现步骤
 
-1. 搭建 Scene / Camera / Renderer 与 OrbitControls
-2. rAF 循环中 update 并 render
+1. 初始化 Viewer 或 Scene / Camera / Renderer
+2. 创建 OrbitControls 并处理 resize
+3. 搭建灯光与环境（如有）
+4. requestAnimationFrame 循环 update + render
 
-## 源码
+## 代码要点
 
 ```js
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
-
 const DOM = document.getElementById('box')
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, DOM.clientWidth / DOM.clientHeight, 0.1, 1000)
@@ -55,117 +49,27 @@ renderer.setSize(DOM.clientWidth, DOM.clientHeight)
 DOM.appendChild(renderer.domElement)
 const controls = new OrbitControls(camera, renderer.domElement)
 controls.enableDamping = true
-controls.dampingFactor = 0.01
 
-animate()
-function animate() {
-    controls.update()
-    renderer.render(scene, camera)
-    requestAnimationFrame(animate)
-}
+const scene = new THREE.Scene()
+const camera = new THREE.PerspectiveCamera(75, DOM.clientWidth / DOM.clientHeight, 0.1, 1000)
+camera.position.set(1, 2, 3)
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
+renderer.setSize(DOM.clientWidth, DOM.clientHeight)
+DOM.appendChild(renderer.domElement)
+const controls = new OrbitControls(camera, renderer.domElement)
 
-window.onresize = () => {
-    renderer.setSize(DOM.clientWidth, DOM.clientHeight)
-    camera.aspect = DOM.clientWidth / DOM.clientHeight
-    camera.updateProjectionMatrix()
-}
-
-scene.add(new THREE.AxesHelper(1000))
-
-scene.add(new THREE.AmbientLight(0x404040, 5));
-
-let directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-directionalLight.castShadow = true;
-directionalLight.position.set(0, 50, 0);
-
-scene.add(directionalLight);
-
-const TEXT = [
-    "three.js",
-    "tres.js",
-    "react-three-fiber",
-    "cesium",
-    "javascript",
-    "html",
-    "babylon",
-    "webgl",
-    "glsl",
-    "shader",
-    "css",
-    "vue",
-    "vite",
-];
-
-// 创建球体几何体
-const radius = 2;
-const segments = 64;
-const rings = 64;
-const geometry = new THREE.SphereGeometry(radius, segments, rings);
-
-const widthSegments = 32; // 横向细分段数
-const heightSegments = 32; // 纵向细分段数
-
-// 生成顶点数据
-const positions = [];
-for (let phiIndex = 0; phiIndex <= heightSegments; phiIndex++) {
-    const phi = (phiIndex * Math.PI) / heightSegments;
-    for (let thetaIndex = 0; thetaIndex <= widthSegments; thetaIndex++) {
-        const theta = (thetaIndex * 2 * Math.PI) / widthSegments;
-
-        // 计算点的坐标
-        const x = radius * Math.sin(phi) * Math.cos(theta);
-        const y = radius * Math.sin(phi) * Math.sin(theta);
-        const z = radius * Math.cos(phi);
-
-        positions.push(x, y, z);
-    }
-}
-
-// 创建球体材质
-const material = new THREE.MeshBasicMaterial({
-    color: 0x00ff00, // 球体的颜色
-    transparent: true, // 开启透明
-    opacity: 0, // 设置透明度
-});
-
-// 创建球体网格
-const sphere = new THREE.Mesh(geometry, material);
-scene.add(sphere);
-
-const font = await new Promise((resolve) => new FontLoader().load('https://z2586300277.github.io/three-editor/dist/files/font/cn1.json', (f) => resolve(f)))
-
-const totalCount = positions.length;
-
-const savePos = [];
-const textMeshes = []; // 存储文本网格的数组
-
-// 创建并布局文本网格
-for (let i = 0; i < totalCount; i += 3) {
-    const x = positions[i];
-    const y = positions[i + 1];
-    const z = positions[i + 2];
-
-    const pos = new THREE.Vector3(x, y, z);
-
-    // 遍历文本数组
-    const index = THREE.MathUtils.randInt(0, TEXT.length - 1);
-    const textGeometry = new TextGeometry(TEXT[index], {
-        font,
-        size: 0.1 /* 字体大小 */,
-        depth: 0.001 /* 文本厚度 */,
-        curveSegments: 1 /* 曲线点数 (5降低优化性能) */,
-        bevelEnabled: true /* 是否开启斜角 */,
-        bevelThickness: 0.001 /* 斜角深度 */,
-        bevelSize: 0.001 /* 斜角与原始文本轮廓之间的延伸距离 */,
-        bevelSegments: 1 /* 斜角的分段数 (3降低优化性能) */,
-        bevelOffset: 0 /* 斜角偏移 */,
-    });
-// ... 完整源码见在线案例编辑器
+// ...
 ```
+
+
+完整源码：[GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/threeExamples/application/textSphere.js)
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=textSphere) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [应用场景目录](/examples/three/application/)
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=textSphere) 运行，再对照源码修改 uniform / 参数加深理解
 
-> 应用场景 · Three.js
+
+- 上一篇：[数学公式应用](/examples/three/application/mathApply)
+- 下一篇：[矩阵操作](/examples/three/application/matrixOperation)
+
+> 应用场景 · Three.js · 26/68

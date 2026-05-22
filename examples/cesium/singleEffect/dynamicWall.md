@@ -1,48 +1,50 @@
 ---
 title: "动态围墙 - Cesium.js 案例讲解"
-description: "地图上的弧形飞线，线条材质贴图沿切线方向滚动；如有 model 则沿测地曲线飞行。入口在 `DynamicWallMaterialProperty`。"
+description: "动态围墙：动态围墙（单一效果）"
 head:
   - - meta
     - name: keywords
-      content: "cesium.js,webgl,singleEffect,动态围墙"
+      content: "cesium.js,singleEffect,dynamicWall"
 outline: deep
 ---
+
 # 动态围墙
 
 *Dynamic Wall*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=singleEffect&id=dynamicWall)
 
-![动态围墙](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/effect/dynamicWall.jpg)
+![动态围墙](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/singleEffect/dynamicWall.jpg)
 
 ## 你将学到什么
 
-- 案例交互与参数可在在线编辑器中查看
+- 本案例核心 API 与实现思路
+- 对照源码与在线效果学习
 
 ## 效果说明
 
-地图上的弧形飞线，线条材质贴图沿切线方向滚动；如有 model 则沿测地曲线飞行。入口在 `DynamicWallMaterialProperty`。
-
-> 单一效果 · Cesium.js
+本页为 **工具 / 资源 / 外部链接** 导航，或源码托管在外部。点击上方按钮访问在线案例或目标站点。
 
 ## 核心概念
 
-- **Viewer** 管理地球与渲染；业务对象可用 **Entity**（高层）或 **Primitive**（高性能）。
-- 坐标转换：经纬高 ↔ `Cartesian3` 是 Cesium 开发基础。
+- 结合在线案例与下方源码阅读 GLSL / API 调用
 
 ## 实现步骤
 
-1. 初始化 `Cesium.Viewer` 与底图图层
-2. 添加 Entity / Primitive / DataSource 等业务对象
-3. 按需 `camera.flyTo` 定位视角
+1. 按需 flyTo 定位视角
+2. 注册拾取 / 绘制 / 漫游等交互
 
-## 源码
+## 代码要点
 
-完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=singleEffect&id=dynamicWall)。
+_本站无对应 JS 文件，请参考在线案例或外部链接。_
+
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=singleEffect&id=dynamicWall) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [单一效果目录](/examples/cesium/singleEffect/)
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=singleEffect&id=dynamicWall) 运行，再对照源码修改 uniform / 参数加深理解
 
-> 单一效果 · Cesium.js
+
+- 上一篇：[雷达探测](/examples/cesium/singleEffect/radarEmission)
+- 下一篇：[烟雾效果](/examples/cesium/singleEffect/smokeEffect)
+
+> 单一效果 · Cesium.js · 6/11

@@ -1,12 +1,13 @@
 ---
 title: "雷达扫描 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
+description: "雷达扫描：Scene / Camera / Renderer 渲染管线、相机交互控制器、onBeforeCompile 修改内置材质 shader（应用场景）"
 head:
   - - meta
     - name: keywords
-      content: "three.js,webgl,application,雷达扫描"
+      content: "three.js,application,radarScan,顶点着色器,片元着色器,uniform 驱动"
 outline: deep
 ---
+
 # 雷达扫描
 
 *Radar Scan*
@@ -17,61 +18,32 @@ outline: deep
 
 ## 你将学到什么
 
-- 自定义 ShaderMaterial / 修改内置 shader
+- Scene / Camera / Renderer 渲染管线
 - 相机交互控制器
-- requestAnimationFrame 渲染循环
+- onBeforeCompile 修改内置材质 shader
+- 粒子 / 点云 / 实例化渲染
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
-
-> 应用场景 · Three.js
+Three.js WebGL 场景，以自定义 shader 呈现核心视觉效果，粒子或点云特效，技术点：顶点着色器、片元着色器、uniform 驱动。打开在线案例可查看最终画面。
 
 ## 核心概念
 
-- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
-
-- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
+- **Scene** 容纳对象，**Camera** 定义视点，**WebGLRenderer** 输出 canvas。
+- **OrbitControls** 轨道旋转缩放；开启阻尼时每帧 `controls.update()`。
+- 替换 `#include <begin_vertex>` 等 chunk 注入特效，适合 PBR 材质叠加大屏效果。
+- 大量点用 **BufferGeometry + Points** 或 **InstancedMesh** 合批，避免逐 Entity 创建。
 
 ## 实现步骤
 
-1. 搭建 Scene / Camera / Renderer 与 OrbitControls
-2. 定义材质/shader 与 uniforms，rAF 中更新
-3. rAF 循环中 update 并 render
+1. 初始化 Viewer 或 Scene / Camera / Renderer
+2. 创建 OrbitControls 并处理 resize
+3. material.onBeforeCompile 注入 GLSL 与 uniform
+4. 构建几何 attribute 或 instanceMatrix 并 add 到 scene
 
 ## 代码要点
 
-- **`createRadarMarkers()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
-- **`update()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
-
-## 源码
-
 ```js
-import * as THREE from 'three'
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-
-// 配置与常量
-const CONFIG = {
-  grid: { size: 1000, divisions: 20, color1: 0x345678, color2: 0x123456 },
-  radar: {
-    position: { x: 0, y: 20, z: 0 },
-    radius: 240,
-    color: '#2288ff',      // 更改为好看的蓝色
-    scanColor: '#00ffaa',  // 更改为青绿色
-    opacity: 0.5,
-    speed: 300,
-    followWidth: 220,
-    rings: 3
-  },
-  markers: {
-    ringColor: 0x3399aa,   // 更改为蓝绿色
-    lineColor: 0x3399aa,   // 保持一致性
-    opacity: 0.3,
-    angleCount: 12
-  }
-}
-
-// 初始化场景
 const box = document.getElementById('box')
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(50, box.clientWidth / box.clientHeight, 0.1, 10000)
@@ -81,98 +53,27 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarit
 renderer.setSize(box.clientWidth, box.clientHeight)
 box.appendChild(renderer.domElement)
 
+
+const scene = new THREE.Scene()
+const camera = new THREE.PerspectiveCamera(50, box.clientWidth / box.clientHeight, 0.1, 10000)
+camera.position.set(0, 800, 1000)
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
+renderer.setSize(box.clientWidth, box.clientHeight)
+box.appendChild(renderer.domElement)
+
 const controls = new OrbitControls(camera, renderer.domElement)
-controls.enableDamping = true
-
-// 辅助网格
-const gridHelper = new THREE.GridHelper(
-  CONFIG.grid.size, 
-  CONFIG.grid.divisions, 
-  CONFIG.grid.color1, 
-  CONFIG.grid.color2
-);
-scene.add(gridHelper);
-
-// 颜色转换工具函数
-const hexToRgb = hex => {
-  hex = hex.replace('#', '');
-  return {
-    r: parseInt(hex.substring(0, 2), 16) / 255,
-    g: parseInt(hex.substring(2, 4), 16) / 255,
-    b: parseInt(hex.substring(4, 6), 16) / 255
-  };
-}
-
-// 添加圆形雷达范围标记 - 简化后的函数
-function createRadarMarkers(radius, count) {
-  const { ringColor, lineColor, opacity, angleCount } = CONFIG.markers;
-  const markers = new THREE.Group();
-  
-  // 创建同心圆
-  const ringMaterial = new THREE.LineBasicMaterial({ 
-    color: ringColor, 
-    opacity, 
-    transparent: true 
-  });
-  
-  for (let i = 1; i <= count; i++) {
-    const circle = new THREE.RingGeometry(
-      radius * i / count, 
-      radius * i / count + 1, 
-      100
-    );
-    const line = new THREE.LineSegments(
-      new THREE.EdgesGeometry(circle), 
-      ringMaterial
-    );
-    line.rotation.x = Math.PI / 2;
-    markers.add(line);
-  }
-
-  // 添加角度标记线
-  const angleMaterial = new THREE.LineBasicMaterial({ 
-    color: lineColor, 
-    opacity: opacity - 0.1, 
-    transparent: true 
-  });
-  
-  for (let i = 0; i < angleCount; i++) {
-    const angle = (i * (360 / angleCount)) * Math.PI / 180;
-    const lineGeometry = new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(0, 0, 0),
-      new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius)
-    ]);
-    markers.add(new THREE.Line(lineGeometry, angleMaterial));
-  }
-
-  return markers;
-}
-
-// 创建并添加雷达标记
-const radarMarkers = createRadarMarkers(CONFIG.radar.radius, CONFIG.radar.rings);
-scene.add(radarMarkers);
-
-// 雷达扫描区域
-const { position, radius, opacity } = CONFIG.radar;
-const radarColor = hexToRgb(CONFIG.radar.color);
-const scanColor = hexToRgb(CONFIG.radar.scanColor);
-
-// 创建雷达圆盘
-const circleGeometry = new THREE.CircleGeometry(radius, 1000)
-circleGeometry.applyMatrix4(new THREE.Matrix4().makeRotationX(-Math.PI/2))
-
-const material = new THREE.MeshBasicMaterial({ 
-  color: new THREE.Color(radarColor.r, radarColor.g, radarColor.b), 
-  opacity, 
-  transparent: true 
-})
-
-// ... 完整源码见在线案例编辑器
 ```
+
+
+完整源码：[GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/threeExamples/application/radarScan.js)
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=radarScan) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [应用场景目录](/examples/three/application/)
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=radarScan) 运行，再对照源码修改 uniform / 参数加深理解
 
-> 应用场景 · Three.js
+
+- 上一篇：[朋克风](/examples/three/application/punk)
+- 下一篇：[随机城市白膜](/examples/three/application/white model)
+
+> 应用场景 · Three.js · 46/68

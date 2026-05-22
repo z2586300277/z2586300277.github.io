@@ -1,143 +1,105 @@
 ---
-title: "geojson面 - Cesium.js 案例讲解"
-description: "本案例展示 **geojson面 ** 的实现。涉及：Cesium Viewer 初始化、Cesium 鼠标拾取交互、Cesium 影像图层。"
+title: "GeoJSON 面 - Cesium.js 案例讲解"
+description: "GeoJsonDataSource 加载行政区面，点击拾取改 polygon 材质"
 head:
   - - meta
     - name: keywords
-      content: "cesium.js,webgl,basic,geojson面"
+      content: "cesium.js,GeoJSON,polygon,DataSource,pick"
 outline: deep
 ---
-# geojson面
 
-*GeoJSON Face*
+# GeoJSON 面
+
+*GeoJSON Polygon*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=geojsonFace)
 
-![geojson面](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/geojsonFace.jpg)
+![GeoJSON 面](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/geojsonFace.jpg)
 
 ## 你将学到什么
 
-- Cesium Viewer 初始化
-- Cesium 鼠标拾取交互
-- Cesium 影像图层
-- GeoJSON 矢量数据加载
+- **GeoJsonDataSource.load** 加载 GeoJSON 面数据
+- 统一设置 **stroke / fill / strokeWidth**
+- **scene.pick** 点击 Entity 修改 **polygon.material**
+- 封装 `changeMaterial` 批量改色
 
 ## 效果说明
 
-本案例展示 **geojson面 ** 的实现。涉及：Cesium Viewer 初始化、Cesium 鼠标拾取交互、Cesium 影像图层。
-
-> 基础功能 · Cesium.js
+加载广东省 GeoJSON，半透明蓝色填充；点击某一区域后该区域变为黄色半透明。
 
 ## 核心概念
 
-- **Viewer** 封装地球、相机、图层；可关闭 animation/timeline 等 UI 精简界面。
+### GeoJsonDataSource
 
-- **ScreenSpaceEventHandler** 监听点击；`scene.pick` 取 Entity，`pickPosition` 取地表坐标。
+```js
+const dataSource = await Cesium.GeoJsonDataSource.load(url, {
+    stroke: Cesium.Color.RED.withAlpha(0.5),
+    fill: Cesium.Color.BLUE.withAlpha(0.5),
+    strokeWidth: 3,
+});
+viewer.dataSources.add(dataSource);
+viewer.flyTo(dataSource);
+```
 
-- **ImageryLayer** 叠加 XYZ/WMTS/ArcGIS 等底图，`imageryLayers.add/remove` 管理。
+加载后每个 Feature 对应一个 **Entity**，面要素带 `polygon` 图形。
 
-- 加载 GeoJSON 转 Entity 面/线/点，可配 extrudedHeight 做拉伸。
+### 点击改色
+
+```js
+viewer.screenSpaceEventHandler.setInputAction((event) => {
+    const picked = viewer.scene.pick(event.position);
+    if (Cesium.defined(picked) && picked.id) {
+        picked.id.polygon.material = Cesium.Color.YELLOW.withAlpha(0.5);
+    }
+}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+```
+
+`picked.id` 即 Entity；`polygon.material` 接受 `Color` 或 `MaterialProperty`。
+
+### 批量换肤
+
+```js
+dataSource.changeMaterial = (params) => {
+    dataSource.entities.values.forEach(entity => {
+        entity.polygon.material = Cesium.Color.fromCssColorString(params.fillColor)
+            .withAlpha(params.fillOpacity);
+        entity.polygon.outlineColor = ...;
+    });
+};
+```
 
 ## 实现步骤
 
-1. 初始化 `Cesium.Viewer` 与底图图层
-2. 添加 Entity / Primitive / DataSource 等业务对象
-3. 配置 ScreenSpaceEventHandler 交互
-4. 按需 `camera.flyTo` 定位视角
+1. 初始化 Viewer 与底图
+2. `setGeoPolygon(viewer, geojsonUrl)` 封装 load + add + changeMaterial
+3. `viewer.flyTo(dataSource)` 定位到数据范围
+4. 注册 LEFT_CLICK，pick 后改 material
 
 ## 代码要点
 
-- **`setGeoPolygon()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
-
-## 源码
-
 ```js
-import * as Cesium from 'cesium'
-
-const box = document.getElementById('box')
-
-const viewer = new Cesium.Viewer(box, {
-
-    animation: false,//是否创建动画小器件，左下角仪表    
-
-    baseLayerPicker: false,//是否显示图层选择器，右上角图层选择按钮
-
-    baseLayer: false, // 不显示默认图层
-
-    fullscreenButton: false,//是否显示全屏按钮，右下角全屏选择按钮
-
-    timeline: false,//是否显示时间轴    
-
-    infoBox: false,//是否显示信息框   
-
-})
-
-const url = GLOBAL_CONFIG.getLayerUrl()
- 
-const layer = Cesium.ImageryLayer.fromProviderAsync(
-
-    Cesium.ArcGisMapServerImageryProvider.fromUrl(url)
-
-)
-
-viewer.imageryLayers.add(layer)
-
-// 加载geojson数据
-const dataSource = setGeoPolygon(viewer, 'https://z2586300277.github.io/three-editor/dist/files/font/guangdong.json')
-
-// 看向geojson数据
-viewer.flyTo(dataSource)
-
-// 点击变色
-viewer.screenSpaceEventHandler.setInputAction((event) => {
-
-    const pickedObject = viewer.scene.pick(event.position)
-
-    if (Cesium.defined(pickedObject) && pickedObject.id) {
-
-        pickedObject.id.polygon.material = Cesium.Color.fromCssColorString('yellow').withAlpha(0.5)
-
-    }
-
-}, Cesium.ScreenSpaceEventType.LEFT_CLICK)
-
-// 创建 面
 async function setGeoPolygon(viewer, source, params = {}) {
-
     const dataSource = await Cesium.GeoJsonDataSource.load(source, {
-
-        stroke: Cesium.Color.fromCssColorString(params.strokeColor || 'red').withAlpha(params.strokeOpacity || 0.5), // 边界
-
-        fill: Cesium.Color.fromCssColorString(params.fillColor || 'blue').withAlpha(params.fillOpacity || 0.5), // 填充
-
+        stroke: Cesium.Color.fromCssColorString(params.strokeColor || 'red').withAlpha(0.5),
+        fill: Cesium.Color.fromCssColorString(params.fillColor || 'blue').withAlpha(0.5),
         strokeWidth: params.strokeWidth || 3,
-
-        markerSymbol: '?',
-
-        ...params
-
-    })
-
-    dataSource.changeMaterial = (params) => dataSource.entities.values.forEach(entity => {
-
-        entity.polygon.material = Cesium.Color.fromCssColorString(params.fillColor || 'blue').withAlpha(params.fillOpacity || 0.5)
-
-        entity.polygon.outlineColor = Cesium.Color.fromCssColorString(params.strokeColor || 'red').withAlpha(params.strokeOpacity || 0.5)
-
-        entity.polygon.outlineWidth = params.strokeWidth || 3
-
-    })
-
-    viewer.dataSources.add(dataSource)
-
-    return dataSource
-
+    });
+    viewer.dataSources.add(dataSource);
+    return dataSource;
 }
 ```
 
+::: tip 大数据量
+省级以上面数据 Entity 尚可；全国区县建议 **Primitive + 自定义着色** 或 3D Tiles 矢量瓦片。
+:::
+
+## 源码
+
+完整源码见 [GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/cesiumExamples/basic/geojsonFace.js)。
+
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=geojsonFace) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [基础功能目录](/examples/cesium/basic/)
+- GeoJSON → DataSource → Entity 是最快的行政区可视化路径
+- 上一篇：[天空盒](/examples/cesium/basic/skyBox) · 下一篇：[海量点](/examples/cesium/basic/multPoint)
 
-> 基础功能 · Cesium.js
+> 基础功能 · Cesium.js · 8/19

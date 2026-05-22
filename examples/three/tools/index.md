@@ -8,6 +8,9 @@ outline: deep
 
 建模、贴图、压缩、Shader 社区等外部工具与资源链接。
 
+> 本分类案例均已对照 [three-cesium-examples](https://github.com/z2586300277/three-cesium-examples/tree/dev) 源码生成精讲文档。
+
+
 > 工具页多为外链，用于提升资产生产效率。
 
 每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。

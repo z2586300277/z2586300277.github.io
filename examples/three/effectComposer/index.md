@@ -8,6 +8,9 @@ outline: deep
 
 EffectComposer、Bloom、模糊、色调等全屏后处理。
 
+> 本分类案例均已对照 [three-cesium-examples](https://github.com/z2586300277/three-cesium-examples/tree/dev) 源码生成精讲文档。
+
+
 > 后期管线用 composer.render() 替代 renderer.render()。
 
 每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。

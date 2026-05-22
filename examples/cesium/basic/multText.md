@@ -1,177 +1,87 @@
 ---
-title: "cesium大量文字 - Cesium.js 案例讲解"
-description: "本案例展示 **cesium大量文字 ** 的实现。涉及：Cesium Viewer 初始化、Cesium 影像图层。"
+title: "Canvas 文字点 - Cesium.js 案例讲解"
+description: "Canvas 绘制城市名 + BillboardCollection 贴图批量标注"
 head:
   - - meta
     - name: keywords
-      content: "cesium.js,webgl,basic,cesium大量文字"
+      content: "cesium.js,Canvas,Billboard,文字标注"
 outline: deep
 ---
-# cesium大量文字
 
-*Multiple Texts*
+# Canvas 文字点
+
+*Canvas Text Billboards*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=multText)
 
-![cesium大量文字](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/multText.jpg)
+![Canvas 文字点](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/multText.jpg)
 
 ## 你将学到什么
 
-- Cesium Viewer 初始化
-- Cesium 影像图层
+- 用 **Canvas 2D** 动态生成文字纹理
+- **devicePixelRatio × dpr** 高清屏清晰文字
+- 纹理作为 **Billboard.image** 批量贴到城市坐标
 
 ## 效果说明
 
-本案例展示 **cesium大量文字 ** 的实现。涉及：Cesium Viewer 初始化、Cesium 影像图层。
-
-> 基础功能 · Cesium.js
+加载 city.json，每个城市名渲染成彩色 canvas，再以 billboard 形式钉在对应经纬度。
 
 ## 核心概念
 
-- **Viewer** 封装地球、相机、图层；可关闭 animation/timeline 等 UI 精简界面。
+### createCanvasText 工厂
 
-- **ImageryLayer** 叠加 XYZ/WMTS/ArcGIS 等底图，`imageryLayers.add/remove` 管理。
+```js
+function createCanvasText(params) {
+    const { dpr, fontSize, maxWidth } = { dpr: 1, maxWidth: 100, fontSize: 20, ...params };
+    const ratio = window.devicePixelRatio * dpr;
+    canvas.width = maxWidth * ratio;
+    canvas.height = fontSize * ratio;
+    ctx.scale(ratio, ratio);
+    // 返回 (opts) => canvas.toDataURL() 或 canvas 本身
+}
+```
+
+每次调用 `updateCanvasText({ text: key, color })` 重绘并返回 image 源。
+
+### 为何不用 Label？
+
+| Label | Canvas Billboard |
+|-------|------------------|
+| 字体样式有限 | 任意 CSS 字体、描边、背景 |
+| 每 Entity 开销 | Collection 合批 |
+| 适合少量 | 适合上百城市名 |
 
 ## 实现步骤
 
-1. 初始化 `Cesium.Viewer` 与底图图层
-2. 添加 Entity / Primitive / DataSource 等业务对象
-3. 按需 `camera.flyTo` 定位视角
+1. fetch city.json → `{ 城市名: [lon, lat] }`
+2. `createCanvasText({ dpr: 1.4 })` 得 update 函数
+3. `BillboardCollection` 循环 add，`image: updateCanvasText({ text, color })`
+4. `flyTo` 中国上空总览
 
 ## 代码要点
 
-- **`createCanvasText()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
-- **`createBorder()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+```js
+const updateCanvasText = createCanvasText({ dpr: 1.4 });
+const billboards = new Cesium.BillboardCollection();
+viewer.scene.primitives.add(billboards);
+
+for (const key in citys) {
+    const [longitude, latitude] = citys[key];
+    billboards.add({
+        position: Cesium.Cartesian3.fromDegrees(longitude, latitude),
+        image: updateCanvasText({ text: key, color: getColor() }),
+        scale: 0.5,
+    });
+}
+```
 
 ## 源码
 
-```js
-import * as Cesium from 'cesium'
-
-const box = document.getElementById('box')
-
-const viewer = new Cesium.Viewer(box, {
-
-    animation: false,//是否创建动画小器件，左下角仪表    
-
-    baseLayerPicker: false,//是否显示图层选择器，右上角图层选择按钮
-
-    baseLayer: Cesium.ImageryLayer.fromProviderAsync(Cesium.ArcGisMapServerImageryProvider.fromUrl('https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer')),
-
-    fullscreenButton: false,//是否显示全屏按钮，右下角全屏选择按钮
-
-    timeline: false,//是否显示时间轴    
-
-    infoBox: false,//是否显示信息框   
-
-})
-
-viewer.camera.flyTo({ destination: Cesium.Cartesian3.fromDegrees(116.46, 39.92, 8000000) }) // 设置相机位置
-
-const citys = await fetch('https://z2586300277.github.io/three-editor/dist/files/other/city.json').then(res => res.json()) // 获取城市数据
-
-const updateCanvasText = createCanvasText({ dpr: 1.4 }) // 创建canvas
-
-const billboards = new Cesium.BillboardCollection() // 创建合集
-
-viewer.scene.primitives.add(billboards) // 添加图层
-
-const getColor = () => '#' + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0') // 随机颜色
-
-for (const key in citys) {
-
-    const [longitude, latitude] = citys[key]
-
-    billboards.add({
-
-        position: Cesium.Cartesian3.fromDegrees(longitude, latitude),
-
-        image: updateCanvasText({ text: key, color: getColor() }),
-
-        scale: 0.5
-        
-    })
-    
-}
-
-// 创建canvas文字方法
-function createCanvasText(params) {
-
-    const defaultParams = { dpr: 1, maxWidth: 100, fontSize: 20, color: 'white', fontFamily: 'serif', align: 'center', border: false, ...params } // 默认参数
-
-    const { dpr, border, maxWidth, fontSize, align } = defaultParams
-
-    const devicePixelRatio = window.devicePixelRatio * dpr
-
-    // 准备 cnvas
-    const canvas = document.createElement('canvas')
-
-    canvas.width = maxWidth * devicePixelRatio
-
-    canvas.height = fontSize * devicePixelRatio
-
-    // 获取 2d 上下文
-    const ctx = canvas.getContext('2d')
-
-    ctx.imageSmoothingQuality = 'high'
-
-    ctx.scale(devicePixelRatio, devicePixelRatio)
-
-    // 创建边框
-    function createBorder() {
-
-        ctx.strokeStyle = '#fff'
-
-        // 创建宽度为10px的边框
-        ctx.lineWidth = 1 * devicePixelRatio;
-
-        ctx.strokeRect(
-
-            ctx.lineWidth / 2,
-
-            ctx.lineWidth / 2,
-
-            canvas.width / devicePixelRatio - ctx.lineWidth,
-
-            canvas.height / devicePixelRatio - ctx.lineWidth
-
-        )
-
-    }
-
-    // 创建文字
-    const createText = ({ text, color, fontSize, fontFamily }) => {
-
-        // 参数设定
-        ctx.fillStyle = color || defaultParams.color
-
-        ctx.font = fontSize || defaultParams.fontSize + 'px ' + fontFamily || defaultParams.fontFamily
-
-        // 文本长度计算
-        let textMaxNum = 0
-
-        let totalWidth = 0
-
-        for (let i = 0; i < text.length; i++) {
-
-            const metrics = ctx.measureText(text[i])
-
-            totalWidth += metrics.width;
-
-            if (totalWidth > maxWidth) break
-
-            textMaxNum++
-
-        }
-
-        text = text.slice(0, textMaxNum)
-
-// ... 完整源码见在线案例编辑器
-```
+完整源码见 [GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/cesiumExamples/basic/multText.js)。
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=multText) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [基础功能目录](/examples/cesium/basic/)
+- Canvas → dataURL/canvas 是 Cesium 自定义图标的标准套路
+- 上一篇：[海量曲线](/examples/cesium/basic/multCurve) · 下一篇：[海量 Box](/examples/cesium/basic/multBox)
 
-> 基础功能 · Cesium.js
+> 基础功能 · Cesium.js · 13/19

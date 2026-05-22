@@ -8,6 +8,9 @@ outline: deep
 
 智慧城市、管道、测量、导航等完整业务向 Demo。
 
+> 本分类案例均已对照 [three-cesium-examples](https://github.com/z2586300277/three-cesium-examples/tree/dev) 源码生成精讲文档。
+
+
 > 应用案例代码量较大，建议配合在线编辑器分模块阅读。
 
 每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。

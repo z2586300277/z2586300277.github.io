@@ -1,49 +1,53 @@
 ---
 title: "边缘模糊效果 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
+description: "边缘模糊效果：Scene / Camera / Renderer 渲染管线、ShaderMaterial / RawShaderMaterial 自定义 GLSL（后期处理）"
 head:
   - - meta
     - name: keywords
-      content: "three.js,webgl,effectComposer,边缘模糊效果"
+      content: "three.js,effectComposer,EdgeBlurringEffect,顶点着色器,片元着色器,uniform 驱动"
 outline: deep
 ---
+
 # 边缘模糊效果
 
 *Edge Blur*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=effectComposer&id=EdgeBlurringEffect)
 
-![边缘模糊效果](https://z2586300277.github.io/3d-file-server/images/four/EdgeBlurringEffect.png)
+![边缘模糊效果](https://z2586300277.github.io/three-cesium-examples/threeExamples/effectComposer/EdgeBlurringEffect.jpg)
 
 ## 你将学到什么
 
-- 自定义 ShaderMaterial / 修改内置 shader
-- 天空盒与环境贴图
-- requestAnimationFrame 渲染循环
+- Scene / Camera / Renderer 渲染管线
+- ShaderMaterial / RawShaderMaterial 自定义 GLSL
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
-
-> 后期处理 · Three.js
+Three.js WebGL 场景，以自定义 shader 呈现核心视觉效果，技术点：顶点着色器、片元着色器、uniform 驱动。打开在线案例可查看最终画面。
 
 ## 核心概念
 
-- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
-
-- **CubeTexture** 六面贴图作 `scene.background`；`scene.environment` 供 PBR 材质反射。
+- **Scene** 容纳对象，**Camera** 定义视点，**WebGLRenderer** 输出 canvas。
+- **ShaderMaterial** 自定义 uniforms + vertex/fragment；**RawShaderMaterial** 需手写全部 shader 声明。
 
 ## 实现步骤
 
-1. 搭建 Scene / Camera / Renderer 与 OrbitControls
-2. 定义材质/shader 与 uniforms，rAF 中更新
-3. rAF 循环中 update 并 render
+1. 初始化 Viewer 或 Scene / Camera / Renderer
+2. 定义 uniforms，在 rAF 中更新并 render
+3. 搭建灯光与环境（如有）
+4. requestAnimationFrame 循环 update + render
 
-## 源码
+## 代码要点
 
 ```js
-import * as THREE from "three";
-import { Color, UniformsUtils } from "three";
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+);
+
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -55,6 +59,7 @@ const camera = new THREE.PerspectiveCamera(
 
 scene.background = new Color(0xffffff);
 
+
 const vertexShader = `
     precision highp float;
     precision highp int;
@@ -63,110 +68,17 @@ const vertexShader = `
     attribute vec3 position;
     attribute vec2 uv;
     varying vec2 vUv;
-    void main() {
-        vUv = uv;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-    }
-`;
-const fragmentShader = `
-    precision highp float;
-    precision highp int;
-
-    uniform float edge;
-    uniform float opacity;
-
-    uniform sampler2D map;
-
-    varying vec2 vUv;
-
-    void main(){
-      float edgeMin = edge;
-      float edgeMax = 1.0 - edge;
-
-      gl_FragColor = texture2D( map, vUv );
-
-      if(vUv.x < edgeMin){
-        if(vUv.y < edgeMin){ // 1
-            gl_FragColor.a = (min(vUv.x / edgeMin, vUv.y / edgeMin)) * opacity;
-        }
-        else if(vUv.y >= edgeMin && vUv.y <= edgeMax){ // 4
-            gl_FragColor.a = (vUv.x / edgeMin) * opacity;
-        }
-        else if(vUv.y > edgeMax){ // 7
-            gl_FragColor.a = (min(vUv.x / edgeMin, 1.0 - ((vUv.y - edgeMax) / edgeMin))) * opacity;
-        }
-        else{
-            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // for debug
-        }
-      }
-      else if(vUv.x >= edgeMin && vUv.x <= edgeMax){
-            if(vUv.y < edgeMin){ // 2
-                gl_FragColor.a = (vUv.y / edgeMin) * opacity;
-            }
-            else if(vUv.y >= edgeMin && vUv.y <= edgeMax){ // 5(center)
-                gl_FragColor.a = 1.0 * opacity;
-            }
-            else if(vUv.y > edgeMax){ // 8
-                gl_FragColor.a = (1.0 - ((vUv.y - edgeMax) / edgeMin)) * opacity;
-            }
-      }
-      else if(vUv.x > edgeMax){
-            float xNormal = 1.0 - ((vUv.x - edgeMax) / edgeMin);
-        
-            if(vUv.y < edgeMin){ // 3
-                gl_FragColor.a = (min(vUv.y / edgeMin, xNormal)) * opacity;
-            }
-            else if(vUv.y >= edgeMin && vUv.y <= edgeMax){ // 6
-                gl_FragColor.a = (xNormal) * opacity;
-            }
-            else if(vUv.y > edgeMax){ // 9
-                gl_FragColor.a = (min(xNormal, 1.0 - ((vUv.y - edgeMax) / edgeMin))) * opacity;
-            }
-      }
-    }
-`;
-
-const geometry = new THREE.PlaneGeometry(2, 4);
-
-const material1 = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const material2 = new THREE.RawShaderMaterial({
-    uniforms: UniformsUtils.clone({
-        map: { type: "t", value: null },
-        edge: { type: "float", value: 0.1 },
-        opacity: { type: "float", value: 1 },
-    }),
-    transparent: true,
-    opacity: 1,
-    alphaTest: 1,
-    depthTest: true,
-    vertexShader: vertexShader,
-    fragmentShader: fragmentShader,
-});
-
-const cube = new THREE.Mesh(geometry, material1);
-const rect = new THREE.Mesh(geometry, material2);
-cube.position.set(-2, 0, 0);
-rect.position.set(0, 0, 0);
-
-scene.add(rect);
-
-camera.position.z = 5;
-
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.prepend(renderer.domElement);
-
-function animate() {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-}
-
-animate();
 ```
+
+
+完整源码：[GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/threeExamples/effectComposer/EdgeBlurringEffect.js)
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=effectComposer&id=EdgeBlurringEffect) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [后期处理目录](/examples/three/effectComposer/)
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=effectComposer&id=EdgeBlurringEffect) 运行，再对照源码修改 uniform / 参数加深理解
 
-> 后期处理 · Three.js
+
+- 上一篇：[饱和度(自定义Pass)](/examples/three/effectComposer/saturationPass)
+- 下一篇：[官方选择辉光简化版](/examples/three/effectComposer/threeSelectBloom)
+
+> 后期处理 · Three.js · 7/10

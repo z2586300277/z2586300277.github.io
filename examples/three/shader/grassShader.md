@@ -1,12 +1,13 @@
 ---
 title: "草地着色器 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
+description: "程序化 GrassGeometry + ShaderMaterial 十万草叶风动与云影"
 head:
   - - meta
     - name: keywords
-      content: "three.js,webgl,shader,草地着色器"
+      content: "three.js,草地,ShaderMaterial,BufferGeometry,风动"
 outline: deep
 ---
+
 # 草地着色器
 
 *Grass Shader*
@@ -17,164 +18,88 @@ outline: deep
 
 ## 你将学到什么
 
-- 自定义 ShaderMaterial / 修改内置 shader
-- 相机交互控制器
-- 天空盒与环境贴图
-- requestAnimationFrame 渲染循环
+- **程序化生成** 草叶三角面（非模型导入）
+- 自定义 `GrassGeometry extends BufferGeometry`
+- 顶点着色器 **sin 风摆** + 片元 **云影采样**
+- `gl_VertexID % 5` 区分草尖与草身
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
-
-> 着色器 · Three.js
+半径 50 的圆盘上 **10 万** 根草叶随风摇摆，云纹理在草面缓慢漂移，底部圆形地面共用同一 shader。
 
 ## 核心概念
 
-- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
+### 草叶几何
 
-- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
+每根草 **5 顶点 / 3 三角面**：底边两角 + 中段两角 + 尖端。随机：
 
-- **CubeTexture** 六面贴图作 `scene.background`；`scene.environment` 供 PBR 材质反射。
+- `yaw`：绕 Y 轴朝向
+- `bend`：尖端弯曲方向
+- `height`：高度 ± 随机变化
+
+```js
+class GrassGeometry extends THREE.BufferGeometry {
+  constructor(size, count) {
+    for (let i = 0; i < count; i++) {
+      const radius = (size / 2) * Math.random();
+      const theta = Math.random() * 2 * Math.PI;
+      const x = radius * Math.cos(theta);
+      const y = radius * Math.sin(theta);
+      const blade = this.computeBlade([x, 0, y], i);
+      // push positions, uvs, indices
+    }
+  }
+}
+```
+
+### 顶点风动
+
+```glsl
+bool isTip = (gl_VertexID + 1) % 5 == 0;
+float waveDistance = isTip ? 0.3 : 0.1;
+vPosition.x += sin((uTime / 500.0) + uv.x * 10.0) * waveDistance;
+```
+
+草尖摆动幅度更大，视觉更自然。
+
+### 片元着色
+
+- 按 `vPosition.y` 混深浅绿
+- `texture2D(uCloud, vUv)` 叠云影（UV 随 uTime 平移）
+- 简单法线点乘做明暗
 
 ## 实现步骤
 
-1. 搭建 Scene / Camera / Renderer 与 OrbitControls
-2. 定义材质/shader 与 uniforms，rAF 中更新
-3. rAF 循环中 update 并 render
+1. 定义 `BLADE_WIDTH/HEIGHT` 等常量
+2. `GrassGeometry` 生成 position / uv / index
+3. `ShaderMaterial` 写 vertex + fragment，uniform：`uTime`、`uCloud`
+4. `Grass` 类继承 Mesh，`update(time)` 更新 uTime
+5. 同材质 `CircleGeometry` 作地面
 
 ## 代码要点
 
-- **`interpolate()`** — 案例中的独立逻辑模块，建议在线编辑器中跳转阅读
+```js
+grass = new Grass(50, 100000);
+scene.add(grass);
+
+function animate(time) {
+  if (grass) grass.update(time);
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+}
+```
+
+::: tip 性能
+10 万草叶对 GPU 压力较大；可减少 `count` 或改用 **InstancedMesh + GPU 草** 方案。
+:::
 
 ## 源码
 
-```js
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-
-const box = document.getElementById('box')
-const scene = new THREE.Scene()
-const camera = new THREE.PerspectiveCamera(75, box.clientWidth / box.clientHeight, 0.1, 1000)
-camera.position.set(0, 10, 10)
-const renderer = new THREE.WebGLRenderer({ antialias: true , alpha: true, logarithmicDepthBuffer: true})
-renderer.setSize(box.clientWidth, box.clientHeight)
-box.appendChild(renderer.domElement)
-new OrbitControls(camera, renderer.domElement)
-window.onresize = () => {
-    renderer.setSize(box.clientWidth, box.clientHeight)
-    camera.aspect = box.clientWidth / box.clientHeight
-    camera.updateProjectionMatrix()
-}
-scene.background = new THREE.CubeTextureLoader().load([0, 1, 2, 3, 4, 5].map(k => (FILE_HOST + 'files/sky/skyBox0/' + (k + 1) + '.png')));
-
-let grass = null
-animate()
-function animate(time) {
-   if(grass) grass.update(time);
-    requestAnimationFrame(animate)
-    renderer.render(scene, camera)
-}
-
-const BLADE_WIDTH = 0.1
-const BLADE_HEIGHT = 0.8
-const BLADE_HEIGHT_VARIATION = 0.6
-const BLADE_VERTEX_COUNT = 5
-const BLADE_TIP_OFFSET = 0.1
-
-function interpolate(val, oldMin, oldMax, newMin, newMax) {
-  return ((val - oldMin) * (newMax - newMin)) / (oldMax - oldMin) + newMin
-}
-
-class GrassGeometry extends THREE.BufferGeometry {
-  constructor(size, count) {
-    super()
-
-    const positions = []
-    const uvs = []
-    const indices = []
-
-    for (let i = 0; i < count; i++) {
-      const surfaceMin = (size / 2) * -1
-      const surfaceMax = size / 2
-      const radius = (size / 2) * Math.random()
-      const theta = Math.random() * 2 * Math.PI
-
-      const x = radius * Math.cos(theta)
-      const y = radius * Math.sin(theta)
-
-      uvs.push(
-        ...Array.from({ length: BLADE_VERTEX_COUNT }).flatMap(() => [
-          interpolate(x, surfaceMin, surfaceMax, 0, 1),
-          interpolate(y, surfaceMin, surfaceMax, 0, 1)
-        ])
-      )
-
-      const blade = this.computeBlade([x, 0, y], i)
-      positions.push(...blade.positions)
-      indices.push(...blade.indices)
-    }
-
-    this.setAttribute(
-      'position',
-      new THREE.BufferAttribute(new Float32Array(positions), 3)
-    )
-    this.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(uvs), 2))
-    this.setIndex(indices)
-    this.computeVertexNormals()
-  }
-
-  // Grass blade generation, covered in https://smythdesign.com/blog/stylized-grass-webgl
-  // TODO: reduce vertex count, optimize & possibly move to GPU
-  computeBlade(center, index = 0) {
-    const height = BLADE_HEIGHT + Math.random() * BLADE_HEIGHT_VARIATION
-    const vIndex = index * BLADE_VERTEX_COUNT
-
-    // Randomize blade orientation and tip angle
-    const yaw = Math.random() * Math.PI * 2
-    const yawVec = [Math.sin(yaw), 0, -Math.cos(yaw)]
-    const bend = Math.random() * Math.PI * 2
-    const bendVec = [Math.sin(bend), 0, -Math.cos(bend)]
-
-    // Calc bottom, middle, and tip vertices
-    const bl = yawVec.map((n, i) => n * (BLADE_WIDTH / 2) * 1 + center[i])
-    const br = yawVec.map((n, i) => n * (BLADE_WIDTH / 2) * -1 + center[i])
-    const tl = yawVec.map((n, i) => n * (BLADE_WIDTH / 4) * 1 + center[i])
-    const tr = yawVec.map((n, i) => n * (BLADE_WIDTH / 4) * -1 + center[i])
-    const tc = bendVec.map((n, i) => n * BLADE_TIP_OFFSET + center[i])
-
-    // Attenuate height
-    tl[1] += height / 2
-    tr[1] += height / 2
-    tc[1] += height
-
-    return {
-      positions: [...bl, ...br, ...tr, ...tl, ...tc],
-      indices: [
-        vIndex,
-        vIndex + 1,
-        vIndex + 2,
-        vIndex + 2,
-        vIndex + 4,
-        vIndex + 3,
-        vIndex + 3,
-        vIndex,
-        vIndex + 2
-      ]
-    }
-  }
-}
-
-const cloudTexture = new THREE.TextureLoader().load(FILE_HOST + 'threeExamples/shader/cloud.jpg')
-cloudTexture.wrapS = cloudTexture.wrapT = THREE.RepeatWrapping
-
-class Grass extends THREE.Mesh {
-  constructor(size, count) {
-// ... 完整源码见在线案例编辑器
-```
+完整源码见 [GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/threeExamples/shader/grassShader.js)。
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=grassShader) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [着色器目录](/examples/three/shader/)
+- 程序化植被 = CPU 摆点 + 自定义 shader 动画
+- 上一篇：[城市光效](/examples/three/shader/cityEffect) · 下一篇：[音乐可视化](/examples/three/shader/audioSolutions)
 
-> 着色器 · Three.js
+> 着色器 · Three.js · 2/89

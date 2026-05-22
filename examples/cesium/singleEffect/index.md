@@ -8,6 +8,9 @@ outline: deep
 
 雷达、水波、火焰、动态围墙等单一可视化特效。
 
+> 本分类案例均已对照 [three-cesium-examples](https://github.com/z2586300277/three-cesium-examples/tree/dev) 源码生成精讲文档。
+
+
 每篇案例含 **你将学到什么 · 核心概念 · 实现步骤 · 源码**。
 
 - [粒子（火焰）](/examples/cesium/singleEffect/fire)

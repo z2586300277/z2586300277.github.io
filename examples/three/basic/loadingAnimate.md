@@ -1,15 +1,16 @@
 ---
 title: "加载动画 - Three.js 案例讲解"
-description: "本案例展示 **加载动画** 的实现。涉及：glTF/FBX/OBJ 外部模型加载、相机交互控制器、requestAnimationFrame 渲染循环。"
+description: "LoadingManager 总进度、GLTFLoader xhr 下载进度与 DOM 加载提示"
 head:
   - - meta
     - name: keywords
-      content: "three.js,webgl,basic,加载动画"
+      content: "three.js,LoadingManager,加载进度,GLTFLoader"
 outline: deep
 ---
+
 # 加载动画
 
-*Load Animate*
+*Loading Progress*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=loadingAnimate)
 
@@ -17,27 +18,45 @@ outline: deep
 
 ## 你将学到什么
 
-- glTF/FBX/OBJ 外部模型加载
-- 相机交互控制器
-- requestAnimationFrame 渲染循环
+- **LoadingManager** 管理多资源总进度
+- **GLTFLoader.load** 第三个参数 xhr 下载进度
+- 两层进度：**下载 %** 与 **解析/导入 %**
 
 ## 效果说明
 
-本案例展示 **加载动画** 的实现。涉及：glTF/FBX/OBJ 外部模型加载、相机交互控制器、requestAnimationFrame 渲染循环。
-
-> 基础案例 · Three.js
+加载 `LittlestTokyo.glb` 大场景时，屏幕中央浮层显示 **「下载 xx%」** 与 **「导入 xx%」**，完成后显示「加载完成」。
 
 ## 核心概念
 
-- **Loader** 异步加载模型；glTF 返回 `gltf.scene`，加载后注意 `scale` 与坐标系。Draco 需配置 `DRACOLoader`。
+### LoadingManager 回调
 
-- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
+```js
+const manager = new THREE.LoadingManager();
+manager.onStart = (url, loaded, total) => { /* 开始 */ };
+manager.onProgress = (url, loaded, total) => { /* 总进度 */ };
+manager.onLoad = () => { /* 全部完成 */ };
+manager.onError = (url) => { /* 失败 */ };
 
-## 实现步骤
+const loader = new GLTFLoader(manager);
+```
 
-1. 搭建 Scene / Camera / Renderer 与 OrbitControls
-2. Loader 异步加载模型/纹理资源
-3. rAF 循环中 update 并 render
+传入 Manager 后，Loader 内部加载的 **纹理、bin 等子资源** 都会计入 `onProgress`。
+
+### xhr 下载进度
+
+```js
+loader.load(url, onLoad, (xhr) => {
+    const pct = (xhr.loaded / xhr.total * 100).toFixed(2);
+    // 仅反映网络下载，不含 GPU 解析
+});
+```
+
+| 阶段 | 回调 | 含义 |
+|------|------|------|
+| 下载 | load 的第 3 参数 xhr | 字节流进度 |
+| 导入 | manager.onProgress | 含纹理解析等 |
+
+本案例 **两者同时显示**，用户体验更完整。
 
 ## 源码
 
@@ -50,106 +69,51 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 const loadingDiv = document.createElement('div')
 loadingDiv.innerText = '加载中...'
 Object.assign(loadingDiv.style, {
-    pointerEvents: 'none',
-    position: 'fixed',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%,-50%)',
-    color: 'white',
-    fontSize: '20px',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    padding: '10px 20px',
-    borderRadius: '5px'
+    pointerEvents: 'none', position: 'fixed', top: '50%', left: '50%',
+    transform: 'translate(-50%,-50%)', color: 'white', fontSize: '20px',
+    backgroundColor: 'rgba(0,0,0,0.5)', padding: '10px 20px', borderRadius: '5px'
 })
-
 document.body.appendChild(loadingDiv)
 
 const box = document.getElementById('box')
-
 const scene = new THREE.Scene()
-
 const camera = new THREE.PerspectiveCamera(75, box.clientWidth / box.clientHeight, 0.1, 1000000)
-
 camera.position.set(0, 400, 400)
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
-
 renderer.setSize(box.clientWidth, box.clientHeight)
-
 box.appendChild(renderer.domElement)
 
 const controls = new OrbitControls(camera, renderer.domElement)
-
 controls.enableDamping = true
-
-window.onresize = () => {
-
-    renderer.setSize(box.clientWidth, box.clientHeight)
-
-    camera.aspect = box.clientWidth / box.clientHeight
-
-    camera.updateProjectionMatrix()
-
-}
-
 scene.add(new THREE.AmbientLight(0xffffff, 3))
 
-const manager = new THREE.LoadingManager();
-
-manager.onStart = function (url, itemsLoaded, itemsTotal) {
-    loadingDiv.innerText = '开始加载'
-};
-
-manager.onLoad = function () {
-    loadingDiv.innerHTML = '加载完成'
-};
-
-manager.onProgress = function (url, itemsLoaded, itemsTotal) {
-    loadingDiv.innerText = '导入' + (itemsLoaded / itemsTotal * 100).toFixed(2) + '%' 
-}
-
-manager.onError = function (url) {
-
+const manager = new THREE.LoadingManager()
+manager.onStart = () => { loadingDiv.innerText = '开始加载' }
+manager.onLoad = () => { loadingDiv.innerHTML = '加载完成' }
+manager.onProgress = (url, loaded, total) => {
+    loadingDiv.innerText = '导入' + (loaded / total * 100).toFixed(2) + '%'
 }
 
 const loader = new GLTFLoader(manager)
-
 loader.setDRACOLoader(new DRACOLoader().setDecoderPath(FILE_HOST + 'js/three/draco/'))
-
 loader.load(
-
     FILE_HOST + '/files/model/LittlestTokyo.glb?time=' + new Date().getTime(),
-
-    gltf => {
-
-        scene.add(gltf.scene)
-
-    },
-
-    xhr => {
-
-        loadingDiv.innerText = '下载' + (xhr.loaded / xhr.total * 100).toFixed(2) + '%'
-
-    }
-
+    gltf => { scene.add(gltf.scene) },
+    xhr => { loadingDiv.innerText = '下载' + (xhr.loaded / xhr.total * 100).toFixed(2) + '%' }
 )
 
-animate()
-
 function animate() {
-
     requestAnimationFrame(animate)
-
     controls.update()
-
     renderer.render(scene, camera)
-
 }
+animate()
 ```
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=loadingAnimate) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [基础案例目录](/examples/three/basic/)
+- 生产环境：`LoadingManager` + 自定义 Progress UI（本案例为简易 div）
+- 上一篇：[Opt解压](/examples/three/basic/gltfOptLoader) · 下一篇：[轮廓光](/examples/three/basic/outlinePass)
 
-> 基础案例 · Three.js
+> 基础案例 · Three.js · 10/35

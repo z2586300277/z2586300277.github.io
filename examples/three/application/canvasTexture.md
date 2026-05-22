@@ -1,12 +1,13 @@
 ---
 title: "Canvas贴图 - Three.js 案例讲解"
-description: "Three.js 业务向场景组合。"
+description: "Canvas贴图：Scene / Camera / Renderer 渲染管线、相机交互控制器、onBeforeCompile 修改内置材质 shader（应用场景）"
 head:
   - - meta
     - name: keywords
-      content: "three.js,webgl,application,Canvas贴图"
+      content: "three.js,application,canvasTexture,片元着色器,uniform 驱动,Canvas 纹理"
 outline: deep
 ---
+
 # Canvas贴图
 
 *Canvas Texture*
@@ -17,41 +18,38 @@ outline: deep
 
 ## 你将学到什么
 
-- 自定义 ShaderMaterial / 修改内置 shader
+- Scene / Camera / Renderer 渲染管线
 - 相机交互控制器
-- ECharts 与三维融合
-- requestAnimationFrame 渲染循环
+- onBeforeCompile 修改内置材质 shader
 
 ## 效果说明
 
-Three.js 业务向场景组合。
-
-> 应用场景 · Three.js
+Three.js WebGL 场景，以自定义 shader 呈现核心视觉效果，技术点：片元着色器、uniform 驱动、Canvas 纹理。打开在线案例可查看最终画面。
 
 ## 核心概念
 
-- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
-
-- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
-
-- 二维图表/飞线与 Cesium/Three 场景叠加或纹理映射。
+- **Scene** 容纳对象，**Camera** 定义视点，**WebGLRenderer** 输出 canvas。
+- **OrbitControls** 轨道旋转缩放；开启阻尼时每帧 `controls.update()`。
+- 替换 `#include <begin_vertex>` 等 chunk 注入特效，适合 PBR 材质叠加大屏效果。
 
 ## 实现步骤
 
-1. 搭建 Scene / Camera / Renderer 与 OrbitControls
-2. 定义材质/shader 与 uniforms，rAF 中更新
-3. rAF 循环中 update 并 render
+1. 初始化 Viewer 或 Scene / Camera / Renderer
+2. 创建 OrbitControls 并处理 resize
+3. material.onBeforeCompile 注入 GLSL 与 uniform
 
-## 源码
+## 代码要点
 
 ```js
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import * as echarts from 'echarts'
-
-const box = document.getElementById('box')
-
 const scene = new THREE.Scene()
+
+const camera = new THREE.PerspectiveCamera(75, box.clientWidth / box.clientHeight, 0.1, 100000)
+
+camera.position.set(0, 0, 3)
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
+
+
 
 const camera = new THREE.PerspectiveCamera(75, box.clientWidth / box.clientHeight, 0.1, 100000)
 
@@ -61,114 +59,26 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarit
 
 renderer.setSize(box.clientWidth, box.clientHeight)
 
+
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
+
+renderer.setSize(box.clientWidth, box.clientHeight)
+
 box.appendChild(renderer.domElement)
 
 new OrbitControls(camera, renderer.domElement)
-
-const w = 800, h = 600
-const container = document.createElement('canvas')
-// 设置实际尺寸而不是CSS尺寸
-container.width = w
-container.height = h
-// 保持CSS尺寸以便echarts正确初始化
-container.style.width = w + "px"
-container.style.height = h + "px"
-
-const myChart = echarts.init(container, null, {
-    devicePixelRatio: window.devicePixelRatio // 使用正确的设备像素比
-})
-const texture = new THREE.CanvasTexture(container)
-// 设置贴图过滤模式以提高清晰度
-texture.minFilter = THREE.LinearFilter
-texture.magFilter = THREE.LinearFilter
-
-// 计算保持纵横比的平面尺寸
-const aspectRatio = w / h
-const planeWidth = 4
-const planeHeight = planeWidth / aspectRatio
-const planeGeometry = new THREE.PlaneGeometry(planeWidth, planeHeight)
-const planeMaterial = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide, transparent: true })
-const plane = new THREE.Mesh(planeGeometry, planeMaterial)
-scene.add(plane)
-
-const uniforms = {
-    iResolution: {
-        type: 'v2',
-        value: new THREE.Vector2(box.clientWidth, box.clientHeight)
-    },
-    iTime: {
-        type: 'f',
-        value: 1.0
-    }
-}
-planeMaterial.onBeforeCompile = shader => {
-    shader.uniforms.iResolution = uniforms.iResolution
-    shader.uniforms.iTime = uniforms.iTime
-    shader.fragmentShader = shader.fragmentShader.replace(/#include <common>/, `
-        uniform vec2 iResolution;
-        uniform float iTime;
-        #include <common> 
-    `)
-    shader.fragmentShader = shader.fragmentShader.replace('vec4 diffuseColor = vec4( diffuse, opacity );', `
-        vec3 c;
-        float l,z=iTime;
-        for(int i=0;i<3;i++) {
-            vec2 uv,p=gl_FragCoord.xy/iResolution;
-            uv=p +  2.0;
-            p-=.5;
-            p.x*=iResolution.x/iResolution.y;
-            z+=.07;
-            l=length(p);
-            uv+=p/l*(sin(z)+1.)*abs(sin(l*9.-z-z));
-            c[i]=.01/length(mod(uv,1.)-.5);
-        }
-        vec4 diffuseColor = vec4( diffuse * c  * vec3(8.,8.,8.), opacity );
-    `)
-}
-
-animate()
-
-function animate() {
-    texture.needsUpdate = true
-    uniforms.iTime.value += 0.05
-    requestAnimationFrame(animate)
-    renderer.render(scene, camera)
-
-}
-
-const data = [820, 932, 901, 934, 1290, 1330, 1320]
-const option = {
-    xAxis: {
-        type: 'category',
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-    },
-    yAxis: {
-        type: 'value'
-    },
-    series: [
-        {
-            data,
-            type: 'line',
-            areaStyle: {}
-        }
-    ]
-}
-myChart.setOption(option)
-setInterval(() => {
-    data.forEach((item, index) => {
-        data[index] = Math.floor(Math.random() * 1000)
-    })
-    myChart.setOption({
-        series: [{
-            data: data
-        }]
-    })
-}, 2000)
 ```
+
+
+完整源码：[GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/threeExamples/application/canvasTexture.js)
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=canvasTexture) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [应用场景目录](/examples/three/application/)
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=canvasTexture) 运行，再对照源码修改 uniform / 参数加深理解
 
-> 应用场景 · Three.js
+
+- 上一篇：[鬼屋](/examples/three/application/ghostHouse)
+- 下一篇：[贴图飞线](/examples/three/application/flowLine)
+
+> 应用场景 · Three.js · 5/68

@@ -1,47 +1,50 @@
 ---
 title: "绘制面_内置点 - Three.js 案例讲解"
-description: "Three.js 业务向场景组合。"
+description: "绘制面_内置点：绘制面_内置点（应用场景）"
 head:
   - - meta
     - name: keywords
-      content: "three.js,webgl,application,绘制面_内置点"
+      content: "three.js,application,drawFace_improve"
 outline: deep
 ---
+
 # 绘制面_内置点
 
 *Draw Face*
 
 [▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=drawFace_improve)
 
-![绘制面_内置点](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/draw_face_improve.jpg)
+![绘制面_内置点](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/drawFace_improve.jpg)
 
 ## 你将学到什么
 
-- 案例交互与参数可在在线编辑器中查看
+- 本案例核心 API 与实现思路
+- 对照源码与在线效果学习
 
 ## 效果说明
 
-Three.js 业务向场景组合。
-
-> 应用场景 · Three.js
+本页为 **工具 / 资源 / 外部链接** 导航，或源码托管在外部。点击上方按钮访问在线案例或目标站点。
 
 ## 核心概念
 
-- **Scene / Camera / Renderer** 是 Three.js 渲染三件套；Mesh = Geometry + Material。
-- 开发时先确认坐标系、材质是否受光、以及是否需要 rAF 循环。
+- 结合在线案例与下方源码阅读 GLSL / API 调用
 
 ## 实现步骤
 
-1. 搭建 Scene / Camera / Renderer 与 OrbitControls
-2. 渲染场景并处理 resize
+1. 搭建灯光与环境（如有）
+2. requestAnimationFrame 循环 update + render
 
-## 源码
+## 代码要点
 
-完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=drawFace_improve)。
+_本站无对应 JS 文件，请参考在线案例或外部链接。_
+
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=drawFace_improve) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [应用场景目录](/examples/three/application/)
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=drawFace_improve) 运行，再对照源码修改 uniform / 参数加深理解
 
-> 应用场景 · Three.js
+
+- 上一篇：[绘制面](/examples/three/application/drawFace)
+- 下一篇：[道路流光](/examples/three/application/roadShader)
+
+> 应用场景 · Three.js · 20/68

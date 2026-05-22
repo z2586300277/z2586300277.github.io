@@ -1,12 +1,13 @@
 ---
 title: "粒子地球 - Three.js 案例讲解"
-description: "主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。"
+description: "粒子地球：Scene / Camera / Renderer 渲染管线、相机交互控制器、ShaderMaterial / RawShaderMaterial 自定义 GLSL（粒子）"
 head:
   - - meta
     - name: keywords
-      content: "three.js,webgl,particle,粒子地球"
+      content: "three.js,particle,pointsEarth,顶点着色器,片元着色器,uniform 驱动"
 outline: deep
 ---
+
 # 粒子地球
 
 *Points Earth*
@@ -17,47 +18,43 @@ outline: deep
 
 ## 你将学到什么
 
-- 自定义 ShaderMaterial / 修改内置 shader
+- Scene / Camera / Renderer 渲染管线
 - 相机交互控制器
-- 点云 / 粒子 / 实例化渲染
-- requestAnimationFrame 渲染循环
-- GUI 面板调试参数
+- ShaderMaterial / RawShaderMaterial 自定义 GLSL
+- 粒子 / 点云 / 实例化渲染
+- GUI 参数调试面板
 
 ## 效果说明
 
-主要靠自定义 shader 出效果，看 uniform 和 GLSL 主逻辑。
-
-> 粒子 · Three.js
+Three.js WebGL 场景，以自定义 shader 呈现核心视觉效果，粒子或点云特效，技术点：顶点着色器、片元着色器、uniform 驱动。打开在线案例可查看最终画面。
 
 ## 核心概念
 
-- **ShaderMaterial** 完全自定义 GLSL；`onBeforeCompile` 可在内置材质 shader 中注入代码。关注 `uniforms` 与 rAF 更新。
-
-- **OrbitControls** 轨道旋转缩放；开 `enableDamping` 时每帧需 `controls.update()`。
-
-- **Points** 大量顶点用点精灵渲染；**InstancedMesh** 相同几何体批量绘制，降低 draw call。
+- **Scene** 容纳对象，**Camera** 定义视点，**WebGLRenderer** 输出 canvas。
+- **OrbitControls** 轨道旋转缩放；开启阻尼时每帧 `controls.update()`。
+- **ShaderMaterial** 自定义 uniforms + vertex/fragment；**RawShaderMaterial** 需手写全部 shader 声明。
+- 大量点用 **BufferGeometry + Points** 或 **InstancedMesh** 合批，避免逐 Entity 创建。
+- dat.GUI / lil-gui 绑定 uniform 或配置对象实时调参。
 
 ## 实现步骤
 
-1. 搭建 Scene / Camera / Renderer 与 OrbitControls
-2. 定义材质/shader 与 uniforms，rAF 中更新
-3. rAF 循环中 update 并 render
+1. 初始化 Viewer 或 Scene / Camera / Renderer
+2. 创建 OrbitControls 并处理 resize
+3. 定义 uniforms，在 rAF 中更新并 render
+4. 构建几何 attribute 或 instanceMatrix 并 add 到 scene
+5. gui.add 绑定可调参数
 
-## 源码
+## 代码要点
 
 ```js
-import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    100
+);
 
-let gui = new GUI();
-// 初始化场景、相机和渲染器
-const gl = {
-    clearColor: '#332148',
-    shadows: false,
-    alpha: false,
-    outputColorSpace: THREE.SRGBColorSpace,
-};
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -68,6 +65,9 @@ const camera = new THREE.PerspectiveCamera(
 );
 
 const renderer = new THREE.WebGLRenderer({ alpha: gl.alpha });
+
+
+const renderer = new THREE.WebGLRenderer({ alpha: gl.alpha });
 renderer.setClearColor(gl.clearColor);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -75,103 +75,17 @@ document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.target.set(0, 0, 0);
 controls.update();
-// 设置相机位置
-camera.position.z = 2;
-// Shaders
-const vertexShader = `  uniform float size;
-uniform sampler2D elevTexture;
-uniform sampler2D alphaTexture;
-uniform float uTime;
-uniform float uWaveHeight;
-uniform float uWaveSpeed;
-
-varying vec2 vUv;
-varying float vVisible;
-varying float vAlpha;
-varying float vElevation;
-// Function to generate fBm with vec3 input
-float random(vec3 st) {
-return fract(sin(dot(st.xyz, vec3(12.9898,78.233,45.164))) * 43758.5453123);
-}
-
-float noise(vec3 st) {
-vec3 i = floor(st);
-vec3 f = fract(st);
-
-// Eight corners in 3D of a tile
-float a = random(i);
-float b = random(i + vec3(1.0, 0.0, 0.0));
-float c = random(i + vec3(0.0, 1.0, 0.0));
-float d = random(i + vec3(1.0, 1.0, 0.0));
-float e = random(i + vec3(0.0, 0.0, 1.0));
-float f1 = random(i + vec3(1.0, 0.0, 1.0));
-float g = random(i + vec3(0.0, 1.0, 1.0));
-float h = random(i + vec3(1.0, 1.0, 1.0));
-
-vec3 u = f * f * (3.0 - 2.0 * f);
-
-return mix(mix(mix(a, b, u.x), mix(c, d, u.x), u.y),
-       mix(mix(e, f1, u.x), mix(g, h, u.x), u.y), u.z);
-}
-
-float fbm(vec3 st) {
-float value = 0.0;
-float amplitude = 0.5;
-
-for (int i = 0; i < 5; i++) {
-value += amplitude * noise(st);
-st *= 2.0;
-amplitude *= 0.5;
-}
-return value;
-}
-
-void main() {
-vUv = uv;
-float alphaLand = 1.0 - texture2D(alphaTexture, vUv).r;
-vAlpha = alphaLand;
-vec3 newPosition = position;
-
-if(alphaLand < 0.5) {
-// Sea
-// fBm for wave-like displacement
-float waveHeight = uWaveHeight; // Adjust wave height as needed
-float waveSpeed = uWaveSpeed;  // Adjust wave speed as needed
-float displacement = (fbm(newPosition * 5.0 + uTime * waveSpeed) * 2.0 - 1.0) * waveHeight;
-vElevation = displacement;
-newPosition += normal * displacement ;
-}
-
-vec4 mvPosition = modelViewMatrix * vec4( newPosition, 1.0 );
-float elv = texture2D(elevTexture, vUv).r;
-vec3 vNormal = normalMatrix * normal;
-vVisible = step(0.0, dot( -normalize(mvPosition.xyz), normalize(vNormal)));
-mvPosition.z += 0.45 * elv;
-
-// 求出 mvPosition 距离相机的距离
-float dist = length(mvPosition.xyz);
-// 根据距离调整 size
-float pointSize = size * (1.0 - dist / 10.0);
-gl_PointSize = max(pointSize, 1.0);
-gl_PointSize = pointSize;
-gl_Position = projectionMatrix * mvPosition;
-}
-`; // 将pointsEarth.vert的内容粘贴在这里
-const fragmentShader = `  uniform sampler2D colorTexture;
-// uniform sampler2D alphaTexture;
-uniform sampler2D earthTexture;
-uniform sampler2D starTexture;
-
-varying vec2 vUv;
-varying float vVisible;
-varying float vAlpha;
-varying float vElevation;
-// ... 完整源码见在线案例编辑器
 ```
+
+
+完整源码：[GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/threeExamples/particle/pointsEarth.js)
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=pointsEarth) 运行，再对照源码逐步修改参数加深理解
-- 更多同类案例见 [粒子目录](/examples/three/particle/)
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=pointsEarth) 运行，再对照源码修改 uniform / 参数加深理解
 
-> 粒子 · Three.js
+
+- 上一篇：[星系](/examples/three/particle/galaxyStar)
+- 下一篇：[波浪粒子](/examples/three/particle/waveParticleShader)
+
+> 粒子 · Three.js · 9/27
