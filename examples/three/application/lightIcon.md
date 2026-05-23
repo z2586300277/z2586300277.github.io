@@ -1,4 +1,4 @@
----
+﻿---
 title: "亮光标记 - Three.js 案例讲解"
 description: "亮光标记：相机交互控制器、动画与时间线（应用场景）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Light Icon*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=lightIcon)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=lightIcon)
 
 ![亮光标记](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/lightIcon.jpg)
 
@@ -66,7 +66,7 @@ const lightPillarMaterial = new THREE.MeshBasicMaterial({
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=lightIcon) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=lightIcon) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[烟雾效果](/examples/three/application/smokeAir)

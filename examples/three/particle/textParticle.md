@@ -1,4 +1,4 @@
----
+﻿---
 title: "文字采集成粒子 - Three.js 案例讲解"
 description: "文字采集成粒子：Scene / Camera / Renderer 渲染管线、相机交互控制器、粒子 / 点云 / 实例化渲染（粒子）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Text Particle*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=textParticle)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=particle&id=textParticle)
 
 ![文字采集成粒子](https://z2586300277.github.io/three-cesium-examples/threeExamples/particle/textParticle.jpg)
 
@@ -66,7 +66,7 @@ const controls = new OrbitControls(camera, renderer.domElement)
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=textParticle) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=particle&id=textParticle) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[鼠标轨迹粒子](/examples/three/particle/particlesCursorAnimation)

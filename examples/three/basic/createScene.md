@@ -1,4 +1,4 @@
----
+﻿---
 title: "创建场景 - Three.js 案例讲解"
 description: "生产级 Scene/Camera/Renderer 搭建：抗锯齿、像素比、resize、OrbitControls 与 rAF 循环"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Create Scene*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=createScene)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=createScene)
 
 ![创建场景](https://z2586300277.github.io/three-cesium-examples-self/threeExamples/createScene.jpg)
 
@@ -83,7 +83,7 @@ window.addEventListener('resize', () => {
 
 ## 源码
 
-完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=createScene)。核心结构：
+完整源码见 [在线案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=createScene)。核心结构：
 
 ```js
 import * as THREE from 'three';

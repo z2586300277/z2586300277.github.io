@@ -1,4 +1,4 @@
----
+﻿---
 title: "雪景 - Cesium.js 案例讲解"
 description: "雪景：雪景（高级特效）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *Snow Scene*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=advancedEffect&id=snow)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=advancedEffect&id=snow)
 
-![雪景](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/advancedEffect/snow.jpg)
+![雪景](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/expand/snow.jpg)
 
 ## 你将学到什么
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=advancedEffect&id=snow) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=advancedEffect&id=snow) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 下一篇：[下雨](/examples/cesium/advancedEffect/rain)

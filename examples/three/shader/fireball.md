@@ -1,4 +1,4 @@
----
+﻿---
 title: "火球效果 - Three.js 案例讲解"
 description: "火球效果：火球效果（着色器）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *Fireball*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=fireball)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=fireball)
 
-![火球效果](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/fireball.jpg)
+![火球效果](https://z2586300277.github.io/3d-file-server/images/four/fireball.png)
 
 ## 你将学到什么
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=fireball) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=fireball) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[方块着色器](/examples/three/shader/shaderBlock)

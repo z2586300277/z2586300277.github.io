@@ -1,4 +1,4 @@
----
+﻿---
 title: "终末地-据点围栏 - Three.js 案例讲解"
 description: "终末地-据点围栏：Scene / Camera / Renderer 渲染管线、相机交互控制器、ShaderMaterial / RawShaderMaterial 自定义 GLSL（游戏复刻）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *EndField Fence*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=game&id=zmdFence)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=game&id=zmdFence)
 
 ![终末地-据点围栏](https://z2586300277.github.io/three-cesium-examples/threeExamples/game/zmdFence.jpg)
 
@@ -80,7 +80,7 @@ const params = {
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=game&id=zmdFence) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=game&id=zmdFence) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[人物虚化](/examples/three/game/characterBlur)

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Cesium案例 - 点⭐ - Cesium.js 案例讲解"
 description: "Cesium案例 - 点⭐：Cesium案例 - 点⭐（首页导航）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *Cesium Examples*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=topStation&id=jiawanlong)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=topStation&id=jiawanlong)
 
-![Cesium案例 - 点⭐](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/topStation/jiawanlong.jpg)
+![Cesium案例 - 点⭐](https://z2586300277.github.io/3d-file-server/images/jiawanlong.jpg)
 
 ## 你将学到什么
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=topStation&id=jiawanlong) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=topStation&id=jiawanlong) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[CesiumJS官网](/examples/cesium/topStation/cesiumjsHome)

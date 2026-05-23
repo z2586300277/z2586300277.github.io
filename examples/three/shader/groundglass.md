@@ -1,4 +1,4 @@
----
+﻿---
 title: "毛玻璃 - Three.js 案例讲解"
 description: "毛玻璃：Scene / Camera / Renderer 渲染管线、相机交互控制器、ShaderMaterial / RawShaderMaterial 自定义 GLSL（着色器）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Groundglass*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=groundglass)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=groundglass)
 
 ![毛玻璃](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/groundglass.jpg)
 
@@ -78,7 +78,7 @@ new OrbitControls(camera, renderer.domElement)
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=groundglass) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=groundglass) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[蒸汽波太阳](/examples/three/shader/steamWaveSun)

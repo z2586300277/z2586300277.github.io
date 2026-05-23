@@ -1,4 +1,4 @@
----
+﻿---
 title: "魔幻山体 - Three.js 案例讲解"
 description: "魔幻山体：Scene / Camera / Renderer 渲染管线、相机交互控制器、ShaderMaterial / RawShaderMaterial 自定义 GLSL（着色器）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Contour*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=contour)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=contour)
 
 ![魔幻山体](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/contour.jpg)
 
@@ -77,7 +77,7 @@ camera.position.set(0, 10, 10);
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=contour) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=contour) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[着色器行星](/examples/three/shader/shader_planet)

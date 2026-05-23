@@ -1,4 +1,4 @@
----
+﻿---
 title: "点云第一人称漫游,碰撞检测 - Three.js 案例讲解"
 description: "Three.js 业务向场景组合。入口在 `OctreeCollisionField`。"
 head:
@@ -11,7 +11,7 @@ outline: deep
 
 *Point Cloud FPS Octree*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=pointCloudFpsOctree)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=pointCloudFpsOctree)
 
 ![点云第一人称漫游,碰撞检测](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/pointCloudFpsOctree.png)
 
@@ -179,7 +179,7 @@ function createAnchorSprite(colorHex) {
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=pointCloudFpsOctree) 运行，再对照源码逐步修改参数加深理解
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=pointCloudFpsOctree) 运行，再对照源码逐步修改参数加深理解
 - 更多同类案例见 [应用场景目录](/examples/three/application/)
 
 > 应用场景 · Three.js

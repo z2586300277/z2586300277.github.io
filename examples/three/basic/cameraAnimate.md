@@ -1,4 +1,4 @@
----
+﻿---
 title: "相机动画 - Three.js 案例讲解"
 description: "gsap 实现相机/ target 抖动、跳跃等运镜特效"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Camera FX*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=cameraAnimate)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=cameraAnimate)
 
 ## 你将学到什么
 

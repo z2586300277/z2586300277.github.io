@@ -1,4 +1,4 @@
----
+﻿---
 title: "echarts飞线 - Cesium.js 案例讲解"
 description: "echarts飞线：Cesium Viewer 初始化与场景配置、Cesium 屏幕空间拾取交互、Cesium 相机定位与跟随（扩展功能）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *EchartsFlyLine*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=expand&id=echartsFlyLine)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=expand&id=echartsFlyLine)
 
 ![echarts飞线](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/expand/echartsFlyLine.jpg)
 
@@ -79,7 +79,7 @@ const viewer = new Cesium.Viewer(DOM, {
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=expand&id=echartsFlyLine) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=expand&id=echartsFlyLine) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[Cesium Three切换](/examples/cesium/expand/cesiumSwitch)

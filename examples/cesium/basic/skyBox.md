@@ -1,4 +1,4 @@
----
+﻿---
 title: "天空盒 - Cesium.js 案例讲解"
 description: "SkyBox 六面体贴图替换默认天空，UrlTemplateImageryProvider 高德影像"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Sky Box*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=skyBox)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=basic&id=skyBox)
 
 ![天空盒](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/skyBox.jpg)
 

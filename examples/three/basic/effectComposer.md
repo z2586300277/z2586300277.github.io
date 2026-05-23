@@ -1,4 +1,4 @@
----
+﻿---
 title: "渲染器配置 - Three.js 案例讲解"
 description: "toneMapping、outputColorSpace、OutputPass 与 effect/normal 双路渲染对比"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Renderer Config*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=effectComposer)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=effectComposer)
 
 ## 你将学到什么
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "高斯溅射 - Three.js 案例讲解"
 description: "高斯溅射：高斯溅射（扩展功能）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *gaussianSplats3D*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=gaussianSplats3D)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=expand&id=gaussianSplats3D)
 
-![高斯溅射](https://z2586300277.github.io/three-cesium-examples/threeExamples/expand/gaussianSplats3D.jpg)
+![高斯溅射](https://z2586300277.github.io/three-cesium-examples/threeExamples/expand/gaussianSplats3D.webp)
 
 ## 你将学到什么
 
@@ -69,7 +69,7 @@ viewer.addSplatScene(FILE_HOST + 'other/deskFlower.ksplat', {
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=gaussianSplats3D) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=expand&id=gaussianSplats3D) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[柱状图](/examples/three/expand/barCharts)

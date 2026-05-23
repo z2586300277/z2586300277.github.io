@@ -1,4 +1,4 @@
----
+﻿---
 title: "第一人称移动 - Three.js 案例讲解"
 description: "第一人称移动：Scene / Camera / Renderer 渲染管线、外部模型 / 3D Tiles 加载、ShaderMaterial / RawShaderMaterial 自定义 GLSL（动画效果）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *First Move*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=animation&id=personFirstMove)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=animation&id=personFirstMove)
 
 ![第一人称移动](https://z2586300277.github.io/three-cesium-examples/threeExamples/animation/personFirstMove.jpg)
 
@@ -74,7 +74,7 @@ function createCyberpunkMaterial(originalColor) {
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=animation&id=personFirstMove) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=animation&id=personFirstMove) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[模型拆解动画](/examples/three/animation/modelUnpack)

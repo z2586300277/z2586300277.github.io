@@ -1,4 +1,4 @@
----
+﻿---
 title: "GeoJSON 面 - Cesium.js 案例讲解"
 description: "GeoJsonDataSource 加载行政区面，点击拾取改 polygon 材质"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *GeoJSON Polygon*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=geojsonFace)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=basic&id=geojsonFace)
 
 ![GeoJSON 面](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/geojsonFace.jpg)
 

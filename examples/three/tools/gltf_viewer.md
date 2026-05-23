@@ -1,4 +1,4 @@
----
+﻿---
 title: "gltf模型查看器 - Three.js 案例讲解"
 description: "gltf模型查看器：gltf模型查看器（相关工具）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *GLTF Viewer*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=tools&id=gltf_viewer)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=tools&id=gltf_viewer)
 
 ![gltf模型查看器](https://z2586300277.github.io/three-cesium-examples/threeExamples/tools/gltf_viewer.jpg)
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=tools&id=gltf_viewer) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=tools&id=gltf_viewer) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[制作人物动画](/examples/three/tools/mixamo)

@@ -1,4 +1,4 @@
----
+﻿---
 title: "飞线效果 - Three.js 案例讲解"
 description: "飞线效果：Scene / Camera / Renderer 渲染管线、相机交互控制器、ShaderMaterial / RawShaderMaterial 自定义 GLSL（应用场景）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *Fly Line*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=flyLine)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=flyLine)
 
-![飞线效果](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/flyLine.jpg)
+![飞线效果](https://z2586300277.github.io/3d-file-server/threeExamples/application/flyLine/colorful.jpg)
 
 ## 你将学到什么
 
@@ -70,7 +70,7 @@ function initCamera() {
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=flyLine) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=flyLine) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[贴图飞线](/examples/three/application/flowLine)

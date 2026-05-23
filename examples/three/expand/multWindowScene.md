@@ -1,4 +1,4 @@
----
+﻿---
 title: "多浏览器窗口连接 - Three.js 案例讲解"
 description: "Three.js 接第三方库或扩展能力。入口在 `WindowManager`。"
 head:
@@ -11,7 +11,7 @@ outline: deep
 
 *Mult Window*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=multWindowScene)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=expand&id=multWindowScene)
 
 ![多浏览器窗口连接](https://z2586300277.github.io/three-cesium-examples/threeExamples/expand/multWindowScene.jpg)
 
@@ -174,7 +174,7 @@ else {
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=multWindowScene) 运行，再对照源码逐步修改参数加深理解
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=expand&id=multWindowScene) 运行，再对照源码逐步修改参数加深理解
 - 更多同类案例见 [扩展功能目录](/examples/three/expand/)
 
 > 扩展功能 · Three.js

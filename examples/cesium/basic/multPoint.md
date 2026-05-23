@@ -1,4 +1,4 @@
----
+﻿---
 title: "海量点 - Cesium.js 案例讲解"
 description: "BillboardCollection 64800 个全球格网点，Primitive 层批量渲染"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Mass Points*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=multPoint)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=basic&id=multPoint)
 
 ![海量点](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/multPoint.jpg)
 

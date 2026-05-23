@@ -1,4 +1,4 @@
----
+﻿---
 title: "绘制线 - Cesium.js 案例讲解"
 description: "pickPosition 交互绘线、贴地 polyline、实时距离标签"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Draw Line*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=drawLine)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=basic&id=drawLine)
 
 ![绘制线](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/drawLine.jpg)
 

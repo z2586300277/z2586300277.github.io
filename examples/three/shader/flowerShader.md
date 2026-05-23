@@ -1,4 +1,4 @@
----
+﻿---
 title: "花 - Three.js 案例讲解"
 description: "花：Scene / Camera / Renderer 渲染管线、ShaderMaterial / RawShaderMaterial 自定义 GLSL、Cesium Primitive 层海量渲染（着色器）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Flower Shader*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=flowerShader)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=flowerShader)
 
 ![花](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/flowerShader.jpg)
 
@@ -73,7 +73,7 @@ _height= window.innerHeight;
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=flowerShader) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=flowerShader) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[浮雕图像](/examples/three/shader/reliefImage)

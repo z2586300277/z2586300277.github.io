@@ -1,4 +1,4 @@
----
+﻿---
 title: "gltf在线draco压缩工具 - Three.js 案例讲解"
 description: "gltf在线draco压缩工具：gltf在线draco压缩工具（相关工具）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *GLTF Draco*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=tools&id=gltf_report)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=tools&id=gltf_report)
 
 ![gltf在线draco压缩工具](https://z2586300277.github.io/three-cesium-examples/threeExamples/tools/gltf_report.jpg)
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=tools&id=gltf_report) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=tools&id=gltf_report) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[免费hdr全景图资源](/examples/three/tools/skyBox_image)

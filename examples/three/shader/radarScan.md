@@ -1,4 +1,4 @@
----
+﻿---
 title: "雷达扫描 - Three.js 案例讲解"
 description: "雷达扫描：Scene / Camera / Renderer 渲染管线、相机交互控制器、onBeforeCompile 修改内置材质 shader（着色器）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *Radar Scan*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=radarScan)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=radarScan)
 
-![雷达扫描](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/radarScan.jpg)
+![雷达扫描](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/radarScan.jpg)
 
 ## 你将学到什么
 
@@ -71,11 +71,11 @@ const controls = new OrbitControls(camera, renderer.domElement)
 ```
 
 
-完整源码：[GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/threeExamples/shader/radarScan.js)
+完整源码：[GitHub](https://github.com/z2586300277/three-cesium-examples/blob/dev/threeExamples/application/radarScan.js)
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=radarScan) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=radarScan) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[圆泡吸附](/examples/three/shader/smokeCircle)

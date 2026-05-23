@@ -1,4 +1,4 @@
----
+﻿---
 title: "Cesium 3D 变换控制器 - Cesium.js 案例讲解"
 description: "Cesium 3D 变换控制器：Cesium Viewer 初始化与场景配置、外部模型 / 3D Tiles 加载、Cesium 相机定位与跟随（相关工具）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Cesium 3D Transform Controls*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=tools&id=transformControls)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=tools&id=transformControls)
 
 ![Cesium 3D 变换控制器](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/tools/transformControls.jpg)
 
@@ -82,7 +82,7 @@ const viewer = new Cesium.Viewer(box, {
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=tools&id=transformControls) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=tools&id=transformControls) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[绘制图形并导出geojson](/examples/cesium/tools/Draw and export geojson)

@@ -1,4 +1,4 @@
----
+﻿---
 title: "智慧城市光 - Cesium.js 案例讲解"
 description: "智慧城市光：智慧城市光（高级特效）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *City Light*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=advancedEffect&id=smartCity)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=advancedEffect&id=smartCity)
 
-![智慧城市光](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/advancedEffect/smartCity.jpg)
+![智慧城市光](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/smartCity.jpg)
 
 ## 你将学到什么
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=advancedEffect&id=smartCity) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=advancedEffect&id=smartCity) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[城市光影](/examples/cesium/advancedEffect/cityLight)

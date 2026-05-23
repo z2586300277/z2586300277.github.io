@@ -1,4 +1,4 @@
----
+﻿---
 title: "粒子线 - Three.js 案例讲解"
 description: "粒子线：Scene / Camera / Renderer 渲染管线、ShaderMaterial / RawShaderMaterial 自定义 GLSL、粒子 / 点云 / 实例化渲染（粒子）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Wire*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=particleWire)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=particle&id=particleWire)
 
 ![粒子线](https://z2586300277.github.io/three-cesium-examples/threeExamples/particle/particleWire.jpg)
 
@@ -75,7 +75,7 @@ const particlesGeometry = new THREE.BufferGeometry();
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=particleWire) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=particle&id=particleWire) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[球体线条](/examples/three/particle/sphereLine)

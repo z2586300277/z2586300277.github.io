@@ -1,4 +1,4 @@
----
+﻿---
 title: "绘制文字 - Cesium.js 案例讲解"
 description: "Entity Label 贴地文字、HeightReference 与 globe.getHeight 手动贴地"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *Draw Text*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=cesiumText)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=basic&id=cesiumText)
 
-![绘制文字](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/cesiumText.jpg)
+![绘制文字](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/layer/defaultLayer.jpg)
 
 ## 你将学到什么
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "高德图层 - Cesium.js 案例讲解"
 description: "高德图层：Cesium Viewer 初始化与场景配置（在线地图）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *高德图层 *
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=layer&id=gaodeLayer)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=layer&id=gaodeLayer)
 
 ![高德图层](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/layer/gaodeLayer.jpg)
 
@@ -61,7 +61,7 @@ const viewer = new Cesium.Viewer(box, {
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=layer&id=gaodeLayer) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=layer&id=gaodeLayer) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[arcgis图层](/examples/cesium/layer/arcgisLayer)

@@ -1,4 +1,4 @@
----
+﻿---
 title: "坐标参考 - Cesium.js 案例讲解"
 description: "坐标参考：Cesium Viewer 初始化与场景配置（在线地图）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *坐标参考 *
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=layer&id=coordLayer)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=layer&id=coordLayer)
 
-![坐标参考](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/layer/coordLayer.jpg)
+![坐标参考](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/layer/coord.jpg)
 
 ## 你将学到什么
 
@@ -55,7 +55,7 @@ viewer.imageryLayers.addImageryProvider(new Cesium.TileCoordinatesImageryProvide
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=layer&id=coordLayer) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=layer&id=coordLayer) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[默认图层](/examples/cesium/layer/defaultLayer)

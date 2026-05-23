@@ -1,4 +1,4 @@
----
+﻿---
 title: "波浪粒子 - Three.js 案例讲解"
 description: "波浪粒子：ShaderMaterial / RawShaderMaterial 自定义 GLSL、粒子 / 点云 / 实例化渲染、GUI 参数调试面板（粒子）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Wave*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=waveParticleShader)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=particle&id=waveParticleShader)
 
 ![波浪粒子](https://z2586300277.github.io/three-cesium-examples/threeExamples/particle/waveParticleShader.jpg)
 
@@ -76,7 +76,7 @@ const planeMaterial = new ShaderMaterial({
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=waveParticleShader) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=particle&id=waveParticleShader) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[粒子地球](/examples/three/particle/pointsEarth)

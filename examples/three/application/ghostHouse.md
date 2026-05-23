@@ -1,4 +1,4 @@
----
+﻿---
 title: "鬼屋 - Three.js 案例讲解"
 description: "鬼屋：Scene / Camera / Renderer 渲染管线、相机交互控制器、GUI 参数调试面板（应用场景）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Ghost House*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=ghostHouse)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=ghostHouse)
 
 ![鬼屋](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/ghostHouse.jpg)
 
@@ -67,7 +67,7 @@ const door_heightTexture = textureLoader.load(FILE_HOST + 'threeExamples/applica
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=ghostHouse) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=ghostHouse) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[代码云](/examples/three/application/codeCloud)

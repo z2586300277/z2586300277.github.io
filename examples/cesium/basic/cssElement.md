@@ -1,4 +1,4 @@
----
+﻿---
 title: "CSS 元素 - Cesium.js 案例讲解"
 description: "postRender + worldToWindowCoordinates 将 HTML DOM 钉在地理坐标"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *CSS DOM Overlay*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=cssElement)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=basic&id=cssElement)
 
 ![CSS 元素](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/cssElement.jpg)
 

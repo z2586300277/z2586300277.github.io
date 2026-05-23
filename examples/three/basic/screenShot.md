@@ -1,4 +1,4 @@
----
+﻿---
 title: "截图 - Three.js 案例讲解"
 description: "canvas.toDataURL 导出 PNG，含 EffectComposer 后期时先 composer.render"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Screenshot*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=screenShot)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=screenShot)
 
 ## 你将学到什么
 

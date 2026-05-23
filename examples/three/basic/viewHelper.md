@@ -1,4 +1,4 @@
----
+﻿---
 title: "视图辅助 - Three.js 案例讲解"
 description: "ViewHelper 右下角坐标轴小部件，autoClear 叠加渲染"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *View Helper*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=viewHelper)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=viewHelper)
 
 ## 你将学到什么
 

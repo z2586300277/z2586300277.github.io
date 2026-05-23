@@ -1,4 +1,4 @@
----
+﻿---
 title: "DOM遮挡 - Three.js 案例讲解"
 description: "Raycaster 检测 CSS3D 标签与 Mesh 之间遮挡，动态 opacity"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *DOM Occlusion*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=domDisplay)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=domDisplay)
 
 ## 你将学到什么
 

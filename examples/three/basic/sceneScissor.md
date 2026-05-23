@@ -1,4 +1,4 @@
----
+﻿---
 title: "场景剪切-后处理 - Three.js 案例讲解"
 description: "setScissor 分屏对比：无 Bloom vs UnrealBloomPass，滑块拖动分界线"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Scissor Compare*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=sceneScissor)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=sceneScissor)
 
 ## 你将学到什么
 

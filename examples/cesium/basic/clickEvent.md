@@ -1,4 +1,4 @@
----
+﻿---
 title: "点击事件 - Cesium.js 案例讲解"
 description: "ScreenSpaceEventHandler 鼠标拾取、scene.pick 与 pickPosition 经纬高转换"
 head:
@@ -11,7 +11,7 @@ outline: deep
 
 *Click Event*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=clickEvent)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=basic&id=clickEvent)
 
 ![点击事件](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/clickEvent.jpg)
 
@@ -174,7 +174,7 @@ const polyline = viewer.entities.add({
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=clickEvent) 运行，再对照源码逐步修改参数加深理解
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=basic&id=clickEvent) 运行，再对照源码逐步修改参数加深理解
 - 更多同类案例见 [基础功能目录](/examples/cesium/basic/)
 
 > 基础功能 · Cesium.js

@@ -1,4 +1,4 @@
----
+﻿---
 title: "圆锥网格 - Three.js 案例讲解"
 description: "圆锥网格：Scene / Camera / Renderer 渲染管线、相机交互控制器、EffectComposer 后处理管线（应用场景）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Cone Mesh*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=coneMesh)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=coneMesh)
 
 ![圆锥网格](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/coneMesh.jpg)
 
@@ -75,7 +75,7 @@ new OrbitControls(camera, renderer.domElement)
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=coneMesh) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=coneMesh) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[生成模型底座](/examples/three/application/model_base)

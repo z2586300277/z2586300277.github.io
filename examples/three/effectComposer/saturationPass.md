@@ -1,4 +1,4 @@
----
+﻿---
 title: "饱和度(自定义Pass) - Three.js 案例讲解"
 description: "饱和度(自定义Pass)：Scene / Camera / Renderer 渲染管线、相机交互控制器、ShaderMaterial / RawShaderMaterial 自定义 GLSL（后期处理）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Saturation*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=effectComposer&id=saturationPass)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=effectComposer&id=saturationPass)
 
 ![饱和度(自定义Pass)](https://z2586300277.github.io/three-cesium-examples/threeExamples/effectComposer/saturationPass.jpg)
 
@@ -73,7 +73,7 @@ function init() {
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=effectComposer&id=saturationPass) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=effectComposer&id=saturationPass) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[模糊反射(drei转原生)](/examples/three/effectComposer/blurReflect)

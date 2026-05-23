@@ -1,4 +1,4 @@
----
+﻿---
 title: "物理cannon使用 - Three.js 案例讲解"
 description: "Three.js 物理引擎联动。"
 head:
@@ -11,7 +11,7 @@ outline: deep
 
 *Physics Mesh*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=physics&id=physicsMesh)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=physics&id=physicsMesh)
 
 ![物理cannon使用](https://z2586300277.github.io/three-cesium-examples/threeExamples/physics/physicsMesh.jpg)
 
@@ -160,7 +160,7 @@ function createPhysicsBody(PhysicsWorld, model, mass) {
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=physics&id=physicsMesh) 运行，再对照源码逐步修改参数加深理解
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=physics&id=physicsMesh) 运行，再对照源码逐步修改参数加深理解
 - 更多同类案例见 [物理应用目录](/examples/three/physics/)
 
 > 物理应用 · Three.js

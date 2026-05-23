@@ -1,4 +1,4 @@
----
+﻿---
 title: "模糊反射(drei转原生) - Three.js 案例讲解"
 description: "模糊反射(drei转原生)：模糊反射(drei转原生)（后期处理）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *Blur Reflect*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=effectComposer&id=blurReflect)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=effectComposer&id=blurReflect)
 
-![模糊反射(drei转原生)](https://z2586300277.github.io/three-cesium-examples/threeExamples/effectComposer/blurReflect.jpg)
+![模糊反射(drei转原生)](https://z2586300277.github.io/three-cesium-examples/threeExamples/expand/blurReflect.jpg)
 
 ## 你将学到什么
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=effectComposer&id=blurReflect) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=effectComposer&id=blurReflect) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[残影效果](/examples/three/effectComposer/afterimagePass)

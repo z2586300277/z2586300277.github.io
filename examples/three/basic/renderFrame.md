@@ -1,4 +1,4 @@
----
+﻿---
 title: "帧率控制 - Three.js 案例讲解"
 description: "固定 FPS 渲染：Clock 累加 delta，到 renderT 才 render"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Fixed FPS*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=renderFrame)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=renderFrame)
 
 ## 你将学到什么
 

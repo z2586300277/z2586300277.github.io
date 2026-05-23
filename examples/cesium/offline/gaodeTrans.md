@@ -1,4 +1,4 @@
----
+﻿---
 title: "高德纠偏 - Cesium.js 案例讲解"
 description: "高德纠偏：高德纠偏（离线地图）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *Gaode Transform*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=offline&id=gaodeTrans)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=offline&id=gaodeTrans)
 
-![高德纠偏](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/offline/gaodeTrans.jpg)
+![高德纠偏](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/layer/gaodeTrans.jpg)
 
 ## 你将学到什么
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=offline&id=gaodeTrans) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=offline&id=gaodeTrans) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[内网高德](/examples/cesium/offline/gaode)

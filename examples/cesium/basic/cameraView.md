@@ -1,4 +1,4 @@
----
+﻿---
 title: "记录视角 - Cesium.js 案例讲解"
 description: "保存/恢复 camera 位置、姿态、frustum 到 sessionStorage"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *Save Camera View*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=cameraView)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=basic&id=cameraView)
 
-![记录视角](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/cameraView.jpg)
+![记录视角](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/layer/defaultLayer.jpg)
 
 ## 你将学到什么
 

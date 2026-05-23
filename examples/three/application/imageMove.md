@@ -1,4 +1,4 @@
----
+﻿---
 title: "图片移动 - Three.js 案例讲解"
 description: "图片移动：Scene / Camera / Renderer 渲染管线、onBeforeCompile 修改内置材质 shader（应用场景）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Image Move*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=imageMove)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=imageMove)
 
 ![图片移动](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/imageMove.jpg)
 
@@ -76,7 +76,7 @@ const urls = [
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=imageMove) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=imageMove) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[风吹动画](/examples/three/application/windMove)

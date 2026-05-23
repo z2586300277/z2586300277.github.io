@@ -1,4 +1,4 @@
----
+﻿---
 title: "Div 弹窗 - Cesium.js 案例讲解"
 description: "preUpdate + worldToWindowCoordinates 地理锚点 HTML 弹窗"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Div Popup*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=drawDivElement)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=basic&id=drawDivElement)
 
 ![Div 弹窗](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/drawDivElement.jpg)
 

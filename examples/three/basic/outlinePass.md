@@ -1,4 +1,4 @@
----
+﻿---
 title: "轮廓光 - Three.js 案例讲解"
 description: "OutlinePass 选中高亮、EffectComposer 后期链与 Raycaster 点击拾取"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Outline Pass*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=outlinePass)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=outlinePass)
 
 ![轮廓光](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/outlinePass.jpg)
 
@@ -70,7 +70,7 @@ outlinePass.selectedObjects = hits.length ? [hits[0].object] : [];
 
 ## 源码
 
-完整源码见 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=outlinePass)（与仓库 `outlinePass.js` 一致）。
+完整源码见 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=outlinePass)（与仓库 `outlinePass.js` 一致）。
 
 核心结构：
 

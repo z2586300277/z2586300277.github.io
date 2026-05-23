@@ -1,4 +1,4 @@
----
+﻿---
 title: "城市线条 - Three.js 案例讲解"
 description: "城市线条：Scene / Camera / Renderer 渲染管线、相机交互控制器、外部模型 / 3D Tiles 加载（着色器）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *City Line*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=cityLine)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=cityLine)
 
 ![城市线条](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/cityLine.jpg)
 
@@ -70,7 +70,7 @@ this.fbxLoader = new FBXLoader();
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=cityLine) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=cityLine) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[平面扫描](/examples/three/shader/planeScan)

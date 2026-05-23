@@ -1,4 +1,4 @@
----
+﻿---
 title: "CSS元素 - Three.js 案例讲解"
 description: "CSS2DRenderer / CSS3DRenderer 与 WebGL 同屏渲染 HTML 标签"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *CSS2D / CSS3D*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=cssElement)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=cssElement)
 
 ## 你将学到什么
 

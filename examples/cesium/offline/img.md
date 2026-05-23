@@ -1,4 +1,4 @@
----
+﻿---
 title: "影像 - Cesium.js 案例讲解"
 description: "影像：Cesium Viewer 初始化与场景配置（离线地图）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *影像 *
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=offline&id=img)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=offline&id=img)
 
 ![影像](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/offline/img.jpg)
 
@@ -60,7 +60,7 @@ viewer.imageryLayers.addImageryProvider(imagelayer);
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=offline&id=img) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=offline&id=img) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[夜间](/examples/cesium/offline/day)

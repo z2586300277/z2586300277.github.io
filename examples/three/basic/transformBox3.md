@@ -1,4 +1,4 @@
----
+﻿---
 title: "变换Box3 - Three.js 案例讲解"
 description: "Box3.setFromObject 包围盒，Box3Helper 随 TransformControls 实时更新"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Box3 Helper*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=transformBox3)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=transformBox3)
 
 ![变换Box3](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/transformBox3.jpg)
 

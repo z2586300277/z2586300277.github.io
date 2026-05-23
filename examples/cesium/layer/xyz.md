@@ -1,4 +1,4 @@
----
+﻿---
 title: "OGC- xyz服务 - Cesium.js 案例讲解"
 description: "OGC- xyz服务：Cesium Viewer 初始化与场景配置、Cesium 环境 / 水体 / 地形（在线地图）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *OGC- xyz服务 *
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=layer&id=xyz)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=layer&id=xyz)
 
 ![OGC- xyz服务](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/layer/xyz.jpg)
 
@@ -72,7 +72,7 @@ viewer.imageryLayers.addImageryProvider(xyz)
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=layer&id=xyz) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=layer&id=xyz) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[天地图](/examples/cesium/layer/tiandituLayer)

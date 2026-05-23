@@ -1,4 +1,4 @@
----
+﻿---
 title: "计算方位角 - Cesium.js 案例讲解"
 description: "计算方位角：Cesium Viewer 初始化与场景配置、Cesium Entity / DataSource 高层 API、Cesium 屏幕空间拾取交互（相关工具）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *computerAngle*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=tools&id=computerAngle)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=tools&id=computerAngle)
 
 ![计算方位角](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/tools/computerAngle.jpg)
 
@@ -70,7 +70,7 @@ const viewer = new Cesium.Viewer(box, {
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=tools&id=computerAngle) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=tools&id=computerAngle) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[计算新坐标](/examples/cesium/tools/computerNewPoint)

@@ -1,4 +1,4 @@
----
+﻿---
 title: "热力图 - Three.js 案例讲解"
 description: "热力图：热力图（扩展功能）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *Heatmap Shader*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=heatmapShader)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=expand&id=heatmapShader)
 
-![热力图](https://z2586300277.github.io/three-cesium-examples/threeExamples/expand/heatmapShader.jpg)
+![热力图](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/heatmapShader.jpg)
 
 ## 你将学到什么
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=heatmapShader) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=expand&id=heatmapShader) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[3D热力图](/examples/three/expand/heatmap3D)

@@ -1,4 +1,4 @@
----
+﻿---
 title: "百度图层 - Cesium.js 案例讲解"
 description: "百度图层：百度图层（在线地图）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Baidu Layer*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=layer&id=baiduLayer)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=layer&id=baiduLayer)
 
 ![百度图层](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/layer/baiduLayer.jpg)
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=layer&id=baiduLayer) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=layer&id=baiduLayer) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[坐标参考](/examples/cesium/layer/coordLayer)

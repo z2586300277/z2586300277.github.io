@@ -1,4 +1,4 @@
----
+﻿---
 title: "物理ammo使用 - Three.js 案例讲解"
 description: "物理ammo使用：Scene / Camera / Renderer 渲染管线、相机交互控制器、物理引擎集成（物理应用）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Ammo Physics*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=physics&id=ammoPhysics)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=physics&id=ammoPhysics)
 
 ![物理ammo使用](https://z2586300277.github.io/three-cesium-examples/threeExamples/physics/ammoPhysics.jpg)
 
@@ -75,7 +75,7 @@ new OrbitControls(camera, renderer.domElement)
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=physics&id=ammoPhysics) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=physics&id=ammoPhysics) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[物理cannon使用](/examples/three/physics/physicsMesh)

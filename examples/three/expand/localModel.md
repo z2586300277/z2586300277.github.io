@@ -1,4 +1,4 @@
----
+﻿---
 title: "本地模型加载 - Three.js 案例讲解"
 description: "本地模型加载：Scene / Camera / Renderer 渲染管线、相机交互控制器、外部模型 / 3D Tiles 加载（扩展功能）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *Local Model*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=localModel)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=expand&id=localModel)
 
-![本地模型加载](https://z2586300277.github.io/three-cesium-examples/threeExamples/expand/localModel.jpg)
+![本地模型加载](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/localModel.jpg)
 
 ## 你将学到什么
 
@@ -75,7 +75,7 @@ const controls = new OrbitControls(camera, renderer.domElement)
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=localModel) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=expand&id=localModel) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 下一篇：[IndexedDB使用](/examples/three/expand/useIndexDB)

@@ -1,4 +1,4 @@
----
+﻿---
 title: "城市光效 - Three.js 案例讲解"
 description: "onBeforeCompile 注入生长/上升线/扩散波/扫光四套 GLSL，FBX 城市白膜大屏"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *City Effect*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=cityEffect)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=cityEffect)
 
 ![城市光效](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/cityEffect.jpg)
 

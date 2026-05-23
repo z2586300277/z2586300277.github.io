@@ -1,4 +1,4 @@
----
+﻿---
 title: "圆波扫光 - Three.js 案例讲解"
 description: "circleWave 同心圆扩散 + 加法混合 + 扫描纹理"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Circle Wave Scan*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=circleWave)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=circleWave)
 
 ![圆波扫光](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/circleWave.jpg)
 

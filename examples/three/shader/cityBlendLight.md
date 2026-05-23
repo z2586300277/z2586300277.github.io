@@ -1,4 +1,4 @@
----
+﻿---
 title: "城市混合扫光 - Three.js 案例讲解"
 description: "modelBlendShader 环形扫光带 mix 双色，innerCircleWidth 动画扩散"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *City Blend Light*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=cityBlendLight)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=cityBlendLight)
 
 ![城市混合扫光](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/cityBlendLight.jpg)
 

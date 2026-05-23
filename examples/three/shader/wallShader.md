@@ -1,4 +1,4 @@
----
+﻿---
 title: "扩散圆墙 - Three.js 案例讲解"
 description: "扩散圆墙：Scene / Camera / Renderer 渲染管线、相机交互控制器、ShaderMaterial / RawShaderMaterial 自定义 GLSL（着色器）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Wall Shader*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=wallShader)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=wallShader)
 
 ![扩散圆墙](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/wallShader.jpg)
 
@@ -67,7 +67,7 @@ controls.dampingFactor = 0.25
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=wallShader) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=wallShader) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[城市线条](/examples/three/shader/cityLine)

@@ -1,4 +1,4 @@
----
+﻿---
 title: "测量 - Three.js 案例讲解"
 description: "Three.js 业务向场景组合。"
 head:
@@ -11,7 +11,7 @@ outline: deep
 
 *Line Measure*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=lineMeasure)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=lineMeasure)
 
 ![测量](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/lineMeasure.jpg)
 
@@ -175,7 +175,7 @@ function onDragChanging(event) {
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=lineMeasure) 运行，再对照源码逐步修改参数加深理解
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=lineMeasure) 运行，再对照源码逐步修改参数加深理解
 - 更多同类案例见 [应用场景目录](/examples/three/application/)
 
 > 应用场景 · Three.js

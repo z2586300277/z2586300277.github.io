@@ -1,4 +1,4 @@
----
+﻿---
 title: "渲染贴图物体 - Three.js 案例讲解"
 description: "WebGLRenderTarget 离屏渲染，Layers 分层写入纹理贴到平面/球"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Render Target*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=renderTarget)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=renderTarget)
 
 ## 你将学到什么
 

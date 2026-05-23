@@ -1,4 +1,4 @@
----
+﻿---
 title: "爱心 - Three.js 案例讲解"
 description: "爱心：Scene / Camera / Renderer 渲染管线、ShaderMaterial / RawShaderMaterial 自定义 GLSL、粒子 / 点云 / 实例化渲染（着色器）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Love Shader*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=loveShader)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=loveShader)
 
 ![爱心](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/loveShader.jpg)
 
@@ -79,7 +79,7 @@ this.clock = new THREE.Clock();
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=loveShader) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=loveShader) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[围栏着色器](/examples/three/shader/fenceShader)

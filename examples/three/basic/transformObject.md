@@ -1,4 +1,4 @@
----
+﻿---
 title: "拖拽控制 - Three.js 案例讲解"
 description: "TransformControls 平移/旋转/缩放，与 OrbitControls 互斥拖拽"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Transform Controls*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=transformObject)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=transformObject)
 
 ![拖拽控制](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/transformObject.jpg)
 

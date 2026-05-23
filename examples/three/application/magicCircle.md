@@ -1,4 +1,4 @@
----
+﻿---
 title: "魔法阵 - Three.js 案例讲解"
 description: "魔法阵：Scene / Camera / Renderer 渲染管线、相机交互控制器、粒子 / 点云 / 实例化渲染（应用场景）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Magic Circle*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=magicCircle)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=magicCircle)
 
 ![魔法阵](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/magicCircle.jpg)
 
@@ -67,7 +67,7 @@ this.options = options;
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=magicCircle) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=magicCircle) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[优雅永不过时](/examples/three/application/z2586300277)

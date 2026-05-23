@@ -1,4 +1,4 @@
----
+﻿---
 title: "实例化渲染 - Cesium.js 案例讲解"
 description: "实例化渲染：实例化渲染（应用相关）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *Instance Render*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=applyExample&id=instanceRender)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=applyExample&id=instanceRender)
 
-![实例化渲染](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/applyExample/instanceRender.jpg)
+![实例化渲染](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/application/instanceRender.jpg)
 
 ## 你将学到什么
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=applyExample&id=instanceRender) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=applyExample&id=instanceRender) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[渐变行政区](/examples/cesium/applyExample/gradienGeojsonFace)

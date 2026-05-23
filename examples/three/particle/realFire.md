@@ -1,4 +1,4 @@
----
+﻿---
 title: "真实火焰 - Three.js 案例讲解"
 description: "真实火焰：Scene / Camera / Renderer 渲染管线、相机交互控制器、ShaderMaterial / RawShaderMaterial 自定义 GLSL（粒子）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Real Fire*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=realFire)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=particle&id=realFire)
 
 ![真实火焰](https://z2586300277.github.io/three-cesium-examples/threeExamples/particle/realFire.jpg)
 
@@ -79,7 +79,7 @@ box.appendChild(renderer.domElement)
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=realFire) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=particle&id=realFire) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[粒子火焰](/examples/three/particle/fireParticles)

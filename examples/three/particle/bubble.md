@@ -1,4 +1,4 @@
----
+﻿---
 title: "粒子泡泡 - Three.js 案例讲解"
 description: "粒子泡泡：Scene / Camera / Renderer 渲染管线、相机交互控制器、ShaderMaterial / RawShaderMaterial 自定义 GLSL（粒子）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *Bubble*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=bubble)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=particle&id=bubble)
 
-![粒子泡泡](https://z2586300277.github.io/three-cesium-examples/threeExamples/particle/bubble.jpg)
+![粒子泡泡](https://z2586300277.github.io/3d-file-server/images/four/bubble.png)
 
 ## 你将学到什么
 
@@ -82,7 +82,7 @@ void main(){
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=bubble) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=particle&id=bubble) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[粒子效果的行星](/examples/three/particle/PlanetParticle)

@@ -1,4 +1,4 @@
----
+﻿---
 title: "风力涡轮机尾迹 - Three.js 案例讲解"
 description: "风力涡轮机尾迹：Scene / Camera / Renderer 渲染管线、相机交互控制器、粒子 / 点云 / 实例化渲染（应用场景）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *Wind Turbine Wake*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=windTurbineWake)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=windTurbineWake)
 
-![风力涡轮机尾迹](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/windTurbineWake.jpg)
+![风力涡轮机尾迹](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/windTurbineWake.png)
 
 ## 你将学到什么
 
@@ -69,7 +69,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: true })
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=windTurbineWake) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=windTurbineWake) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[点云第一人称漫游,碰撞检测](/examples/three/application/pointCloudFpsOctree)

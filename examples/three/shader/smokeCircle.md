@@ -1,4 +1,4 @@
----
+﻿---
 title: "圆泡吸附 - Three.js 案例讲解"
 description: "大量重复物体或粒子，注意 draw call 与 update 频率。"
 head:
@@ -11,7 +11,7 @@ outline: deep
 
 *Smoke Circle*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=smokeCircle)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=smokeCircle)
 
 ![圆泡吸附](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/smokeCircle.jpg)
 
@@ -178,7 +178,7 @@ function animation() {
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=smokeCircle) 运行，再对照源码逐步修改参数加深理解
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=smokeCircle) 运行，再对照源码逐步修改参数加深理解
 - 更多同类案例见 [着色器目录](/examples/three/shader/)
 
 > 着色器 · Three.js

@@ -1,4 +1,4 @@
----
+﻿---
 title: "发散飞线 - Three.js 案例讲解"
 description: "发散飞线：Scene / Camera / Renderer 渲染管线、相机交互控制器、ShaderMaterial / RawShaderMaterial 自定义 GLSL（应用场景）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Diffuse Line*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=diffuseLine)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=diffuseLine)
 
 ![发散飞线](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/diffuseLine.jpg)
 
@@ -70,7 +70,7 @@ if (texture && !texture.isTexture) {
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=diffuseLine) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=diffuseLine) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[简单碰撞检测](/examples/three/application/simple_collision)

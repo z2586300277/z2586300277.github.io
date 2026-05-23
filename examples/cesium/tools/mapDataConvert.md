@@ -1,4 +1,4 @@
----
+﻿---
 title: "地图转换工具 - Cesium.js 案例讲解"
 description: "地图转换工具：地图转换工具（相关工具）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Map Convert*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=tools&id=mapDataConvert)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=tools&id=mapDataConvert)
 
 ![地图转换工具](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/tools/mapDataConvert.jpg)
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=tools&id=mapDataConvert) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=tools&id=mapDataConvert) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 下一篇：[地图下载器](/examples/cesium/tools/layerDownload)

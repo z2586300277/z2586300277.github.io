@@ -1,4 +1,4 @@
----
+﻿---
 title: "星系 - Three.js 案例讲解"
 description: "星系：Scene / Camera / Renderer 渲染管线、相机交互控制器、粒子 / 点云 / 实例化渲染（粒子）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Galaxy Star*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=galaxyStar)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=particle&id=galaxyStar)
 
 ![星系](https://z2586300277.github.io/three-cesium-examples/threeExamples/particle/galaxyStar.jpg)
 
@@ -80,7 +80,7 @@ Three.js WebGL 场景，粒子或点云特效，技术点：BufferGeometry。打
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=galaxyStar) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=particle&id=galaxyStar) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[下雪](/examples/three/particle/downSnow)

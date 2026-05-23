@@ -1,4 +1,4 @@
----
+﻿---
 title: "Opt解压(su7 模型) - Three.js 案例讲解"
 description: "Meshopt 压缩 glTF 解码、HDR 环境贴图与 PMREMGenerator 预滤波"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *GLTF Meshopt + HDR*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=gltfOptLoader)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=gltfOptLoader)
 
 ![Opt解压](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/gltfOptLoader.jpg)
 

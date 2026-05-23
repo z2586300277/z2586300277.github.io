@@ -1,4 +1,4 @@
----
+﻿---
 title: "三维转屏幕坐标 - Three.js 案例讲解"
 description: "Vector3.project 将世界坐标转为屏幕像素，手动同步 DOM 标签位置"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *World to Screen*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=screenCoord)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=screenCoord)
 
 ![三维转屏幕坐标](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/screenCoord.jpg)
 

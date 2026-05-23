@@ -1,4 +1,4 @@
----
+﻿---
 title: "文件分片(打包zip) - Three.js 案例讲解"
 description: "大 glb 切分为 chunk + JSZip，合并 ArrayBuffer 后 GLTFLoader 加载"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *File Chunks*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=fileChunks)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=fileChunks)
 
 ## 你将学到什么
 

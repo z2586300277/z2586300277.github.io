@@ -1,4 +1,4 @@
----
+﻿---
 title: "天空云 - Three.js 案例讲解"
 description: "天空云：ShaderMaterial / RawShaderMaterial 自定义 GLSL、粒子 / 点云 / 实例化渲染、GUI 参数调试面板（着色器）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Cloud Shader*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=cloudShader)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=cloudShader)
 
 ![天空云](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/cloudShader.jpg)
 
@@ -77,7 +77,7 @@ PlaneGeometry,
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=cloudShader) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=cloudShader) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[水天一色](/examples/three/shader/waterSky)

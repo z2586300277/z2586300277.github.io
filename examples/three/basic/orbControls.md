@@ -1,4 +1,4 @@
----
+﻿---
 title: "轨道控制器 - Three.js 案例讲解"
 description: "OrbitControls 阻尼、距离/角度限制、autoRotate 与 lil-gui 全参数调试"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Orbit Controls*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=orbControls)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=orbControls)
 
 ![轨道控制器](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/orbControls.jpg)
 

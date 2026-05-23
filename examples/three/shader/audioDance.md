@@ -1,4 +1,4 @@
----
+﻿---
 title: "音乐舞动 - Three.js 案例讲解"
 description: "音乐舞动：相机交互控制器、ShaderMaterial / RawShaderMaterial 自定义 GLSL、GUI 参数调试面板（着色器）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Audio Dance*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=audioDance)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=audioDance)
 
 ![音乐舞动](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/audioDance.jpg)
 
@@ -77,7 +77,7 @@ const fragmentShader = /*glsl*/ `
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=audioDance) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=audioDance) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[城市光影](/examples/three/shader/cityLight)

@@ -1,4 +1,4 @@
----
+﻿---
 title: "模型导航 - Three.js 案例讲解"
 description: "模型导航：模型导航（应用场景）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *Model Nav*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=model_navigation)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=model_navigation)
 
-![模型导航](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/model_navigation.jpg)
+![模型导航](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/nav.jpg)
 
 ## 你将学到什么
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=model_navigation) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=model_navigation) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[道路流光](/examples/three/application/roadShader)

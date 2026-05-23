@@ -1,4 +1,4 @@
----
+﻿---
 title: "随机城市白膜 - Three.js 案例讲解"
 description: "随机城市白膜：随机城市白膜（应用场景）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *White Model*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=white%20model)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=white+model)
 
-![随机城市白膜](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/white%20model.jpg)
+![随机城市白膜](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/white_model.jpg)
 
 ## 你将学到什么
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=white%20model) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=white+model) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[雷达扫描](/examples/three/application/radarScan)

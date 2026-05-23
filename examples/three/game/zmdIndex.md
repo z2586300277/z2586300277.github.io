@@ -1,4 +1,4 @@
----
+﻿---
 title: "终末地-登录入口 - Three.js 案例讲解"
 description: "终末地-登录入口：Scene / Camera / Renderer 渲染管线、相机交互控制器、外部模型 / 3D Tiles 加载（游戏复刻）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *EndField Index*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=game&id=zmdIndex)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=game&id=zmdIndex)
 
 ![终末地-登录入口](https://z2586300277.github.io/three-cesium-examples/threeExamples/game/zmdIndex.jpg)
 
@@ -83,7 +83,7 @@ const model_mat = new THREE.ShaderMaterial({
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=game&id=zmdIndex) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=game&id=zmdIndex) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 下一篇：[人物虚化](/examples/three/game/characterBlur)

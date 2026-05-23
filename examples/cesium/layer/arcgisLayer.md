@@ -1,4 +1,4 @@
----
+﻿---
 title: "arcgis图层 - Cesium.js 案例讲解"
 description: "arcgis图层：Cesium Viewer 初始化与场景配置（在线地图）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *arcgis图层 *
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=layer&id=arcgisLayer)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=layer&id=arcgisLayer)
 
 ![arcgis图层](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/layer/arcgisLayer.jpg)
 
@@ -59,7 +59,7 @@ viewer.imageryLayers.add(layer)
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=layer&id=arcgisLayer) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=layer&id=arcgisLayer) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[百度图层](/examples/cesium/layer/baiduLayer)

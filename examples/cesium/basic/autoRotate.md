@@ -1,4 +1,4 @@
----
+﻿---
 title: "自动旋转 - Cesium.js 案例讲解"
 description: "clock.onTick + camera.rotate 绕地轴自动旋转地球"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *Auto Rotate*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=autoRotate)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=basic&id=autoRotate)
 
-![自动旋转](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/autoRotate.jpg)
+![自动旋转](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/layer/defaultLayer.jpg)
 
 ## 你将学到什么
 

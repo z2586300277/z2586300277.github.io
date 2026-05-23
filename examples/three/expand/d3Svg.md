@@ -1,4 +1,4 @@
----
+﻿---
 title: "D3 svg与Three - Three.js 案例讲解"
 description: "D3 svg与Three：Scene / Camera / Renderer 渲染管线、相机交互控制器（扩展功能）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *D3 SVG Three*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=d3Svg)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=expand&id=d3Svg)
 
 ![D3 svg与Three](https://z2586300277.github.io/three-cesium-examples/threeExamples/expand/d3Svg.jpg)
 
@@ -74,7 +74,7 @@ new OrbitControls(camera, renderer.domElement)
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=expand&id=d3Svg) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=expand&id=d3Svg) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[瓦片地图](/examples/three/expand/tilesMap)

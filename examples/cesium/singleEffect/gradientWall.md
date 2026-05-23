@@ -1,4 +1,4 @@
----
+﻿---
 title: "渐变色墙体 - Cesium.js 案例讲解"
 description: "渐变色墙体：渐变色墙体（单一效果）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *Gradient Wall*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=singleEffect&id=gradientWall)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=singleEffect&id=gradientWall)
 
-![渐变色墙体](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/singleEffect/gradientWall.jpg)
+![渐变色墙体](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/effect/gradientWall.jpg)
 
 ## 你将学到什么
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=singleEffect&id=gradientWall) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=singleEffect&id=gradientWall) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[动态围墙(简易版)](/examples/cesium/singleEffect/dynamicWallSimple)

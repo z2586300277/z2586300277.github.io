@@ -1,4 +1,4 @@
----
+﻿---
 title: "视角切换 - Cesium.js 案例讲解"
 description: "flyTo、zoomTo、trackedEntity、viewBoundingSphere 等相机定位 API 对照"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Switch View*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=switchView)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=basic&id=switchView)
 
 ![视角切换](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/switchView.jpg)
 

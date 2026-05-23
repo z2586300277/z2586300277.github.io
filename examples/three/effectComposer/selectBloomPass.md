@@ -1,4 +1,4 @@
----
+﻿---
 title: "辉光-postprocessing - Three.js 案例讲解"
 description: "辉光-postprocessing：Scene / Camera / Renderer 渲染管线、相机交互控制器、EffectComposer 后处理管线（后期处理）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Select Bloom*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=effectComposer&id=selectBloomPass)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=effectComposer&id=selectBloomPass)
 
 ![辉光-postprocessing](https://z2586300277.github.io/three-cesium-examples/threeExamples/effectComposer/selectBloomPass.jpg)
 
@@ -75,7 +75,7 @@ new OrbitControls(camera, renderer.domElement)
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=effectComposer&id=selectBloomPass) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=effectComposer&id=selectBloomPass) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 下一篇：[自定义遮罩通道](/examples/three/effectComposer/customMaskPass)

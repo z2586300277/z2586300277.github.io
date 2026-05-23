@@ -1,4 +1,4 @@
----
+﻿---
 title: "骨骼动画 - Three.js 案例讲解"
 description: "手工 SkinnedMesh + Bone 层级，SkeletonHelper 可视化骨骼"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Skeleton Bone*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=skeletonBone)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=skeletonBone)
 
 ## 你将学到什么
 

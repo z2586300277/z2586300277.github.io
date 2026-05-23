@@ -1,4 +1,4 @@
----
+﻿---
 title: "颗粒图像 - Three.js 案例讲解"
 description: "Three.js 片元/顶点着色器改颜色与形变。"
 head:
@@ -11,7 +11,7 @@ outline: deep
 
 *Image Part*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=imageParticle)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=imageParticle)
 
 ![颗粒图像](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/imageParticle.jpg)
 
@@ -171,7 +171,7 @@ requestAnimationFrame(function h() {
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=imageParticle) 运行，再对照源码逐步修改参数加深理解
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=imageParticle) 运行，再对照源码逐步修改参数加深理解
 - 更多同类案例见 [着色器目录](/examples/three/shader/)
 
 > 着色器 · Three.js

@@ -1,4 +1,4 @@
----
+﻿---
 title: "随机粒子效果 - Three.js 案例讲解"
 description: "随机粒子效果：随机粒子效果（粒子）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Random*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=RandomParticle)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=particle&id=RandomParticle)
 
 ![随机粒子效果](https://z2586300277.github.io/three-cesium-examples/threeExamples/particle/RandomParticle.jpg)
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=particle&id=RandomParticle) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=particle&id=RandomParticle) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[优雅永不过时](/examples/three/particle/z2586300277)

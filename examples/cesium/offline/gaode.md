@@ -1,4 +1,4 @@
----
+﻿---
 title: "内网高德 - Cesium.js 案例讲解"
 description: "内网高德：Cesium Viewer 初始化与场景配置（离线地图）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *内网高德 *
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=offline&id=gaode)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=offline&id=gaode)
 
 ![内网高德](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/offline/gaode.jpg)
 
@@ -61,7 +61,7 @@ const viewer = new Cesium.Viewer(box, {
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=offline&id=gaode) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=offline&id=gaode) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[内网百度](/examples/cesium/offline/baiDu)

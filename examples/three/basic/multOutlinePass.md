@@ -1,4 +1,4 @@
----
+﻿---
 title: "多轮廓光 - Three.js 案例讲解"
 description: "多个 OutlinePass 链式叠加，不同 selectedObjects 不同描边颜色"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Multi Outline*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=multOutlinePass)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=multOutlinePass)
 
 ## 你将学到什么
 

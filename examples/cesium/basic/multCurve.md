@@ -1,4 +1,4 @@
----
+﻿---
 title: "海量曲线 - Cesium.js 案例讲解"
 description: "CatmullRomSpline 样条插值 + PolylineGeometry 批量飞线"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Mass Curves*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=multCurve)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=basic&id=multCurve)
 
 ![海量曲线](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/multCurve.jpg)
 

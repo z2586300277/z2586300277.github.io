@@ -1,4 +1,4 @@
----
+﻿---
 title: "中国旗帜 - Three.js 案例讲解"
 description: "RawShaderMaterial 顶点正弦波模拟旗面飘动与明暗"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *China Flag*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=chinaFlag)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=chinaFlag)
 
 ![中国旗帜](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/chinaFlag.jpg)
 

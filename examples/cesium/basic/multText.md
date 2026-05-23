@@ -1,4 +1,4 @@
----
+﻿---
 title: "Canvas 文字点 - Cesium.js 案例讲解"
 description: "Canvas 绘制城市名 + BillboardCollection 贴图批量标注"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Canvas Text Billboards*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=multText)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=basic&id=multText)
 
 ![Canvas 文字点](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/multText.jpg)
 

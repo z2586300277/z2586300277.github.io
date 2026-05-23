@@ -1,4 +1,4 @@
----
+﻿---
 title: "灯罩 - Three.js 案例讲解"
 description: "灯罩：相机交互控制器、ShaderMaterial / RawShaderMaterial 自定义 GLSL（应用场景）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Lampshade*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=lampshade)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=lampshade)
 
 ![灯罩](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/lampshade.jpg)
 
@@ -76,7 +76,7 @@ const scene = new Scene()
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=lampshade) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=lampshade) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[发散飞线](/examples/three/application/diffuseLine)

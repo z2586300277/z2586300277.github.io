@@ -1,4 +1,4 @@
----
+﻿---
 title: "海量面线 - Cesium.js 案例讲解"
 description: "PolygonGeometry + PolylineGeometry 合批 Primitive 渲染万级三角面"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Mass Polygons & Polylines*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=multFaceLine)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=basic&id=multFaceLine)
 
 ![海量面线](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/multFaceLine.jpg)
 

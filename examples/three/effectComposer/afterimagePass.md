@@ -1,4 +1,4 @@
----
+﻿---
 title: "残影效果 - Three.js 案例讲解"
 description: "原场景 + 后期 Pass 叠加。"
 head:
@@ -11,7 +11,7 @@ outline: deep
 
 *Afterimage*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=effectComposer&id=afterimagePass)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=effectComposer&id=afterimagePass)
 
 ![残影效果](https://z2586300277.github.io/three-cesium-examples/threeExamples/effectComposer/afterimagePass.jpg)
 
@@ -150,7 +150,7 @@ animate();
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=effectComposer&id=afterimagePass) 运行，再对照源码逐步修改参数加深理解
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=effectComposer&id=afterimagePass) 运行，再对照源码逐步修改参数加深理解
 - 更多同类案例见 [后期处理目录](/examples/three/effectComposer/)
 
 > 后期处理 · Three.js

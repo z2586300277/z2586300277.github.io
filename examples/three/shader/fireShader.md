@@ -1,4 +1,4 @@
----
+﻿---
 title: "火焰 - Three.js 案例讲解"
 description: "火焰：Scene / Camera / Renderer 渲染管线、相机交互控制器、ShaderMaterial / RawShaderMaterial 自定义 GLSL（着色器）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Fire Shader*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=fireShader)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=fireShader)
 
 ![火焰](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/fireShader.jpg)
 
@@ -75,7 +75,7 @@ const controls = new OrbitControls(camera, renderer.domElement)
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=fireShader) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=fireShader) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[内发光](/examples/three/shader/innerGlow)

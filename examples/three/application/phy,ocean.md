@@ -1,4 +1,4 @@
----
+﻿---
 title: "具有物理效果的卡通海面 - Three.js 案例讲解"
 description: "具有物理效果的卡通海面：具有物理效果的卡通海面（应用场景）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *Cartoon Ocean*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=phy%2Cocean)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=phy%2Cocean)
 
-![具有物理效果的卡通海面](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/phy%2Cocean.jpg)
+![具有物理效果的卡通海面](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/cartoon_ocean.jpg)
 
 ## 你将学到什么
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=phy%2Cocean) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=phy%2Cocean) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[下雨效果](/examples/three/application/rainRoof)

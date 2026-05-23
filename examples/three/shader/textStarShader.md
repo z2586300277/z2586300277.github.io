@@ -1,4 +1,4 @@
----
+﻿---
 title: "点星感谢 - Three.js 案例讲解"
 description: "点星感谢：Scene / Camera / Renderer 渲染管线、ShaderMaterial / RawShaderMaterial 自定义 GLSL（着色器）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Text Star*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=textStarShader)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=textStarShader)
 
 ![点星感谢](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/textStarShader.jpg)
 
@@ -75,7 +75,7 @@ camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight,
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=textStarShader) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=textStarShader) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[警告信息](/examples/three/shader/warnInfo)

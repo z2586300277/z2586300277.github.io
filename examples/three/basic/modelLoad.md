@@ -1,4 +1,4 @@
----
+﻿---
 title: "gltf/fbx/obj模型加载 - Three.js 案例讲解"
 description: "GLTFLoader、FBXLoader、OBJLoader+MTLLoader 与 DRACOLoader 压缩解码"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Model Load*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=modelLoad)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=modelLoad)
 
 ![gltf/fbx/obj模型加载](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/modelLoad.jpg)
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "智慧城市扫光 - Three.js 案例讲解"
 description: "智慧城市扫光：Scene / Camera / Renderer 渲染管线、相机交互控制器、外部模型 / 3D Tiles 加载（着色器）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *City Move*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=cityMoveLight)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=cityMoveLight)
 
 ![智慧城市扫光](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/cityMoveLight.jpg)
 
@@ -78,7 +78,7 @@ new OrbitControls(camera, renderer.domElement)
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=cityMoveLight) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=cityMoveLight) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[点星感谢](/examples/three/shader/textStarShader)

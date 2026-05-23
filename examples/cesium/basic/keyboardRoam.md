@@ -1,4 +1,4 @@
----
+﻿---
 title: "键盘漫游 - Cesium.js 案例讲解"
 description: "keydown/keyup + clock.onTick 驱动相机 WASD 漫游"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Keyboard Roam*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=keyboardRoam)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=basic&id=keyboardRoam)
 
 ![键盘漫游](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/keyboardRoam.jpg)
 

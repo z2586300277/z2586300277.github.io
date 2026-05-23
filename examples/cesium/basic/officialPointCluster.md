@@ -1,4 +1,4 @@
----
+﻿---
 title: "官方点聚合 - Cesium.js 案例讲解"
 description: "CustomDataSource.clustering 内置聚合与 Canvas 自定义簇图标"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Official Point Cluster*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=officialPointCluster)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=basic&id=officialPointCluster)
 
 ![官方点聚合](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/officialPointCluster.jpg)
 

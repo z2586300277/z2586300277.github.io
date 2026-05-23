@@ -1,4 +1,4 @@
----
+﻿---
 title: "精灵标签 - Three.js 案例讲解"
 description: "Canvas 绘制图文 → CanvasTexture → SpriteMaterial  billboard 标签"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Sprite Label*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=spriteTexture)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=spriteTexture)
 
 ![精灵标签](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/spriteTexture.jpg)
 

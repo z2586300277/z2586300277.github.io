@@ -1,4 +1,4 @@
----
+﻿---
 title: "时间轴动画 - Three.js 案例讲解"
 description: "时间轴动画：Scene / Camera / Renderer 渲染管线、相机交互控制器、动画与时间线（应用场景）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Gsap TimeLine*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=gsapTimeLine)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=gsapTimeLine)
 
 ![时间轴动画](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/gsapTimeLine.jpg)
 
@@ -66,7 +66,7 @@ box.appendChild(renderer.domElement)
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=gsapTimeLine) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=gsapTimeLine) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[测量](/examples/three/application/measurement)

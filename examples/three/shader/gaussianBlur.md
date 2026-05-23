@@ -1,4 +1,4 @@
----
+﻿---
 title: "高斯模糊 - Three.js 案例讲解"
 description: "高斯模糊：Scene / Camera / Renderer 渲染管线、相机交互控制器、ShaderMaterial / RawShaderMaterial 自定义 GLSL（着色器）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Gaussian Blur*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=gaussianBlur)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=gaussianBlur)
 
 ![高斯模糊](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/gaussianBlur.jpg)
 
@@ -81,7 +81,7 @@ Three.js WebGL 场景，以自定义 shader 呈现核心视觉效果，技术点
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=gaussianBlur) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=gaussianBlur) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[颗粒图像](/examples/three/shader/imageParticle)

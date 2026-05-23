@@ -1,4 +1,4 @@
----
+﻿---
 title: "路线导航 - Cesium.js 案例讲解"
 description: "路线导航：路线导航（应用相关）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *Route Nav*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=applyExample&id=routeNavigation)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=applyExample&id=routeNavigation)
 
-![路线导航](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/applyExample/routeNavigation.jpg)
+![路线导航](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/routeNavigation.jpg)
 
 ## 你将学到什么
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=applyExample&id=routeNavigation) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=applyExample&id=routeNavigation) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[曲线管道](/examples/cesium/applyExample/curvePipe)

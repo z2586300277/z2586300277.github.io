@@ -1,4 +1,4 @@
----
+﻿---
 title: "咖啡 - Three.js 案例讲解"
 description: "咖啡：Scene / Camera / Renderer 渲染管线、相机交互控制器、外部模型 / 3D Tiles 加载（应用场景）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Coffee Mug*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=coffeeMug)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=coffeeMug)
 
 ![咖啡](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/coffeeMug.jpg)
 
@@ -83,7 +83,7 @@ Three.js WebGL 场景，加载外部模型，以自定义 shader 呈现核心视
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=coffeeMug) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=coffeeMug) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[矩阵操作](/examples/three/application/matrixOperation)

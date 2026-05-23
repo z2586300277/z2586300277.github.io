@@ -1,4 +1,4 @@
----
+﻿---
 title: "热力图 - Cesium.js 案例讲解"
 description: "热力或密度可视化，通常把数值映射到颜色/高度。入口在 `setCesiumHeatmap`。"
 head:
@@ -11,7 +11,7 @@ outline: deep
 
 *Heat Map*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=expand&id=heatMap)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=expand&id=heatMap)
 
 ![热力图](https://z2586300277.github.io/three-editor/src/codes/cesiumjs/basic/heatMap.jpg)
 
@@ -182,7 +182,7 @@ var Store = (function StoreClosure() {
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=expand&id=heatMap) 运行，再对照源码逐步修改参数加深理解
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=expand&id=heatMap) 运行，再对照源码逐步修改参数加深理解
 - 更多同类案例见 [扩展功能目录](/examples/cesium/expand/)
 
 > 扩展功能 · Cesium.js

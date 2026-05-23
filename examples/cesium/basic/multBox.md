@@ -1,4 +1,4 @@
----
+﻿---
 title: "海量 Box - Cesium.js 案例讲解"
 description: "BoxGeometry + eastNorthUpToFixedFrame 万级实例合批"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Mass Boxes*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=multBox)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=basic&id=multBox)
 
 ![海量 Box](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/multBox.jpg)
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "单/多模型动画 - Three.js 案例讲解"
 description: "多 AnimationMixer 并行、actionIndexs 开关与多 clip 同时 play"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Multi Clip Animation*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=modelAnimates)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=modelAnimates)
 
 ![单/多模型动画](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/modelAnimates.jpg)
 

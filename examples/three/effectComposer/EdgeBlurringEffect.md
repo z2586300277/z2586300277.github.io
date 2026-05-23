@@ -1,4 +1,4 @@
----
+﻿---
 title: "边缘模糊效果 - Three.js 案例讲解"
 description: "边缘模糊效果：Scene / Camera / Renderer 渲染管线、ShaderMaterial / RawShaderMaterial 自定义 GLSL（后期处理）"
 head:
@@ -12,9 +12,9 @@ outline: deep
 
 *Edge Blur*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=effectComposer&id=EdgeBlurringEffect)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=effectComposer&id=EdgeBlurringEffect)
 
-![边缘模糊效果](https://z2586300277.github.io/three-cesium-examples/threeExamples/effectComposer/EdgeBlurringEffect.jpg)
+![边缘模糊效果](https://z2586300277.github.io/3d-file-server/images/four/EdgeBlurringEffect.png)
 
 ## 你将学到什么
 
@@ -75,7 +75,7 @@ const vertexShader = `
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=effectComposer&id=EdgeBlurringEffect) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=effectComposer&id=EdgeBlurringEffect) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[饱和度(自定义Pass)](/examples/three/effectComposer/saturationPass)

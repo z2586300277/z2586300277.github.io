@@ -1,4 +1,4 @@
----
+﻿---
 title: "草地着色器 - Three.js 案例讲解"
 description: "程序化 GrassGeometry + ShaderMaterial 十万草叶风动与云影"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Grass Shader*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=shader&id=grassShader)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=shader&id=grassShader)
 
 ![草地着色器](https://z2586300277.github.io/three-cesium-examples/threeExamples/shader/grassShader.jpg)
 

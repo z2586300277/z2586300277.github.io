@@ -1,4 +1,4 @@
----
+﻿---
 title: "点聚合 Supercluster - Cesium.js 案例讲解"
 description: "Supercluster 库 + BillboardCollection，camera.changed 动态刷新聚合"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Point Cluster (Supercluster)*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=basic&id=multPointCluster)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=basic&id=multPointCluster)
 
 ![点聚合 Supercluster](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/basic/multPointCluster.jpg)
 

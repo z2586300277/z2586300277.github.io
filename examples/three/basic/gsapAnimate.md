@@ -1,4 +1,4 @@
----
+﻿---
 title: "GSAP动画 - Three.js 案例讲解"
 description: "gsap.to 驱动 camera.position 与 controls.target 相机动画"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *GSAP Camera*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=gsapAnimate)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=gsapAnimate)
 
 ![GSAP动画](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/gsapAnimate.jpg)
 

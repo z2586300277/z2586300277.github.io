@@ -1,4 +1,4 @@
----
+﻿---
 title: "下雨效果 - Three.js 案例讲解"
 description: "下雨效果：Scene / Camera / Renderer 渲染管线、相机交互控制器、onBeforeCompile 修改内置材质 shader（应用场景）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Rain Roof*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=rainRoof)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=rainRoof)
 
 ![下雨效果](https://z2586300277.github.io/three-cesium-examples/threeExamples/application/rainRoof.jpg)
 
@@ -70,7 +70,7 @@ this.stencilBuffer = false;
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=application&id=rainRoof) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=application&id=rainRoof) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[视频地板](/examples/three/application/videoFloor)

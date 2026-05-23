@@ -1,4 +1,4 @@
----
+﻿---
 title: "地图滤镜 - Cesium.js 案例讲解"
 description: "Cesium 在线底图图层。"
 head:
@@ -11,7 +11,7 @@ outline: deep
 
 *Map Filter*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=layer&id=mapfilterLayer)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=layer&id=mapfilterLayer)
 
 ![地图滤镜](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/layer/mapfilterLayer.jpg)
 
@@ -150,7 +150,7 @@ function setViewerTheme(viewer, options = {}) {
 
 ## 小结
 
-- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=layer&id=mapfilterLayer) 运行，再对照源码逐步修改参数加深理解
+- 建议先在 [案例编辑器](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=layer&id=mapfilterLayer) 运行，再对照源码逐步修改参数加深理解
 - 更多同类案例见 [在线地图目录](/examples/cesium/layer/)
 
 > 在线地图 · Cesium.js

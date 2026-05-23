@@ -1,4 +1,4 @@
----
+﻿---
 title: "相机属性 - Three.js 案例讲解"
 description: "PerspectiveCamera 的 fov/near/far/zoom、Layers 图层可见性，以及 updateProjectionMatrix"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Camera Attributes*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=cameraAttribute)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=cameraAttribute)
 
 ![相机属性](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/cameraAttribute.jpg)
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Cesium Three切换 - Cesium.js 案例讲解"
 description: "Cesium Three切换：Cesium Viewer 初始化与场景配置、相机交互控制器、外部模型 / 3D Tiles 加载（扩展功能）"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Cesium Switch*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=expand&id=cesiumSwitch)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=expand&id=cesiumSwitch)
 
 ![Cesium Three切换](https://z2586300277.github.io/three-cesium-examples/cesiumExamples/expand/cesiumSwitch.jpg)
 
@@ -73,7 +73,7 @@ const entity = viewer.entities.add({
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=CesiumJS&classify=expand&id=cesiumSwitch) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=expand&id=cesiumSwitch) 运行，再对照源码修改 uniform / 参数加深理解
 
 
 - 上一篇：[cesium融合three](/examples/cesium/expand/cesiumAndThree)

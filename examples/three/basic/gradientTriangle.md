@@ -1,4 +1,4 @@
----
+﻿---
 title: "渐变三角形 - Three.js 案例讲解"
 description: "BufferGeometry 顶点色 + index 索引，GPU 重心插值渐变"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Gradient Triangle*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=gradientTriangle)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=gradientTriangle)
 
 ![渐变三角形](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/gradientTriangle.jpg)
 

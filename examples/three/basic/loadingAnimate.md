@@ -1,4 +1,4 @@
----
+﻿---
 title: "加载动画 - Three.js 案例讲解"
 description: "LoadingManager 总进度、GLTFLoader xhr 下载进度与 DOM 加载提示"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Loading Progress*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=loadingAnimate)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=loadingAnimate)
 
 ![加载动画](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/loadingAnimate.jpg)
 

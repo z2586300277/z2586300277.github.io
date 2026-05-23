@@ -1,4 +1,4 @@
----
+﻿---
 title: "模型天空 - Three.js 案例讲解"
 description: "glTF 天空穹顶模型加载，setAnimationLoop 驱动天空缓慢旋转"
 head:
@@ -12,7 +12,7 @@ outline: deep
 
 *Model Sky*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/?navigation=ThreeJS&classify=basic&id=modelSky)
+[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=basic&id=modelSky)
 
 ![模型天空](https://z2586300277.github.io/three-cesium-examples/threeExamples/basic/modelSky.jpg)
 
