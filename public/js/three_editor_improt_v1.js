@@ -7,7 +7,7 @@
 
     const style = document.createElement('style');
     style.textContent = `
-    .editor-card {
+    .edt-promo-card--v1 {
       position: fixed;
       top: 60px;
       right: 20px;
@@ -16,30 +16,33 @@
       border-radius: 8px;
       padding: 12px 14px;
       width: 240px;
+      box-sizing: border-box;
+      overflow: hidden;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
       z-index: 9999;
-      animation: slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: edt-promo-slidein--v1 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       backdrop-filter: blur(8px);
       user-select: none;
     }
 
-    @keyframes slideIn {
+    @keyframes edt-promo-slidein--v1 {
       from { opacity: 0; transform: translateX(300px); }
       to { opacity: 1; transform: translateX(0); }
     }
 
-    .editor-card-title {
+    .edt-promo-card__title--v1 {
       font-size: 13px;
       font-weight: 600;
       color: #fff;
       margin-bottom: 10px;
     }
 
-    .editor-card-btn {
+    .edt-promo-card__btn--v1 {
       display: block;
       width: 100%;
-      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      box-sizing: border-box;
+      background: linear-gradient(135deg, #2656f4 0%, #ce6bf3 100%);
       color: white;
       border: none;
       border-radius: 5px;
@@ -50,14 +53,16 @@
       transition: all 0.3s;
       text-decoration: none;
       text-align: center;
+      line-height: normal;
+      margin: 0;
     }
 
-    .editor-card-btn:hover {
+    .edt-promo-card__btn--v1:hover {
       transform: translateY(-1px);
       box-shadow: 0 3px 12px rgba(99, 102, 241, 0.3);
     }
 
-    .editor-card-close {
+    .edt-promo-card__close--v1 {
       position: absolute;
       top: 8px;
       right: 8px;
@@ -70,12 +75,12 @@
       padding: 2px;
     }
 
-    .editor-card-close:hover {
+    .edt-promo-card__close--v1:hover {
       color: #fff;
     }
 
     @media (max-width: 640px) {
-      .editor-card {
+      .edt-promo-card--v1 {
         width: 220px;
         top: 10px;
         right: 10px;
@@ -85,14 +90,14 @@
     document.head.appendChild(style);
 
     const card = document.createElement('div');
-    card.className = 'editor-card';
+    card.className = 'edt-promo-card--v1';
     card.innerHTML = `
-    <button class="editor-card-close">×</button>
-    <div class="editor-card-title">国内首款 AI - 3D编辑器 已开源🔥</div>
+    <button class="edt-promo-card__close--v1">×</button>
+    <div class="edt-promo-card__title--v1">国内首款 AI - 3D编辑器 已开源🔥</div>
     <a href="https://z2586300277.github.io/threejs-editor-beta/#/editor" 
        target="_blank" 
        rel="noopener noreferrer"
-       class="editor-card-btn">
+       class="edt-promo-card__btn--v1">
       立即体验 ✨
     </a>
   `;
@@ -102,8 +107,8 @@
         if (document.body) {
             document.body.appendChild(card);
             // 关闭按钮事件
-            card.querySelector('.editor-card-close').addEventListener('click', () => {
-                card.style.animation = 'slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) reverse';
+            card.querySelector('.edt-promo-card__close--v1').addEventListener('click', () => {
+                card.style.animation = 'edt-promo-slidein--v1 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) reverse';
                 setTimeout(() => card.remove(), 400);
                 // 存储到sessionStorage，浏览器关闭后自动清除
                 sessionStorage.setItem('editorCardClosed', '1');
