@@ -12,7 +12,7 @@ outline: deep
 
 *Font to JSON*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=tools&id=make_json_font)
+[▶ 访问外部案例](https://gero3.github.io/facetype.js/)
 
 ![字体转Three使用json字体](https://z2586300277.github.io/three-cesium-examples/threeExamples/tools/make_json_font.jpg)
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=tools&id=make_json_font) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先访问 [外部案例](https://gero3.github.io/facetype.js/) 体验效果
 
 
 - 上一篇：[hdr制作天空盒](/examples/three/tools/skyBox_Make)

@@ -12,7 +12,7 @@ outline: deep
 
 *Mixamo*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=tools&id=mixamo)
+[▶ 访问外部案例](https://www.mixamo.com/)
 
 ![制作人物动画](https://z2586300277.github.io/three-cesium-examples/threeExamples/tools/mixamo.jpg)
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=tools&id=mixamo) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先访问 [外部案例](https://www.mixamo.com/) 体验效果
 
 
 - 上一篇：[图片生成3D模型](/examples/three/tools/TRELLIS)

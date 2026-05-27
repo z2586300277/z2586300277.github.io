@@ -12,7 +12,7 @@ outline: deep
 
 *Cesium Examples*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=topStation&id=jiawanlong)
+[▶ 访问外部案例](https://jiawanlong.github.io/Cesium-Examples/examples/cesiumEx/examples.html)
 
 ![Cesium案例 - 点⭐](https://z2586300277.github.io/3d-file-server/images/jiawanlong.jpg)
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=CesiumJS&classify=topStation&id=jiawanlong) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先访问 [外部案例](https://jiawanlong.github.io/Cesium-Examples/examples/cesiumEx/examples.html) 体验效果
 
 
 - 上一篇：[CesiumJS官网](/examples/cesium/topStation/cesiumjsHome)

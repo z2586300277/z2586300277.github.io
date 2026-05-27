@@ -12,7 +12,7 @@ outline: deep
 
 *ShaderToy*
 
-[▶ 在线运行案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=tools&id=shaderToy)
+[▶ 访问外部案例](https://www.shadertoy.com/)
 
 ![开源shader社区](https://z2586300277.github.io/3d-file-server/images/shaderToy.jpg)
 
@@ -41,7 +41,7 @@ _本站无对应 JS 文件，请参考在线案例或外部链接。_
 
 ## 小结
 
-- 建议先在 [在线案例](https://z2586300277.github.io/three-cesium-examples/#/codeMirror?navigation=ThreeJS&classify=tools&id=shaderToy) 运行，再对照源码修改 uniform / 参数加深理解
+- 建议先访问 [外部案例](https://www.shadertoy.com/) 体验效果
 
 
 - 上一篇：[sketchfab免费模型](/examples/three/tools/sketchfab_model)
