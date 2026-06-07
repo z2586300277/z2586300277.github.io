@@ -38,9 +38,14 @@
       margin-bottom: 10px;
     }
 
+    .edt-promo-card__actions--v1 {
+      display: flex;
+      gap: 8px;
+    }
+
     .edt-promo-card__btn--v1 {
-      display: block;
-      width: 100%;
+      display: inline-flex;
+      width: calc(50% - 4px);
       box-sizing: border-box;
       background: linear-gradient(135deg, #2656f4 0%, #ce6bf3 100%);
       color: white;
@@ -52,9 +57,16 @@
       cursor: pointer;
       transition: all 0.3s;
       text-decoration: none;
+      justify-content: center;
+      align-items: center;
       text-align: center;
       line-height: normal;
       margin: 0;
+    }
+
+    .edt-promo-card__btn--secondary-v1 {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.22);
     }
 
     .edt-promo-card__btn--v1:hover {
@@ -94,12 +106,20 @@
     card.innerHTML = `
     <button class="edt-promo-card__close--v1">×</button>
     <div class="edt-promo-card__title--v1">国内首款 AI - 3D编辑器 已开源🔥</div>
-    <a href="https://z2586300277.github.io/threejs-editor-beta/#/editor" 
-       target="_blank" 
-       rel="noopener noreferrer"
-       class="edt-promo-card__btn--v1">
-      立即体验 ✨
-    </a>
+    <div class="edt-promo-card__actions--v1">
+      <a href="https://z2586300277.github.io/threejs-editor-beta/#/editor" 
+         target="_blank" 
+         rel="noopener noreferrer"
+         class="edt-promo-card__btn--v1">
+        立即使用
+      </a>
+      <a href="https://z2586300277.github.io/yyhg/" 
+         target="_blank" 
+         rel="noopener noreferrer"
+         class="edt-promo-card__btn--v1 edt-promo-card__btn--secondary-v1">
+        示例项目
+      </a>
+    </div>
   `;
 
     // 插入到页面
