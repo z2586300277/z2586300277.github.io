@@ -12,6 +12,11 @@ aside: true
 |[🧑‍🤝‍🧑OpenThree](https://github.com/orgs/OpenThree/repositories)| [🙂emoji表情](https://emoji.muan.co/) | [🌟github排行榜](https://evanli.github.io/Github-Ranking/)| [🐋python学习](https://github.com/jackfrued/Python-100-Days) | [V2rayNG](https://github.com/2dust/v2rayNG) | [Clash](https://github.com/clash-verge-rev/clash-verge-rev)
 |[🍃Panda-vpn](https://github.com/DiningFactory/panda-vpn-pro)| [Dev-sidecar](https://github.com/docmirror/dev-sidecar) | [Watt Toolkit](https://steampp.net) | [Info](https://github.com/xgit01) | [图片压缩](https://z2586300277.github.io/other/imgT.html)
 
+# 模型工具
+| 链接 | 链接 | 链接 |
+| ------- | ----- | ------ |
+|[模型减面](https://z2586300277.github.io/3d_tools/glb_to_min/) | [线框投影](https://z2586300277.github.io/3d_tools/line_model/) | [模型重叠消除](https://z2586300277.github.io/3d_tools/remove_overlap_faces/) |
+
 ## 学习
 
 - 🏗️ [Blender教程](https://www.bilibili.com/video/BV1fb4y1e7PD) - B站优秀的Blender建模学习教程
