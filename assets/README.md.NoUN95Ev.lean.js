@@ -1,0 +1,1 @@
+import{_ as t,o as r,c as a,a0 as i}from"./chunks/framework.Dx25mwie.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"README.md","filePath":"README.md"}'),l={name:"README.md"};function p(h,e,o,n,s,c){return r(),a("div",null,[...e[0]||(e[0]=[i("",2)])])}const b=t(l,[["render",p]]);export{m as __pageData,b as default};

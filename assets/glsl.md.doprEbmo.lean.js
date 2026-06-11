@@ -1,0 +1,1 @@
+import{_ as i,o as a,c as t,a0 as n}from"./chunks/framework.Dx25mwie.js";const g=JSON.parse('{"title":"GLSL 中文手册","description":"","frontmatter":{},"headers":[],"relativePath":"glsl.md","filePath":"glsl.md"}'),h={name:"glsl.md"};function p(l,s,k,e,d,r){return a(),t("div",null,[...s[0]||(s[0]=[n("",185)])])}const y=i(h,[["render",p]]);export{g as __pageData,y as default};

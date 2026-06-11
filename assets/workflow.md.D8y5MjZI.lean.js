@@ -1,0 +1,1 @@
+import{_ as e,o as r,c as t,a0 as n}from"./chunks/framework.Dx25mwie.js";const h=JSON.parse('{"title":"n8n","description":"","frontmatter":{},"headers":[],"relativePath":"workflow.md","filePath":"workflow.md"}'),o={name:"workflow.md"};function l(i,a,d,f,s,_){return r(),t("div",null,[...a[0]||(a[0]=[n("",4)])])}const p=e(o,[["render",l]]);export{h as __pageData,p as default};
