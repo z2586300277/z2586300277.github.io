@@ -17,6 +17,11 @@ aside: true
 | ------- | ----- | ------ |
 |[模型减面](https://z2586300277.github.io/3d_tools/glb_to_min/) | [线框投影](https://z2586300277.github.io/3d_tools/line_model/) | [模型重叠消除](https://z2586300277.github.io/3d_tools/remove_overlap_faces/) |
 
+### AI 3D建模
+| 链接 | 链接 | 链接 | 链接 | 链接 |
+| ------- | ----- | ------ | ------- | ----- |
+| [TRELLIS](https://microsoft.github.io/TRELLIS/) | [Hyper3D](https://hyper3d.ai/?lang=zh) | [Tripo3D Studio](https://studio.tripo3d.com/) | [V2Fun Model](https://v2fun.art/?tab=model) | [腾讯混元3D](https://3d.hunyuan.tencent.com/) |
+
 ### 学习
 
 - 🏗️ [Blender教程](https://www.bilibili.com/video/BV1fb4y1e7PD) - B站优秀的Blender建模学习教程
