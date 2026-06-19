@@ -42,6 +42,13 @@ title: 个人二维码
     height: 260px;
     object-fit: cover;
 }
+.fimg {
+    height: 100px;
+    object-fit: cover;
+    position: fixed;
+    top: 300px;
+    right: 40px;
+}
 </style>
 
 <!-- 包裹展示区 -->
@@ -52,5 +59,6 @@ title: 个人二维码
     <img class="ims4" src="https://z2586300277.github.io/3d-file-server/images/wx_min_app.jpg" >
     <img class="ims" src="/files/qqq.png" >
     <img class="ims5" src="/files/sph.jpg" >
-    <img class="ims6" src="/files/dy.jpg" >
+    <img class="ims6" src="/files/gfdy.jpg" >
+    <img class="fimg" src="/files/wx_gzh.png" >
   </div>
