@@ -49,6 +49,10 @@ aside: true
 
 - 🌟[模型资源](https://pan.quark.cn/s/59f2ed3acb24) - 作者收集的一些优质模型资源,glb、fbx、obj、体积小、精美
 
+- 💎 [优悦数字孪生大屏源码](https://pan.quark.cn/s/03493e659ecb) - 数字孪生大屏源码
+
+- 🍑 [编辑器](https://pan.quark.cn/s/cfee50d8c8ca) - 编辑器源码
+
 
 <!-- /* 
 🌹🍀🍎💰📱🌙🍁🍂🍃🌷💎🔪🔫🏀⚽⚡👄👍🔥😀😁😂😃😄😅😆😉😊😋
