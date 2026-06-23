@@ -6,7 +6,7 @@ title: 个人二维码
 <style>
 .qrgrid {
   height: 600px;
-  width: 850px;
+  width: 840px;
   margin: 20px auto 0;
   flex-wrap: wrap;
   display: flex;
@@ -46,7 +46,14 @@ title: 个人二维码
     height: 100px;
     object-fit: cover;
     position: fixed;
-    top: 300px;
+    top: 450px;
+    right: 40px;
+}
+.yimg {
+    height: 100px;
+    object-fit: cover;
+    position: fixed;
+    top: 200px;
     right: 40px;
 }
 </style>
@@ -61,4 +68,5 @@ title: 个人二维码
     <img class="ims5" src="/files/sph.jpg" >
     <img class="ims6" src="/files/gfdy.jpg" >
     <img class="fimg" src="/files/wx_gzh.png" >
+    <img class="yimg" src="/files/yyhg_gzh.png" >
   </div>
