@@ -1,6 +1,7 @@
 ---
 layout: page
 title: 个人二维码
+description: 优雅永不过时作者微信、QQ 等联系方式二维码，Three.js Cesium.js 技术交流与咨询。
 ---
 
 <style>

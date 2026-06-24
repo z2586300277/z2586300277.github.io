@@ -1,7 +1,7 @@
 ---
 layout: doc
-title: 作者资源
-description: 优雅永不过时的资源链接
+title: 开发者资源导航
+description: Three.js、Cesium.js、WebGL 三维可视化开发资源合集：模型工具、Shader 社区、HDR 贴图、GLTF 压缩与常用开发链接。
 aside: true
 ---
 

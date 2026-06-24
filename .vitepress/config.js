@@ -1,14 +1,41 @@
 import { defineConfig } from 'vitepress'
 import examplesSidebar from './examples-sidebar.mjs'
+import { generateRss } from './rss.mjs'
+import {
+  SITE_HOST,
+  SITE_NAME,
+  SITE_DESCRIPTION,
+  SITE_IMAGE,
+  SITE_KEYWORDS,
+  SITE_AUTHOR,
+  transformPageData,
+  transformSitemapItems
+} from './seo.mjs'
 
 export default defineConfig({
-  title: "优雅永不过时",
+  title: SITE_NAME,
+  titleTemplate: ':title | 优雅三维',
+  description: SITE_DESCRIPTION,
+  lang: 'zh-CN',
   base: '/',
-  description: "WebGL Three.js Cesium.js 三维可视化 - 案例讲解与技术分享",
+  lastUpdated: true,
+  srcExclude: ['README.md'],
   sitemap: {
-    hostname: 'https://z2586300277.github.io'
+    hostname: SITE_HOST,
+    transformItems: transformSitemapItems
+  },
+  transformPageData,
+  async buildEnd(siteConfig) {
+    await generateRss(siteConfig)
   },
   head: [
+    ['link', { rel: 'icon', type: 'image/png', href: '/site.png' }],
+    ['link', { rel: 'apple-touch-icon', href: '/site.png' }],
+    ['link', { rel: 'alternate', type: 'application/rss+xml', title: `${SITE_NAME} 案例文章`, href: '/feed.xml' }],
+    ['meta', { name: 'author', content: SITE_AUTHOR }],
+    ['meta', { name: 'keywords', content: SITE_KEYWORDS }],
+    ['meta', { name: 'robots', content: 'index, follow, max-image-preview:large' }],
+    ['meta', { name: 'theme-color', content: '#3c8772' }],
     ['script', { async: true, src: 'https://www.googletagmanager.com/gtag/js?id=G-LKJQBJNGVF' }],
     ['script', { async: true, src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8697430839896878', crossorigin: 'anonymous' }],
     ['script', {}, `window.dataLayer = window.dataLayer || [];
@@ -24,7 +51,27 @@ export default defineConfig({
     })();`]
   ],
   themeConfig: {
-    logo: 'https://z2586300277.github.io/site.png',
+    logo: SITE_IMAGE,
+    search: {
+      provider: 'local',
+      options: {
+        translations: {
+          button: {
+            buttonText: '搜索文档',
+            buttonAriaLabel: '搜索文档'
+          },
+          modal: {
+            noResultsText: '未找到结果',
+            resetButtonTitle: '清除',
+            footer: {
+              selectText: '选择',
+              navigateText: '切换',
+              closeText: '关闭'
+            }
+          }
+        }
+      }
+    },
     nav: [
       { text: '案例讲解📖', link: '/examples/' },
       { text: '企业🏬', link: 'http://site.threehub.cn/' },
