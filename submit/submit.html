@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>投稿作品 · OpenThree</title>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d524378bd67f7e379f9b1579c741bb0d";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 100vw; height: 100vh; overflow: hidden;
+      background: #060c1a;
+      font-family: 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
+      color: #c8d3e8;
+      display: flex; flex-direction: column;
+    }
+    canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    .glow { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(110px); }
+    .glow-l { width: 55vw; height: 55vw; background: radial-gradient(circle, #3730a3 0%, transparent 70%); top: -20vh; left: -15vw; opacity: 0.4; }
+    .glow-r { width: 45vw; height: 45vw; background: radial-gradient(circle, #075985 0%, transparent 70%); bottom: -18vh; right: -12vw; opacity: 0.35; }
+
+    nav {
+      position: relative; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 6vw;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 1rem; font-weight: 700; letter-spacing: 0.3px;
+      color: #bedcfa; text-decoration: none; transition: color 0.2s;
+    }
+    .logo:hover { color: #ffffff; }
+    .logo svg { flex-shrink: 0; }
+    .btn-gh {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.78rem; font-weight: 600; color: #bedcfa;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      padding: 7px 15px; border-radius: 8px; text-decoration: none;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .btn-gh:hover { color: #ffffff; border-color: rgba(165,180,252,0.3); }
+
+    main {
+      position: relative; z-index: 1; flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 0 6vw;
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.65rem; letter-spacing: 4px; text-transform: uppercase; color: #bedcfa;
+      margin-bottom: 24px;
+      opacity: 0; animation: up 0.5s 0.05s ease forwards;
+    }
+    .dot { width: 4px; height: 4px; border-radius: 50%; background: #38bdf8; box-shadow: 0 0 6px #38bdf8; animation: blink 2s infinite; }
+    .line { width: 22px; height: 1px; background: rgba(255,255,255,0.12); }
+
+    .t1 {
+      font-size: clamp(2rem, 4.5vw, 3.6rem);
+      font-weight: 800; color: #dde5f7; line-height: 1.15; letter-spacing: -0.5px;
+      margin-bottom: 4px;
+      opacity: 0; animation: up 0.5s 0.15s ease forwards;
+    }
+    .t2 {
+      font-size: clamp(2rem, 4.5vw, 3.6rem);
+      font-weight: 800; line-height: 1.15; letter-spacing: -0.5px;
+      background: linear-gradient(110deg, #a78bfa 5%, #38bdf8 50%, #e879f9 95%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 24px;
+      opacity: 0; animation: up 0.5s 0.25s ease forwards;
+    }
+    .desc {
+      letter-spacing: 1.5px;
+      font-size: clamp(0.88rem, 1.3vw, 0.98rem);
+      color: #bedcfa; line-height: 1.75; margin-bottom: 24px;
+      opacity: 0; animation: up 0.5s 0.35s ease forwards;
+    }
+
+    .pills {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center;
+      margin-bottom: 32px;
+      opacity: 0; animation: up 0.5s 0.45s ease forwards;
+    }
+    .pill {
+      font-size: 0.72rem; color: #bedcfa; letter-spacing: 0.2px;
+      padding: 4px 13px; border-radius: 99px;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .pill:hover { color: #ffffff; border-color: rgba(165,180,252,0.2); }
+
+    .actions {
+      display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+      opacity: 0; animation: up 0.5s 0.55s ease forwards;
+    }
+    .btn-main {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 12px 30px; border-radius: 10px;
+      font-size: 0.9rem; font-weight: 700; color: #fff; text-decoration: none;
+      background: linear-gradient(135deg, #4c1d95, #0c4a6e);
+      box-shadow: 0 0 28px rgba(76,29,149,0.5);
+      position: relative; overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-main::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%); }
+    .btn-main:hover { transform: translateY(-2px); box-shadow: 0 0 44px rgba(76,29,149,0.7); }
+
+    .btn-out {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 11px 24px; border-radius: 10px;
+      font-size: 0.86rem; font-weight: 600; color: #bedcfa; text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.09);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .btn-out:hover { color: #a5b4fc; border-color: rgba(165,180,252,0.3); }
+
+    footer {
+      position: relative; z-index: 1;
+      text-align: center; padding: 15px;
+      font-size: 0.8rem; color: #bedcfa;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+    footer a { color: #bedcfa; text-decoration: none; transition: color 0.2s; }
+    footer a:hover { color: #ffffff; }
+
+    @keyframes up { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  </style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+  <div class="glow glow-l"></div>
+  <div class="glow glow-r"></div>
+
+  <nav>
+    <a class="logo" href="https://z2586300277.github.io/three-cesium-examples" target="_blank">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><polygon points="12,2 22,8 22,16 12,22 2,16 2,8" fill="url(#g1)"/><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#38bdf8"/></linearGradient></defs></svg>
+      Open Three
+    </a>
+    <a class="btn-gh" href="https://github.com/z2586300277/three-cesium-examples" target="_blank">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.44 9.8 8.21 11.39.6.11.82-.26.82-.57v-2.24c-3.01.56-3.8-.73-4.04-1.41-.13-.34-.72-1.41-1.23-1.69-.42-.23-1.02-.78-.01-.8.95-.01 1.62.87 1.85 1.23 1.08 1.82 2.8 1.3 3.49.99.11-.78.42-1.3.76-1.6-2.67-.3-5.46-1.34-5.46-5.93 0-1.3.47-2.38 1.23-3.22-.12-.3-.54-1.53.12-3.18 0 0 1-.31 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.54 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.76.84 1.23 1.91 1.23 3.22 0 4.6-2.8 5.62-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.69.83.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub
+    </a>
+  </nav>
+
+  <main>
+    <div class="badge"><span class="line"></span><span class="dot"></span>Open Source · Web3D <span class="dot"></span><span class="line"></span></div>
+    <div class="t1">分享你的 Web3D </div>
+    <div class="t2">开源 案例</div>
+    <p class="desc">让更多人看到你的 - 优秀作品 - ，并且为你的github 点亮一个 ⭐ Star</p>
+    <div class="pills">
+      <span class="pill">精准曝光 Web3D 领域</span>
+      <span class="pill">GitHub Star 持续增长</span>
+      <span class="pill">学习分享 · 永久展示</span>
+    </div>
+    <div class="actions">
+      <a class="btn-main" href="http://app.threehub.cn/submit/submit.html" target="_blank">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        投稿你的作品
+      </a>
+      <a class="btn-out" href="http://app.threehub.cn/submit/index.html" target="_blank">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        即将上线的作品
+      </a>
+    </div>
+  </main>
+
+  <footer>
+    <a href="https://z2586300277.github.io/three-cesium-examples" target="_blank">Open Three</a>
+    &nbsp;——&nbsp; 开源的Web前端三维可视化案例社区
+  </footer>
+
+  <script>(function () {
+      const canvas = document.getElementById('c');
+      const ctx = canvas.getContext('2d');
+      let W, H, stars = [], mouse = { x: -999, y: -999 };
+      const N = 140;
+
+      function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+
+      function init() {
+        stars = Array.from({ length: N }, () => ({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          r: Math.random() * 1.3 + 0.3,
+          vx: (Math.random() - 0.5) * 0.12,
+          vy: (Math.random() - 0.5) * 0.12,
+          tw: Math.random() * Math.PI * 2,
+          a: Math.random() * 0.5 + 0.3
+        }));
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        stars.forEach(s => {
+          s.tw += 0.013;
+          const a = s.a * (0.65 + 0.35 * Math.sin(s.tw));
+
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(168,139,250,${a})`;
+          ctx.fill();
+
+          const dx = s.x - mouse.x, dy = s.y - mouse.y;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d < 100) {
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r * 2.8, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(0,212,255,${0.28 * (1 - d / 100)})`;
+            ctx.fill();
+          }
+
+          s.x += s.vx; s.y += s.vy;
+          if (s.x < 0) s.x = W; if (s.x > W) s.x = 0;
+          if (s.y < 0) s.y = H; if (s.y > H) s.y = 0;
+        });
+
+        for (let i = 0; i < stars.length; i++) {
+          for (let j = i + 1; j < stars.length; j++) {
+            const dx = stars[i].x - stars[j].x, dy = stars[i].y - stars[j].y;
+            const d = Math.sqrt(dx * dx + dy * dy);
+            if (d < 85) {
+              ctx.beginPath();
+              ctx.moveTo(stars[i].x, stars[i].y);
+              ctx.lineTo(stars[j].x, stars[j].y);
+              ctx.strokeStyle = `rgba(108,99,255,${0.16 * (1 - d / 85)})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          }
+        }
+        requestAnimationFrame(draw);
+      }
+
+      window.addEventListener('resize', () => { resize(); init(); });
+      window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+      resize(); init(); draw();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+Sitemap: https://z2586300277.github.io/sitemap.xml
+
+# RSS: https://z2586300277.github.io/feed.xml
