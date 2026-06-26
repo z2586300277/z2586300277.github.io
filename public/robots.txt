@@ -9,5 +9,4 @@ Allow: /
 
 Sitemap: https://z2586300277.github.io/sitemap.xml
 
-# RSS 订阅（380+ 案例文章，便于搜索引擎发现新内容）
-# https://z2586300277.github.io/feed.xml
+# RSS: https://z2586300277.github.io/feed.xml

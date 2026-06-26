@@ -146,11 +146,6 @@ function buildJsonLd(pageData, pageTitle, pageDesc, url, image) {
         '@type': 'Person',
         name: SITE_AUTHOR,
         url: 'https://github.com/z2586300277'
-      },
-      potentialAction: {
-        '@type': 'SearchAction',
-        target: `${SITE_HOST}/examples/?q={search_term_string}`,
-        'query-input': 'required name=search_term_string'
       }
     }
   }
@@ -230,9 +225,10 @@ export function transformPageData(pageData, { siteConfig }) {
   if (isArticle) {
     head.push(['meta', { name: 'robots', content: 'index, follow, max-image-preview:large' }])
     if (pageData.lastUpdated) {
-      const modified = new Date(pageData.lastUpdated).toISOString()
-      head.push(['meta', { property: 'article:modified_time', content: modified }])
-      head.push(['meta', { property: 'article:published_time', content: modified }])
+      head.push([
+        'meta',
+        { property: 'article:modified_time', content: new Date(pageData.lastUpdated).toISOString() }
+      ])
     }
     head.push(['meta', { property: 'article:author', content: SITE_AUTHOR }])
     const category = parseArticleCategory(pageData.relativePath)
